@@ -1,0 +1,105 @@
+{{ 'section-scent-sections.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'scent-sections.js' | asset_url }}" defer="defer"></script>
+
+<scent-visit
+  class="sv"
+  id="{{ section.settings.anchor | default: 'visit' | handle }}"
+  data-header-tone="dark"
+  style="background: {{ section.settings.bg }}; color: {{ section.settings.text_color }};"
+>
+  <div class="sv__inner">
+    <div class="sv__top">
+      <h2 class="sv__title" data-reveal>{{ section.settings.heading | newline_to_br }}</h2>
+      <div class="sv__slot" data-slot aria-hidden="true"></div>
+      <div class="sv__ctas" data-reveal>
+        {%- if section.settings.button_label_1 != blank -%}
+          <a href="{{ section.settings.button_link_1 | default: routes.all_products_collection_url }}" class="sv__btn sv__btn--solid">{{ section.settings.button_label_1 | escape }}</a>
+        {%- endif -%}
+        {%- if section.settings.button_label_2 != blank -%}
+          <a href="{{ section.settings.button_link_2 | default: routes.root_url }}" class="sv__btn">{{ section.settings.button_label_2 | escape }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+    <div class="sv__info">
+      {%- for block in section.blocks -%}
+        <div class="sv__item" data-reveal style="--delay: {{ forloop.index0 | times: 0.1 }}s;" {{ block.shopify_attributes }}>
+          <span class="sv__label">{{ block.settings.heading | escape }}</span>
+          <span class="sv__value">{{ block.settings.text | escape }}</span>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {%- if section.settings.show_bottle -%}
+    <div class="sv__fly" data-fly aria-hidden="true">
+      <div class="sv__fly-inner" data-fly-inner>
+        {%- assign visit_product = section.settings.product | default: collections.all.products[3] | default: collections.all.products[0] -%}
+        {%- assign visit_image = section.settings.image | default: visit_product.featured_image -%}
+        {%- if visit_image != blank -%}
+          {%- render 'bottle-photo', image: visit_image, sizes: '380px', widths: '300, 500, 700', spot: true -%}
+        {%- else -%}
+          {%- capture uid -%}sv{{ section.id | handle | remove: '-' | slice: -5, 5 }}{%- endcapture -%}
+          {%- render 'perfume-bottle', style: section.settings.bottle_style, liquid: section.settings.liquid, label: section.settings.label, uid: uid -%}
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+</scent-visit>
+
+{% schema %}
+{
+  "name": "t:sections.scent_visit.name",
+  "tag": "section",
+  "class": "section section--scent-visit",
+  "max_blocks": 4,
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "textarea", "id": "heading", "default": "Smell\nsomething\nnew.", "label": "t:sections.all.heading" },
+    { "type": "text", "id": "button_label_1", "default": "Shop online", "label": "t:sections.water_hero.blocks.buttons.settings.button_label_1.label" },
+    { "type": "url", "id": "button_link_1", "label": "t:sections.water_hero.blocks.buttons.settings.button_link_1.label" },
+    { "type": "text", "id": "button_label_2", "default": "Book a scent consultation", "label": "t:sections.water_hero.blocks.buttons.settings.button_label_2.label" },
+    { "type": "url", "id": "button_link_2", "label": "t:sections.water_hero.blocks.buttons.settings.button_link_2.label" },
+    { "type": "color", "id": "bg", "default": "#191714", "label": "t:sections.scent_house.settings.bg.label" },
+    { "type": "color", "id": "text_color", "default": "#F3F0EB", "label": "t:sections.scent_visit.settings.text_color.label" },
+    { "type": "header", "content": "t:sections.scent_visit.settings.header_bottle.content" },
+    { "type": "checkbox", "id": "show_bottle", "default": true, "label": "t:sections.scent_visit.settings.show_bottle.label", "info": "t:sections.scent_visit.settings.show_bottle.info" },
+    { "type": "product", "id": "product", "label": "t:sections.scent_story.blocks.scent.settings.product.label" },
+    { "type": "image_picker", "id": "image", "label": "t:sections.scent_story.blocks.scent.settings.image.label", "info": "t:sections.scent_story.blocks.scent.settings.image.info" },
+    {
+      "type": "select",
+      "id": "bottle_style",
+      "default": "tall",
+      "label": "t:sections.scent_story.blocks.scent.settings.bottle_style.label",
+      "options": [
+        { "value": "flacon", "label": "t:sections.scent_story.blocks.scent.settings.bottle_style.options__1.label" },
+        { "value": "round", "label": "t:sections.scent_story.blocks.scent.settings.bottle_style.options__2.label" },
+        { "value": "tall", "label": "t:sections.scent_story.blocks.scent.settings.bottle_style.options__3.label" },
+        { "value": "spray", "label": "t:sections.scent_story.blocks.scent.settings.bottle_style.options__4.label" }
+      ]
+    },
+    { "type": "text", "id": "label", "default": "Cedar", "label": "t:sections.scent_story.blocks.scent.settings.label.label" },
+    { "type": "color", "id": "liquid", "default": "#B89B7A", "label": "t:sections.scent_story.blocks.scent.settings.liquid.label" },
+    { "type": "text", "id": "anchor", "default": "visit", "label": "t:sections.scent_collection.settings.anchor.label" }
+  ],
+  "blocks": [
+    {
+      "type": "info",
+      "name": "t:sections.scent_visit.blocks.info.name",
+      "settings": [
+        { "type": "text", "id": "heading", "default": "Find us", "label": "t:sections.all.heading" },
+        { "type": "text", "id": "text", "default": "24 Rain Street, Your City", "label": "t:sections.all.text" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.scent_visit.presets.name",
+      "blocks": [
+        { "type": "info", "settings": { "heading": "Find us", "text": "24 Rain Street, Your City" } },
+        { "type": "info", "settings": { "heading": "Open", "text": "Tue to Sun · 11am to 8pm" } },
+        { "type": "info", "settings": { "heading": "Say hello", "text": "hello@yourstore.com" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

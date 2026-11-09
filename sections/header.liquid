@@ -1,0 +1,357 @@
+{%- liquid
+  assign transparent = false
+  if section.settings.transparent_on_home and template.name == 'index'
+    assign transparent = true
+  endif
+-%}
+
+<sticky-header
+  class="header-wrapper{% if section.settings.sticky_mode != 'none' %} header-wrapper--sticky{% endif %}{% if transparent %} header-wrapper--transparent{% endif %}"
+  data-sticky-mode="{{ section.settings.sticky_mode }}"
+  style="--transparent-text: {{ section.settings.transparent_text }};"
+>
+  <header class="header page-width color-{{ section.settings.color_scheme }}" style="max-width: none;">
+    <div class="header__nav">
+      <button
+        type="button"
+        class="icon-button header__menu-toggle"
+        data-open-drawer
+        aria-controls="MenuDrawer"
+        aria-expanded="false"
+        aria-label="{{ 'sections.header.menu' | t }}"
+      >
+        {% render 'icon', icon: 'menu' %}
+      </button>
+
+      <nav aria-label="{{ 'sections.header.primary_navigation' | t }}">
+        <ul class="header__menu" role="list">
+          {%- for link in section.settings.menu.links -%}
+            <li class="header__menu-item">
+              {%- if link.links != blank -%}
+                <details-disclosure data-hover="{{ section.settings.open_on_hover }}">
+                  <details>
+                    <summary class="link-underline{% if link.child_active %} is-active{% endif %}">
+                      {{- link.title | escape -}}
+                      {% render 'icon', icon: 'caret' %}
+                    </summary>
+                    <ul class="header__submenu" role="list">
+                      {%- for child in link.links -%}
+                        <li>
+                          <a href="{{ child.url }}" class="link-underline"{% if child.current %} aria-current="page"{% endif %}>
+                            {{- child.title | escape -}}
+                          </a>
+                          {%- if child.links != blank -%}
+                            <ul class="header__submenu" role="list">
+                              {%- for grandchild in child.links -%}
+                                <li>
+                                  <a href="{{ grandchild.url }}" class="link-underline text-muted"{% if grandchild.current %} aria-current="page"{% endif %}>
+                                    {{- grandchild.title | escape -}}
+                                  </a>
+                                </li>
+                              {%- endfor -%}
+                            </ul>
+                          {%- endif -%}
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </details>
+                </details-disclosure>
+              {%- else -%}
+                <a href="{{ link.url }}" class="header__menu-link link-underline"{% if link.current %} aria-current="page"{% endif %}>
+                  {{- link.title | escape -}}
+                </a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    </div>
+
+    {%- if template.name == 'index' -%}<h1 class="header__logo">{%- else -%}<div class="header__logo">{%- endif -%}
+      <a href="{{ routes.root_url }}" class="header__logo" style="text-decoration: none;">
+        {%- if settings.logo != blank -%}
+          {%- assign logo_2x = settings.logo_width | times: 2 -%}
+          {{
+            settings.logo
+            | image_url: width: 600
+            | image_tag:
+              class: 'header__logo-image',
+              widths: '150, 300, 450, 600',
+              sizes: logo_2x,
+              alt: settings.logo.alt | default: shop.name,
+              loading: 'eager'
+          }}
+        {%- else -%}
+          <span class="header__logo-text">{{ shop.name }}</span>
+        {%- endif -%}
+        {%- if section.settings.tagline != blank -%}
+          <span class="eyebrow" style="margin: 0; font-size: 0.9rem; letter-spacing: 0.4em;">{{ section.settings.tagline | escape }}</span>
+        {%- endif -%}
+      </a>
+    {%- if template.name == 'index' -%}</h1>{%- else -%}</div>{%- endif -%}
+
+    <div class="header__icons">
+      <a
+        href="{{ routes.search_url }}"
+        class="icon-button"
+        {% if settings.predictive_search_enabled %}
+          data-open-drawer aria-controls="SearchModal"
+        {% endif %}
+      >
+        {% render 'icon', icon: 'search' %}
+        <span class="visually-hidden">{{ 'general.search.search' | t }}</span>
+      </a>
+
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{{ routes.account_url }}" class="icon-button header__icon--account">
+          {% render 'icon', icon: 'account' %}
+          <span class="visually-hidden">
+            {%- if customer -%}{{ 'customer.account_fallback' | t }}{%- else -%}{{ 'customer.log_in' | t }}{%- endif -%}
+          </span>
+        </a>
+      {%- endif -%}
+
+      <a
+        href="{{ routes.cart_url }}"
+        class="icon-button"
+        {% if settings.cart_type == 'drawer' %}
+          data-open-drawer aria-controls="CartDrawer"
+        {% endif %}
+      >
+        <span id="cart-icon-bubble" style="display: contents;">
+          {%- render 'icon', icon: 'bag' -%}
+          {%- if cart.item_count > 0 -%}
+            <span class="cart-count" aria-hidden="true">{{ cart.item_count }}</span>
+          {%- endif -%}
+          <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
+        </span>
+      </a>
+
+      {%- if section.settings.cta_label != blank -%}
+        <a href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}" class="button button--small header__cta small-hide">
+          {{- section.settings.cta_label | escape -}}
+        </a>
+      {%- endif -%}
+    </div>
+  </header>
+</sticky-header>
+
+{%- comment -%} Mobile menu drawer {%- endcomment -%}
+<drawer-component id="MenuDrawer" class="drawer drawer--left" role="dialog" aria-modal="true" aria-label="{{ 'sections.header.menu' | t }}">
+  <button type="button" class="drawer__overlay" data-drawer-close tabindex="-1" aria-label="{{ 'accessibility.close' | t }}"></button>
+  <div class="drawer__panel color-{{ section.settings.color_scheme }}" tabindex="-1">
+    <div class="drawer__header">
+      <span class="header__logo-text">{{ shop.name }}</span>
+      <button type="button" class="icon-button" data-drawer-close data-drawer-focus aria-label="{{ 'accessibility.close' | t }}">
+        {% render 'icon', icon: 'close' %}
+      </button>
+    </div>
+    <nav class="drawer__body" aria-label="{{ 'sections.header.primary_navigation' | t }}">
+      <ul class="menu-drawer__list" role="list">
+        {%- for link in section.settings.menu.links -%}
+          <li>
+            {%- if link.links != blank -%}
+              <details>
+                <summary>{{ link.title | escape }} {% render 'icon', icon: 'caret' %}</summary>
+                <ul class="menu-drawer__list" role="list">
+                  {%- for child in link.links -%}
+                    <li>
+                      <a href="{{ child.url }}" class="menu-drawer__link"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a>
+                      {%- if child.links != blank -%}
+                        <ul class="menu-drawer__list" role="list">
+                          {%- for grandchild in child.links -%}
+                            <li>
+                              <a href="{{ grandchild.url }}" class="menu-drawer__link"{% if grandchild.current %} aria-current="page"{% endif %}>{{ grandchild.title | escape }}</a>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                      {%- endif -%}
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </details>
+            {%- else -%}
+              <a href="{{ link.url }}" class="menu-drawer__link"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+      <div class="menu-drawer__utility">
+        {%- if shop.customer_accounts_enabled -%}
+          <a href="{{ routes.account_url }}" class="link-underline">
+            {%- if customer -%}{{ 'customer.account_fallback' | t }}{%- else -%}{{ 'customer.log_in' | t }}{%- endif -%}
+          </a>
+        {%- endif -%}
+        {% render 'localization-form', show_country: section.settings.show_country, show_language: section.settings.show_language, id_prefix: 'MenuDrawer' %}
+        {% render 'social-icons' %}
+      </div>
+    </nav>
+  </div>
+</drawer-component>
+
+{%- comment -%} Search modal with predictive search {%- endcomment -%}
+{%- if settings.predictive_search_enabled -%}
+  <search-modal id="SearchModal" class="search-modal" role="dialog" aria-modal="true" aria-label="{{ 'general.search.search' | t }}">
+    <div class="search-modal__panel color-{{ section.settings.color_scheme }}">
+      <div class="page-width">
+        <predictive-search>
+          <form action="{{ routes.search_url }}" method="get" role="search" class="search-modal__form">
+            <div class="field">
+              <label class="visually-hidden" for="Search-In-Modal">{{ 'general.search.search' | t }}</label>
+              <input
+                id="Search-In-Modal"
+                type="search"
+                name="q"
+                value="{{ search.terms | escape }}"
+                placeholder="{{ 'general.search.placeholder' | t }}"
+                role="combobox"
+                aria-expanded="false"
+                aria-owns="predictive-search-results"
+                aria-controls="predictive-search-results"
+                aria-haspopup="listbox"
+                aria-autocomplete="list"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+              >
+              <input name="options[prefix]" type="hidden" value="last">
+            </div>
+            <button type="submit" class="icon-button" aria-label="{{ 'general.search.submit' | t }}">
+              {% render 'icon', icon: 'search' %}
+            </button>
+            <button type="button" class="icon-button" data-search-close aria-label="{{ 'accessibility.close' | t }}">
+              {% render 'icon', icon: 'close' %}
+            </button>
+          </form>
+          <div class="predictive-search" id="predictive-search-results" data-predictive-results hidden></div>
+        </predictive-search>
+      </div>
+    </div>
+  </search-modal>
+{%- endif -%}
+
+{%- if template.name == 'index' and request.page_type == 'index' -%}
+  {%- capture org_logo -%}{%- if settings.logo -%}{{ settings.logo | image_url: width: 500 | prepend: 'https:' }}{%- endif -%}{%- endcapture -%}
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "name": {{ shop.name | json }},
+      {% if org_logo != blank %}"logo": {{ org_logo | json }},{% endif %}
+      "url": {{ request.origin | append: page.url | json }}
+    }
+  </script>
+  {%- capture search_target -%}{{ request.origin }}{{ routes.search_url }}?q={search_term_string}{%- endcapture -%}
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "WebSite",
+      "name": {{ shop.name | json }},
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {{ search_target | json }},
+        "query-input": "required name=search_term_string"
+      },
+      "url": {{ request.origin | json }}
+    }
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.header.name",
+  "class": "section-site-header",
+  "enabled_on": {
+    "groups": [
+      "header"
+    ]
+  },
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "default": "main-menu",
+      "label": "t:sections.header.settings.menu.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_on_hover",
+      "default": false,
+      "label": "t:sections.header.settings.open_on_hover.label"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "t:sections.header.settings.tagline.label",
+      "default": "Maison de parfum"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "t:sections.header.settings.cta_label.label",
+      "default": "Shop scents"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "t:sections.header.settings.cta_link.label"
+    },
+    {
+      "type": "select",
+      "id": "sticky_mode",
+      "default": "always",
+      "label": "t:sections.header.settings.sticky_mode.label",
+      "options": [
+        {
+          "value": "always",
+          "label": "t:sections.header.settings.sticky_mode.options__2.label"
+        },
+        {
+          "value": "reveal",
+          "label": "t:sections.header.settings.sticky_mode.options__1.label"
+        },
+        {
+          "value": "none",
+          "label": "t:sections.header.settings.sticky_mode.options__3.label"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_on_home",
+      "default": true,
+      "label": "t:sections.header.settings.transparent_on_home.label",
+      "info": "t:sections.header.settings.transparent_on_home.info"
+    },
+    {
+      "type": "color",
+      "id": "transparent_text",
+      "default": "#F3F0EB",
+      "label": "t:sections.header.settings.transparent_text.label"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.header_localization.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_country",
+      "default": true,
+      "label": "t:sections.all.show_country.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_language",
+      "default": true,
+      "label": "t:sections.all.show_language.label"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,19 @@
+<section class="section-padding template-404 color-{{ section.settings.color_scheme }}" style="--pad-top: 120px; --pad-bottom: 120px;">
+  <div class="page-width page-width--narrow">
+    <p class="eyebrow">404</p>
+    <h1 class="h-display h-display--lg">{{ 'templates.404.title' | t }}</h1>
+    <p class="text-muted">{{ 'templates.404.subtext' | t }}</p>
+    <a href="{{ routes.all_products_collection_url }}" class="button">{{ 'general.continue_shopping' | t }}</a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.main_404.name",
+  "tag": "div",
+  "class": "section",
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" }
+  ]
+}
+{% endschema %}

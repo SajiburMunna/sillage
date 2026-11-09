@@ -1,0 +1,158 @@
+{{ 'section-product.css' | asset_url | stylesheet_tag }}
+
+{%- assign product = section.settings.product -%}
+<section
+  class="product section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+  data-product-root
+>
+  <div class="page-width product__grid">
+    <media-gallery class="product__media">
+      <ul class="product__media-list" role="list" data-gallery-viewer>
+        {%- if product != blank and product.media.size > 0 -%}
+          {%- for media in product.media limit: 3 -%}
+            <li class="product__media-item{% if forloop.first %} is-active{% endif %}" data-media-id="{{ media.id }}">
+              {% render 'product-media', media: media, loading: 'lazy', sizes: '(min-width: 990px) 55vw, 100vw' %}
+            </li>
+          {%- endfor -%}
+        {%- else -%}
+          <li class="product__media-item is-active">
+            <div class="media media--portrait">{{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}</div>
+          </li>
+        {%- endif -%}
+      </ul>
+    </media-gallery>
+
+    <div class="product__info">
+      <div class="product__info-sticky" data-reveal>
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when '@app' -%}
+              {% render block %}
+            {%- when 'text' -%}
+              <p class="eyebrow" {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
+            {%- when 'title' -%}
+              <h2 class="product__title h1" {{ block.shopify_attributes }}>
+                {%- if product != blank -%}
+                  <a href="{{ product.url }}" class="link-underline">{{ product.title | escape }}</a>
+                {%- else -%}
+                  {{ 'onboarding.product_title' | t }}
+                {%- endif -%}
+              </h2>
+            {%- when 'price' -%}
+              <div data-product-update="price" {{ block.shopify_attributes }}>
+                {% render 'price', product: product, use_variant: true, show_badges: true, class: 'price--large' %}
+              </div>
+            {%- when 'description' -%}
+              {%- if product.description != blank -%}
+                <div class="rte" {{ block.shopify_attributes }}>{{ product.description | strip_html | truncatewords: 40 }}</div>
+              {%- endif -%}
+            {%- when 'fragrance_notes' -%}
+              {% render 'fragrance-notes', block: block, product: product %}
+            {%- when 'variant_picker' -%}
+              {%- if product != blank -%}
+                {% render 'variant-picker', product: product, block: block, section_id: section.id, update_url: false %}
+              {%- endif -%}
+            {%- when 'buy_buttons' -%}
+              {%- if product != blank -%}
+                {% render 'buy-buttons', product: product, block: block, section_id: section.id, show_quantity: false %}
+              {%- else -%}
+                <button type="button" class="button button--full" disabled>{{ 'products.product.add_to_cart' | t }}</button>
+              {%- endif -%}
+            {%- when 'view_details' -%}
+              {%- if product != blank -%}
+                <a href="{{ product.url }}" class="link-underline" {{ block.shopify_attributes }}>
+                  {{- 'products.product.view_full_details' | t -}}
+                </a>
+              {%- endif -%}
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+  {%- if product != blank -%}
+    <script type="application/json" data-selected-variant hidden>
+      {{ product.selected_or_first_available_variant | json }}
+    </script>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.featured_product.name",
+  "tag": "div",
+  "class": "section",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "blocks": [
+    { "type": "@app" },
+    {
+      "type": "text",
+      "name": "t:sections.all.text",
+      "settings": [{ "type": "inline_richtext", "id": "text", "default": "Bestseller", "label": "t:sections.all.text" }]
+    },
+    { "type": "title", "name": "t:sections.main_product.blocks.title.name", "limit": 1 },
+    { "type": "price", "name": "t:sections.main_product.blocks.price.name", "limit": 1 },
+    { "type": "description", "name": "t:sections.main_product.blocks.description.name", "limit": 1 },
+    {
+      "type": "fragrance_notes",
+      "name": "t:sections.main_product.blocks.fragrance_notes.name",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "heading", "default": "Fragrance notes", "label": "t:sections.main_product.blocks.fragrance_notes.settings.heading.label" },
+        { "type": "text", "id": "top_notes", "default": "Bergamot, sea salt", "label": "t:sections.main_product.blocks.fragrance_notes.settings.top_notes.label" },
+        { "type": "text", "id": "heart_notes", "default": "Water lily, neroli", "label": "t:sections.main_product.blocks.fragrance_notes.settings.heart_notes.label" },
+        { "type": "text", "id": "base_notes", "default": "Driftwood, white musk", "label": "t:sections.main_product.blocks.fragrance_notes.settings.base_notes.label" },
+        { "type": "range", "id": "intensity", "min": 0, "max": 5, "step": 1, "default": 3, "label": "t:sections.main_product.blocks.fragrance_notes.settings.intensity.label" }
+      ]
+    },
+    {
+      "type": "variant_picker",
+      "name": "t:sections.main_product.blocks.variant_picker.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "picker_type",
+          "default": "buttons",
+          "label": "t:sections.main_product.blocks.variant_picker.settings.picker_type.label",
+          "options": [
+            { "value": "buttons", "label": "t:sections.main_product.blocks.variant_picker.settings.picker_type.options__1.label" },
+            { "value": "dropdown", "label": "t:sections.main_product.blocks.variant_picker.settings.picker_type.options__2.label" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "buy_buttons",
+      "name": "t:sections.main_product.blocks.buy_buttons.name",
+      "limit": 1,
+      "settings": [
+        { "type": "checkbox", "id": "show_dynamic_checkout", "default": true, "label": "t:sections.main_product.blocks.buy_buttons.settings.show_dynamic_checkout.label" },
+        { "type": "checkbox", "id": "show_gift_card_recipient", "default": false, "label": "t:sections.main_product.blocks.buy_buttons.settings.show_gift_card_recipient.label" },
+        { "type": "checkbox", "id": "show_pickup_availability", "default": false, "label": "t:sections.main_product.blocks.buy_buttons.settings.show_pickup_availability.label" }
+      ]
+    },
+    { "type": "view_details", "name": "t:sections.featured_product.blocks.view_details.name", "limit": 1 }
+  ],
+  "settings": [
+    { "type": "product", "id": "product", "label": "t:sections.featured_product.settings.product.label" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-2" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 96 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 96 }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.featured_product.presets.name",
+      "blocks": [
+        { "type": "text" },
+        { "type": "title" },
+        { "type": "price" },
+        { "type": "fragrance_notes" },
+        { "type": "variant_picker" },
+        { "type": "buy_buttons" },
+        { "type": "view_details" }
+      ]
+    }
+  ]
+}
+{% endschema %}

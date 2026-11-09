@@ -1,0 +1,59 @@
+{{ 'section-collection.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width">
+    <h1 class="h-display h-display--md main-page-title">{{ section.settings.title | escape }}</h1>
+    {%- paginate collections by 24 -%}
+      <ul class="grid" role="list" style="--cols: {{ section.settings.columns_desktop }}; --cols-tablet: 2; --cols-mobile: 1;">
+        {%- for collection in collections -%}
+          <li data-reveal>
+            <a href="{{ collection.url }}" class="collection-tile">
+              <div class="media media--{{ section.settings.image_ratio }}">
+                {%- assign image = collection.featured_image -%}
+                {%- if image -%}
+                  {{ image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '375, 550, 750, 1000, 1200', sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw', alt: image.alt | default: collection.title }}
+                {%- else -%}
+                  {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+              </div>
+              <h2 class="collection-tile__title">
+                <span class="link-underline">{{ collection.title | escape }}</span>
+                {% render 'icon', icon: 'arrow' %}
+              </h2>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+      {% render 'pagination', paginate: paginate %}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.main_list_collections.name",
+  "tag": "div",
+  "class": "section",
+  "settings": [
+    { "type": "inline_richtext", "id": "title", "default": "Collections", "label": "t:sections.all.heading" },
+    { "type": "range", "id": "columns_desktop", "min": 2, "max": 4, "step": 1, "default": 3, "label": "t:sections.all.columns_desktop" },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "default": "portrait",
+      "label": "t:sections.all.image_ratio.label",
+      "options": [
+        { "value": "portrait", "label": "t:sections.all.image_ratio.options.portrait" },
+        { "value": "square", "label": "t:sections.all.image_ratio.options.square" },
+        { "value": "landscape", "label": "t:sections.all.image_ratio.options.landscape" }
+      ]
+    },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 72 }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,40 @@
+<section
+  class="section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width">
+    <product-recommendations
+      data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.products_to_show }}&intent=related"
+    >
+      {%- if recommendations.performed and recommendations.products_count > 0 -%}
+        <div class="section-header">
+          <h2 class="section-header__title h2">{{ section.settings.heading | escape }}</h2>
+        </div>
+        <ul class="grid" role="list" style="--cols: {{ section.settings.columns_desktop }}; --cols-tablet: 3; --cols-mobile: 2;">
+          {%- for recommendation in recommendations.products -%}
+            <li>{% render 'product-card', product: recommendation, section_id: section.id %}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </product-recommendations>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.product_recommendations.name",
+  "tag": "div",
+  "class": "section",
+  "enabled_on": { "templates": ["product"] },
+  "settings": [
+    { "type": "paragraph", "content": "t:sections.product_recommendations.settings.paragraph.content" },
+    { "type": "inline_richtext", "id": "heading", "default": "You may also love", "label": "t:sections.all.heading" },
+    { "type": "range", "id": "products_to_show", "min": 2, "max": 10, "step": 1, "default": 4, "label": "t:sections.all.products_to_show" },
+    { "type": "range", "id": "columns_desktop", "min": 2, "max": 5, "step": 1, "default": 4, "label": "t:sections.all.columns_desktop" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 72 }
+  ],
+  "presets": [{ "name": "t:sections.product_recommendations.presets.name" }]
+}
+{% endschema %}

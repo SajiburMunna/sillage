@@ -1,0 +1,83 @@
+{
+  "current": "Default",
+  "presets": {
+    "Default": {
+      "logo_width": 120,
+      "type_header_font": "marcellus_n4",
+      "type_body_font": "nunito_sans_n4",
+      "heading_scale": 100,
+      "body_scale": 100,
+      "page_width": 1360,
+      "radius": 4,
+      "button_shape": "pill",
+      "animations_reveal_on_scroll": true,
+      "card_image_ratio": "portrait",
+      "card_show_secondary_image": true,
+      "card_show_vendor": true,
+      "card_show_quick_add": true,
+      "card_show_swatches": true,
+      "cart_type": "drawer",
+      "cart_show_note": true,
+      "predictive_search_enabled": true,
+      "color_schemes": {
+        "scheme-1": {
+          "settings": {
+            "background": "#F3F0EB",
+            "text": "#191714",
+            "accent": "#8A4A5B",
+            "button": "#191714",
+            "button_label": "#F3F0EB",
+            "secondary_button_label": "#191714",
+            "surface": "#E9E6E2"
+          }
+        },
+        "scheme-2": {
+          "settings": {
+            "background": "#FFFFFF",
+            "text": "#191714",
+            "accent": "#8A4A5B",
+            "button": "#191714",
+            "button_label": "#FFFFFF",
+            "secondary_button_label": "#191714",
+            "surface": "#F3F0EB"
+          }
+        },
+        "scheme-3": {
+          "settings": {
+            "background": "#191714",
+            "text": "#F3F0EB",
+            "accent": "#E7B9C2",
+            "button": "#F3F0EB",
+            "button_label": "#191714",
+            "secondary_button_label": "#F3F0EB",
+            "surface": "#2A2622"
+          }
+        },
+        "scheme-4": {
+          "settings": {
+            "background": "#13262B",
+            "text": "#F3F0EB",
+            "accent": "#E7B9C2",
+            "button": "#F3F0EB",
+            "button_label": "#13262B",
+            "secondary_button_label": "#F3F0EB",
+            "surface": "#1D353B"
+          }
+        },
+        "scheme-5": {
+          "settings": {
+            "background": "#EADDD7",
+            "text": "#191714",
+            "accent": "#8A4A5B",
+            "button": "#191714",
+            "button_label": "#F3F0EB",
+            "secondary_button_label": "#191714",
+            "surface": "#F3F0EB"
+          }
+        }
+      },
+      "custom_cursor": true,
+      "bottle_photo_style": "frame"
+    }
+  }
+}

@@ -1,0 +1,221 @@
+{
+  "sections": {
+    "scent_story": {
+      "type": "scent-story",
+      "blocks": {
+        "scent_1": {
+          "type": "scent",
+          "settings": {
+            "product": "",
+            "description": "",
+            "title": "",
+            "family": "",
+            "notes": "",
+            "meta": "",
+            "bottle_style": "flacon",
+            "label": "Aqua",
+            "liquid": "#9ED3D6",
+            "cap": "#191714",
+            "bg": "#BFCFCD",
+            "dot": "#2F6B73"
+          }
+        },
+        "scent_2": {
+          "type": "scent",
+          "settings": {
+            "product": "",
+            "description": "",
+            "title": "",
+            "family": "",
+            "notes": "",
+            "meta": "",
+            "bottle_style": "round",
+            "label": "Peony",
+            "liquid": "#E7B9C2",
+            "cap": "#E9D8B4",
+            "bg": "#DCC6C3",
+            "dot": "#8A4A5B"
+          }
+        },
+        "scent_3": {
+          "type": "scent",
+          "settings": {
+            "product": "",
+            "description": "",
+            "title": "",
+            "family": "",
+            "notes": "",
+            "meta": "",
+            "bottle_style": "tall",
+            "label": "Cedar",
+            "liquid": "#B89B7A",
+            "cap": "#3A2E26",
+            "bg": "#CDBFB2",
+            "dot": "#5A4234"
+          }
+        },
+        "scent_4": {
+          "type": "scent",
+          "settings": {
+            "product": "",
+            "description": "",
+            "title": "",
+            "family": "",
+            "notes": "",
+            "meta": "",
+            "bottle_style": "spray",
+            "label": "Amber",
+            "liquid": "#D9A35F",
+            "cap": "#F3F0EB",
+            "bg": "#D6C3A6",
+            "dot": "#9A6A2C"
+          }
+        }
+      },
+      "block_order": [
+        "scent_1",
+        "scent_2",
+        "scent_3",
+        "scent_4"
+      ],
+      "settings": {
+        "hero_line_1": "Scent that",
+        "hero_line_2": "lingers",
+        "tagline": "A small house of honest scents. Every bottle worn, sprayed and argued over before it reaches the shelf.",
+        "ring_text": "Small batch \u00b7 Skin first \u00b7 Worn before stocked",
+        "hero_bg": "#17120F",
+        "water_shallow": "#6B4632",
+        "water_speed": 40,
+        "water_light": 45,
+        "show_loader": true,
+        "manifesto": "We wear every scent before it reaches the shelf. Small batches, honest prices, and perfume worth spraying on an ordinary Tuesday.",
+        "manifesto_bg": "#CFC6BD",
+        "ritual_label": "The ritual",
+        "ritual_word_1": "Uncap.",
+        "ritual_word_2": "Spray.",
+        "ritual_word_3": "Breathe.",
+        "ritual_text": "Spray on warm skin, then leave it alone. Give it ten minutes. The top notes lift, the heart opens, and it starts to smell like you.",
+        "ritual_scent": 1,
+        "ritual_bg": "#1A1E1D",
+        "pill_all": "Our scents",
+        "collection": "",
+        "hero_style": "silk",
+        "hero_light": "#E8C39A"
+      }
+    },
+    "scent_collection": {
+      "type": "scent-collection",
+      "settings": {
+        "eyebrow": "Shop",
+        "heading": "The collection",
+        "text": "<p>Every scent on the shelf right now. Members save on every bottle.</p>",
+        "collection": "",
+        "limit": 8,
+        "anchor": "collection",
+        "color_scheme": "scheme-1",
+        "padding_top": 96,
+        "padding_bottom": 120
+      }
+    },
+    "scent_house": {
+      "type": "scent-house",
+      "blocks": {
+        "b1": {
+          "type": "bottle",
+          "settings": {
+            "bottle_style": "round",
+            "label": "Peony",
+            "liquid": "#E7B9C2"
+          }
+        },
+        "b2": {
+          "type": "bottle",
+          "settings": {
+            "bottle_style": "flacon",
+            "label": "Aqua",
+            "liquid": "#9ED3D6"
+          }
+        },
+        "b3": {
+          "type": "bottle",
+          "settings": {
+            "bottle_style": "spray",
+            "label": "Amber",
+            "liquid": "#D9A35F"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3"
+      ],
+      "settings": {
+        "eyebrow": "Our story",
+        "heading": "Every scent here was worn by our team first.",
+        "text": "<p>We started with one shelf and a handful of oils. Today we make a short list of scents we wear ourselves: small batches, clean ingredients and bottles that earn their place.</p>",
+        "button_label": "Come and smell with us",
+        "button_link": "",
+        "ring_text": "Blended \u00b7 Worn \u00b7 Bottled by hand",
+        "caption": "Worn by the team",
+        "est": "Est. 2024",
+        "bg": "#CFC6BD",
+        "circle": "#1D1A17",
+        "anchor": "story",
+        "padding_top": 120,
+        "padding_bottom": 120
+      }
+    },
+    "scent_visit": {
+      "type": "scent-visit",
+      "blocks": {
+        "i1": {
+          "type": "info",
+          "settings": {
+            "heading": "Find us",
+            "text": "24 Rain Street, Your City"
+          }
+        },
+        "i2": {
+          "type": "info",
+          "settings": {
+            "heading": "Open",
+            "text": "Tue to Sun \u00b7 11am to 8pm"
+          }
+        },
+        "i3": {
+          "type": "info",
+          "settings": {
+            "heading": "Say hello",
+            "text": "hello@yourstore.com"
+          }
+        }
+      },
+      "block_order": [
+        "i1",
+        "i2",
+        "i3"
+      ],
+      "settings": {
+        "heading": "Smell\nsomething\nnew.",
+        "button_label_1": "Shop online",
+        "button_link_1": "",
+        "button_label_2": "Book a scent consultation",
+        "button_link_2": "",
+        "bg": "#191714",
+        "text_color": "#F3F0EB",
+        "show_bottle": true,
+        "bottle_style": "tall",
+        "label": "Cedar",
+        "liquid": "#B89B7A",
+        "anchor": "visit"
+      }
+    }
+  },
+  "order": [
+    "scent_story",
+    "scent_collection",
+    "scent_house",
+    "scent_visit"
+  ]
+}

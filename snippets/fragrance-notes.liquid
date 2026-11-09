@@ -1,0 +1,56 @@
+{%- comment -%}
+  Fragrance pyramid: top, heart and base notes.
+  Text settings can be connected to product metafields in the theme editor
+  (e.g. product.metafields.custom.top_notes).
+  Accepts:
+  - block {Object}
+  Empty block fields fall back to the product metafields custom.top_notes,
+  custom.heart_notes, custom.base_notes and custom.intensity.
+{%- endcomment -%}
+{%- liquid
+  assign mf = product.metafields.custom
+  assign top = block.settings.top_notes | default: mf.top_notes.value
+  assign heart = block.settings.heart_notes | default: mf.heart_notes.value
+  assign base = block.settings.base_notes | default: mf.base_notes.value
+  assign intensity = block.settings.intensity
+  if mf.intensity.value != blank
+    assign intensity = mf.intensity.value | plus: 0
+  endif
+-%}
+{%- if top != blank or heart != blank or base != blank -%}
+  <div class="fragrance-notes" {{ block.shopify_attributes }}>
+    {%- if block.settings.heading != blank -%}
+      <h2 class="fragrance-notes__heading eyebrow">{{ block.settings.heading | escape }}</h2>
+    {%- endif -%}
+    <dl class="fragrance-notes__list">
+      {%- if top != blank -%}
+        <div class="fragrance-notes__tier fragrance-notes__tier--top">
+          <dt>{{ 'products.product.fragrance.top' | t }}</dt>
+          <dd>{{ top }}</dd>
+        </div>
+      {%- endif -%}
+      {%- if heart != blank -%}
+        <div class="fragrance-notes__tier fragrance-notes__tier--heart">
+          <dt>{{ 'products.product.fragrance.heart' | t }}</dt>
+          <dd>{{ heart }}</dd>
+        </div>
+      {%- endif -%}
+      {%- if base != blank -%}
+        <div class="fragrance-notes__tier fragrance-notes__tier--base">
+          <dt>{{ 'products.product.fragrance.base' | t }}</dt>
+          <dd>{{ base }}</dd>
+        </div>
+      {%- endif -%}
+    </dl>
+    {%- if intensity > 0 -%}
+      <div class="fragrance-notes__meter" role="img" aria-label="{{ 'products.product.fragrance.intensity_label' | t: value: intensity }}">
+        <span class="text-muted">{{ 'products.product.fragrance.intensity' | t }}</span>
+        <span class="fragrance-notes__dots" aria-hidden="true">
+          {%- for i in (1..5) -%}
+            <span class="fragrance-notes__dot{% if i <= intensity %} is-filled{% endif %}"></span>
+          {%- endfor -%}
+        </span>
+      </div>
+    {%- endif -%}
+  </div>
+{%- endif -%}

@@ -1,0 +1,92 @@
+{%- comment -%}
+  Variant picker using option value IDs (supports 2,000 variants and combined listings).
+  Accepts:
+  - product {Object}
+  - block {Object}
+  - section_id {String}
+  - update_url {Boolean}
+{%- endcomment -%}
+{%- unless product.has_only_default_variant -%}
+  <variant-picker
+    class="variant-picker"
+    data-section="{{ section_id }}"
+    data-url="{{ product.url }}"
+    data-update-url="{{ update_url | default: true }}"
+    {{ block.shopify_attributes }}
+  >
+    <div data-product-update="picker">
+      {%- for option in product.options_with_values -%}
+        {%- liquid
+          assign use_buttons = false
+          if block.settings.picker_type == 'buttons' or option.values.first.swatch
+            assign use_buttons = true
+          endif
+        -%}
+        {%- if use_buttons -%}
+          <fieldset class="variant-picker__fieldset">
+            <legend class="variant-picker__legend">
+              {{ option.name }}: <span class="text-muted">{{ option.selected_value }}</span>
+            </legend>
+            <div class="variant-picker__values">
+              {%- for value in option.values -%}
+                {%- capture input_id -%}{{ section_id }}-{{ option.position }}-{{ forloop.index0 }}{%- endcapture -%}
+                <input
+                  type="radio"
+                  class="visually-hidden"
+                  id="{{ input_id }}"
+                  name="{{ option.name | escape }}-{{ section_id }}"
+                  value="{{ value | escape }}"
+                  form="ProductForm-{{ section_id }}"
+                  data-option-value-id="{{ value.id }}"
+                  data-product-url="{{ value.product_url | default: product.url }}"
+                  {% if value.selected %}
+                    checked
+                  {% endif %}
+                >
+                <label
+                  for="{{ input_id }}"
+                  class="variant-picker__pill{% if value.swatch %} variant-picker__pill--swatch{% endif %}{% unless value.available %} is-unavailable{% endunless %}"
+                  {% if value.swatch %}
+                    style="--swatch-background: {% if value.swatch.image %}url({{ value.swatch.image | image_url: width: 80 }}){% elsif value.swatch.color %}{{ value.swatch.color }}{% endif %};"
+                  {% endif %}
+                >
+                  {%- if value.swatch -%}
+                    <span class="swatch" aria-hidden="true"></span>
+                    <span class="visually-hidden">{{ value | escape }}</span>
+                  {%- else -%}
+                    {{ value | escape }}
+                  {%- endif -%}
+                  {%- unless value.available -%}
+                    <span class="visually-hidden">{{ 'products.product.variant_sold_out_or_unavailable' | t }}</span>
+                  {%- endunless -%}
+                </label>
+              {%- endfor -%}
+            </div>
+          </fieldset>
+        {%- else -%}
+          <div class="field">
+            <label class="field__label" for="Option-{{ section_id }}-{{ option.position }}">{{ option.name }}</label>
+            <select id="Option-{{ section_id }}-{{ option.position }}" name="options[{{ option.name | escape }}]" form="ProductForm-{{ section_id }}">
+              {%- for value in option.values -%}
+                <option
+                  value="{{ value | escape }}"
+                  data-option-value-id="{{ value.id }}"
+                  data-product-url="{{ value.product_url | default: product.url }}"
+                  {% if value.selected %}
+                    selected
+                  {% endif %}
+                >
+                  {{ value | escape -}}
+                  {%- unless value.available %} — {{ 'products.product.unavailable' | t }}{% endunless %}
+                </option>
+              {%- endfor -%}
+            </select>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    <script type="application/json" data-selected-variant>
+      {{ product.selected_or_first_available_variant | json }}
+    </script>
+  </variant-picker>
+{%- endunless -%}

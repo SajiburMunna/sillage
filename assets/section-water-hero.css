@@ -1,0 +1,218 @@
+.water-hero {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: var(--hero-deep);
+  color: rgb(var(--color-foreground));
+}
+
+.water-hero--small { min-height: 28rem; }
+.water-hero--medium { min-height: 38rem; }
+.water-hero--large { min-height: 48rem; }
+.water-hero--full { min-height: 100svh; }
+
+@media screen and (max-width: 749px) {
+  .water-hero--small { min-height: 24rem; }
+  .water-hero--medium { min-height: 32rem; }
+  .water-hero--large { min-height: 40rem; }
+}
+
+/* ---------- Water surface ---------- */
+
+.water-flow {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  display: block;
+  background:
+    radial-gradient(120% 90% at 20% 10%, var(--hero-shallow) 0%, transparent 60%),
+    linear-gradient(160deg, var(--hero-shallow) -20%, var(--hero-deep) 70%);
+  touch-action: pan-y;
+}
+
+.water-flow__media,
+.water-flow__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.water-flow__canvas {
+  opacity: 0;
+  transition: opacity 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.water-flow--ready .water-flow__canvas {
+  opacity: 1;
+}
+
+.water-flow--fallback .water-flow__canvas {
+  display: none;
+}
+
+.water-hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(to top, rgba(var(--color-background), calc(var(--overlay-opacity) + 0.25)) 0%, transparent 55%),
+    rgba(var(--color-background), var(--overlay-opacity));
+}
+
+/* ---------- Content ---------- */
+
+.water-hero__inner {
+  position: relative;
+  display: flex;
+  width: 100%;
+  padding-top: clamp(6rem, 12vw, 9rem);
+  padding-bottom: clamp(4rem, 8vw, 7rem);
+  pointer-events: none;
+}
+
+.water-hero__inner--top-left { align-items: flex-start; justify-content: flex-start; }
+.water-hero__inner--center { align-items: center; justify-content: center; }
+.water-hero__inner--bottom-left { align-items: flex-end; justify-content: flex-start; }
+.water-hero__inner--bottom-center { align-items: flex-end; justify-content: center; }
+
+.water-hero__content {
+  max-width: 52rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  pointer-events: auto;
+}
+
+.water-hero__content.text-center {
+  align-items: center;
+}
+
+.water-hero__eyebrow {
+  margin: 0;
+}
+
+.water-hero__heading {
+  margin: 0;
+  text-wrap: balance;
+}
+
+.water-hero__text {
+  max-width: 40rem;
+  font-size: 1.7rem;
+  line-height: 1.6;
+}
+
+.water-hero__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+}
+
+.water-hero .button--secondary {
+  background: rgba(var(--color-background), 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Reveal: letters rise out of the water */
+.js .water-hero__content > * {
+  animation: water-rise 1.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.js .water-hero__content > *:nth-child(2) { animation-delay: 0.12s; }
+.js .water-hero__content > *:nth-child(3) { animation-delay: 0.24s; }
+.js .water-hero__content > *:nth-child(4) { animation-delay: 0.36s; }
+
+@keyframes water-rise {
+  from {
+    opacity: 0;
+    transform: translateY(2.4rem);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* ---------- Scroll cue ---------- */
+
+.water-hero__cue {
+  position: absolute;
+  left: 50%;
+  bottom: 2.4rem;
+  width: 1px;
+  height: 4.8rem;
+  overflow: hidden;
+  background: rgba(var(--color-foreground), 0.2);
+}
+
+.water-hero__cue-line {
+  position: absolute;
+  inset: 0;
+  background: rgb(var(--color-foreground));
+  animation: water-cue 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes water-cue {
+  0% { transform: translateY(-100%); }
+  60%, 100% { transform: translateY(100%); }
+}
+
+/* ---------- Pause / play ---------- */
+
+.water-hero__toggle {
+  position: absolute;
+  right: clamp(1.6rem, 3vw, 4rem);
+  bottom: 2.4rem;
+  width: 4.4rem;
+  height: 4.4rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--color-foreground), 0.35);
+  color: rgb(var(--color-foreground));
+  background: rgba(var(--color-background), 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.water-hero__toggle:hover {
+  background: rgba(var(--color-background), 0.5);
+  transform: translateY(-2px);
+}
+
+.water-hero__toggle .icon {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.water-hero__toggle-play,
+.water-hero__toggle.is-paused .water-hero__toggle-pause {
+  display: none;
+}
+
+.water-hero__toggle.is-paused .water-hero__toggle-play {
+  display: flex;
+}
+
+.water-hero__toggle-pause {
+  display: flex;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .water-hero__content > *,
+  .water-hero__cue-line {
+    animation: none;
+  }
+  .water-flow__canvas {
+    transition: none;
+  }
+}

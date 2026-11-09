@@ -1,0 +1,29 @@
+{%- comment -%}
+  Accepts: article, show_image, show_date, show_author
+{%- endcomment -%}
+<article class="card" data-reveal>
+  {%- if show_image and article.image -%}
+    <div class="card__media media media--landscape">
+      {{
+        article.image
+        | image_url: width: 1100
+        | image_tag: widths: '375, 550, 750, 1100', sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw', loading: 'lazy', alt: article.image.alt | default: article.title
+      }}
+    </div>
+  {%- endif -%}
+  <div class="card__info">
+    {%- if show_date or show_author -%}
+      <p class="card__vendor" style="margin: 0;">
+        {%- if show_date -%}{{ article.published_at | time_tag: format: 'date' }}{%- endif -%}
+        {%- if show_date and show_author %} · {% endif -%}
+        {%- if show_author -%}{{ article.author }}{%- endif -%}
+      </p>
+    {%- endif -%}
+    <h3 class="card__title">
+      <a href="{{ article.url }}" class="card__link link-underline">{{ article.title | escape }}</a>
+    </h3>
+    {%- if article.excerpt.size > 0 or article.content.size > 0 -%}
+      <p class="text-muted" style="margin: 0;">{{ article.excerpt | default: article.content | strip_html | truncatewords: 24 }}</p>
+    {%- endif -%}
+  </div>
+</article>

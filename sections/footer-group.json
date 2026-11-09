@@ -1,0 +1,43 @@
+{
+  "type": "footer",
+  "name": "t:sections.footer.group_name",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "link-list-1": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Shop",
+            "menu": "footer"
+          }
+        },
+        "text-1": {
+          "type": "text",
+          "settings": {
+            "heading": "About the house",
+            "text": "<p>Share your fragrance philosophy, where your scents are made, or how customers can reach you.</p>"
+          }
+        },
+        "newsletter-1": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "Join the list"
+          }
+        }
+      },
+      "block_order": ["link-list-1", "text-1", "newsletter-1"],
+      "settings": {
+        "show_wordmark": true,
+        "legal_text": "For external use only.",
+        "show_policy": true,
+        "show_social": true,
+        "payment_enable": true,
+        "show_country": true,
+        "show_language": true,
+        "color_scheme": "scheme-1"
+      }
+    }
+  },
+  "order": ["footer"]
+}

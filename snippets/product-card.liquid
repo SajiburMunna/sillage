@@ -1,0 +1,153 @@
+{%- comment -%}
+  Product card.
+  Accepts:
+  - product {Object} product, or blank to render a placeholder
+  - placeholder_index {Number} index for placeholder images
+  - lazy {Boolean} lazy-load images (default true)
+  - sizes {String} image sizes attribute
+  - section_id {String}
+{%- endcomment -%}
+{%- liquid
+  case settings.card_image_ratio
+    when 'portrait'
+      assign ratio_class = 'media--portrait'
+    when 'square'
+      assign ratio_class = 'media--square'
+    else
+      assign ratio_class = ''
+  endcase
+
+  assign loading = 'lazy'
+  if lazy == false
+    assign loading = 'eager'
+  endif
+  assign img_sizes = sizes | default: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw'
+-%}
+
+<div class="card" data-reveal>
+  {%- if product != blank -%}
+    {%- assign featured = product.featured_media -%}
+    <div
+      class="card__media media {{ ratio_class }}"
+      {% if ratio_class == '' and featured %}
+        style="aspect-ratio: {{ featured.aspect_ratio }};"
+      {% elsif ratio_class == '' %}
+        style="aspect-ratio: 1;"
+      {% endif %}
+    >
+      {%- if featured -%}
+        {{
+          featured
+          | image_url: width: 1200
+          | image_tag:
+            widths: '240, 360, 480, 600, 800, 1000, 1200',
+            sizes: img_sizes,
+            loading: loading,
+            alt: featured.alt | default: product.title,
+            class: 'card__image'
+        }}
+        {%- if settings.card_show_secondary_image and product.media[1] -%}
+          {{
+            product.media[1]
+            | image_url: width: 1200
+            | image_tag:
+              widths: '240, 360, 480, 600, 800, 1000, 1200',
+              sizes: img_sizes,
+              loading: 'lazy',
+              alt: '',
+              class: 'card__image card__image--secondary'
+          }}
+        {%- endif -%}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+
+      <div class="card__badges">
+        {%- if product.available == false -%}
+          <span class="badge badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
+        {%- elsif product.compare_at_price > product.price -%}
+          <span class="badge badge--sale">{{ 'products.product.on_sale' | t }}</span>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="card__info">
+      {%- if settings.card_show_vendor and product.vendor != blank -%}
+        <span class="card__vendor">
+          <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+          {{- product.vendor | escape -}}
+        </span>
+      {%- endif -%}
+      <h3 class="card__title">
+        <a href="{{ product.url }}" class="card__link link-underline" id="CardLink-{{ section_id }}-{{ product.id }}">
+          {{- product.title | escape -}}
+        </a>
+      </h3>
+      {% render 'price', product: product %}
+
+      {%- if settings.card_show_swatches -%}
+        {%- for option in product.options_with_values -%}
+          {%- if option.values.first.swatch -%}
+            <ul class="card__swatches" aria-label="{{ option.name | escape }}">
+              {%- for value in option.values limit: 6 -%}
+                <li>
+                  <span
+                    class="swatch"
+                    title="{{ value | escape }}"
+                    style="--swatch-background: {% if value.swatch.image %}url({{ value.swatch.image | image_url: width: 40 }}){% elsif value.swatch.color %}{{ value.swatch.color }}{% endif %};"
+                  >
+                    <span class="visually-hidden">{{ value | escape }}</span>
+                  </span>
+                </li>
+              {%- endfor -%}
+              {%- if option.values.size > 6 -%}
+                <li class="text-muted">+{{ option.values.size | minus: 6 }}</li>
+              {%- endif -%}
+            </ul>
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    {%- if settings.card_show_quick_add -%}
+      <div class="card__quick-add">
+        {%- if product.has_only_default_variant and product.available -%}
+          <product-form>
+            {%- form 'product', product, id: nil -%}
+              <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+              <button
+                type="submit"
+                name="add"
+                class="button button--secondary button--small button--full"
+                aria-label="{{ 'products.product.add_to_cart_named' | t: title: product.title | escape }}"
+              >
+                {% render 'icon', icon: 'plus' %}
+                <span class="button__label">{{ 'products.product.add_to_cart' | t }}</span>
+                <span class="loading-spinner" aria-hidden="true"></span>
+              </button>
+              <p class="form__message form__message--error" data-product-form-error role="alert" hidden></p>
+            {%- endform -%}
+          </product-form>
+        {%- elsif product.available -%}
+          <a
+            href="{{ product.url }}"
+            class="button button--secondary button--small button--full"
+            aria-label="{{ 'products.product.choose_options_named' | t: title: product.title | escape }}"
+          >
+            {{- 'products.product.choose_options' | t -}}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  {%- else -%}
+    {%- assign index = placeholder_index | default: 1 | modulo: 6 | plus: 1 -%}
+    <div class="card__media media {{ ratio_class | default: 'media--portrait' }}">
+      {{ 'product-' | append: index | placeholder_svg_tag: 'placeholder-svg' }}
+    </div>
+    <div class="card__info">
+      <h3 class="card__title">{{ 'onboarding.product_title' | t }}</h3>
+      {% render 'price', product: blank %}
+    </div>
+  {%- endif -%}
+</div>

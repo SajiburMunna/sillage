@@ -1,0 +1,32 @@
+<section
+  class="section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width">
+    <h1 class="h-display h-display--md main-page-title">{{ blog.title | escape }}</h1>
+    {%- paginate blog.articles by 9 -%}
+      <ul class="grid" role="list" style="--cols: 3; --cols-tablet: 2; --cols-mobile: 1;">
+        {%- for article in blog.articles -%}
+          <li>{% render 'article-card', article: article, show_image: section.settings.show_image, show_date: section.settings.show_date, show_author: section.settings.show_author %}</li>
+        {%- endfor -%}
+      </ul>
+      {% render 'pagination', paginate: paginate %}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.main_blog.name",
+  "tag": "div",
+  "class": "section",
+  "settings": [
+    { "type": "checkbox", "id": "show_image", "default": true, "label": "t:sections.main_blog.settings.show_image.label" },
+    { "type": "checkbox", "id": "show_date", "default": true, "label": "t:sections.main_blog.settings.show_date.label" },
+    { "type": "checkbox", "id": "show_author", "default": false, "label": "t:sections.main_blog.settings.show_author.label" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 64 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 72 }
+  ]
+}
+{% endschema %}

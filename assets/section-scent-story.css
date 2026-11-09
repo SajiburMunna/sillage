@@ -1,0 +1,1245 @@
+/* ==========================================================================
+   Scent story — sticky scroll narrative
+   Positions are written by scent-story.js through transforms only.
+   ========================================================================== */
+
+.ss {
+  --vh: 100vh;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --cream: #f3f0eb;
+  --ink: #191714;
+  display: block;
+  position: relative;
+  color: var(--ink);
+}
+
+.ss-track {
+  position: relative;
+  height: calc(var(--vh) * 13);
+}
+
+.ss-anchor {
+  position: absolute;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+.ss-stage {
+  position: sticky;
+  top: 0;
+  height: var(--vh);
+  overflow: hidden;
+  background-color: var(--ss-hero-bg);
+  isolation: isolate;
+}
+
+/* ---------- Water ---------- */
+
+.ss-water {
+  z-index: 0;
+  transition: opacity 1.1s var(--ease);
+}
+
+
+.ss-water-toggle {
+  z-index: 9;
+  right: clamp(16px, 3vw, 40px);
+  bottom: 32px;
+  transition: opacity 0.6s ease, transform 0.35s var(--ease);
+  color: var(--cream);
+  border-color: rgba(243, 240, 235, 0.35);
+  background: rgba(25, 23, 20, 0.2);
+}
+
+.ss-stage:not([data-idx='0']) .ss-water-toggle {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---------- Ring ---------- */
+
+.ss-ring {
+  position: absolute;
+  z-index: 1;
+  left: 74%;
+  top: 52%;
+  width: calc(var(--vh) * 0.86);
+  height: calc(var(--vh) * 0.86);
+  margin-left: calc(var(--vh) * -0.43);
+  margin-top: calc(var(--vh) * -0.43);
+  pointer-events: none;
+  fill: var(--cream);
+  font-family: var(--font-heading-family);
+  opacity: 0.55;
+  animation: ss-spin 60s linear infinite;
+  transition: opacity 0.8s ease;
+}
+
+
+@keyframes ss-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Letters ---------- */
+
+.ss-word + .ss-word {
+  margin-left: 0.26em;
+}
+
+.ss-word {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.08em;
+}
+
+.ss-letter {
+  display: inline-block;
+  transform: translate3d(0, 110%, 0);
+  transition: transform 1.25s var(--ease);
+  transition-delay: calc(var(--i) * 0.024s);
+}
+
+/* ---------- Chapter titles ---------- */
+
+.ss-title {
+  position: absolute;
+  z-index: 1;
+  left: clamp(16px, 3vw, 40px);
+  right: clamp(16px, 3vw, 40px);
+  top: 84px;
+  pointer-events: none;
+}
+
+.ss-title__text {
+  margin: 0;
+  font-family: var(--font-heading-family);
+  font-size: clamp(44px, 6.6vw, 108px);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.ss-title.is-active .ss-letter {
+  transform: none;
+}
+
+.ss-title.is-past .ss-letter {
+  transform: translateY(-110%);
+  transition-duration: 0.7s;
+  transition-delay: calc(var(--i) * 0.012s);
+}
+
+/* ---------- Bottle ---------- */
+
+.ss-bottle {
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  top: 0;
+  will-change: transform;
+  transform-origin: 50% 50%;
+  pointer-events: none;
+}
+
+.ss-bottle__float {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.ss-loaded .ss-bottle__float {
+  animation: ss-drop 1.6s var(--ease) both, ss-bob 6s ease-in-out 1.6s infinite;
+}
+
+@keyframes ss-drop {
+  0% { transform: translateY(-120%) rotate(-18deg); opacity: 0; }
+  60% { opacity: 1; }
+  100% { transform: none; opacity: 1; }
+}
+
+@keyframes ss-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.ss-bottle__item {
+  position: absolute;
+  inset: 0;
+  display: block;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  opacity: 0;
+  will-change: opacity, transform;
+  pointer-events: none;
+}
+
+/* Before scripts run, show the first bottle */
+.ss-bottle__item:first-child {
+  opacity: 1;
+}
+
+.ss-bottle__item.is-active {
+  pointer-events: auto;
+}
+
+.ss-bottle__item svg,
+.ss-bottle__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 50% 100%;
+  overflow: visible;
+  filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.25));
+}
+
+.perfume-bottle .pb-cap {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: transform 0.9s var(--ease), opacity 0.6s ease;
+}
+
+.perfume-bottle .pb-pump {
+  transform-box: fill-box;
+  transition: transform 0.12s ease-out;
+}
+
+.ss-bottle.is-uncapped .pb-cap {
+  transform: translate(110%, -95%) rotate(32deg);
+  opacity: 0;
+}
+
+.ss-bottle.is-pressing .pb-pump {
+  transform: translateY(14%);
+}
+
+/* ---------- Hero ---------- */
+
+.ss-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(15, 11, 9, 0.7) 0%, rgba(15, 11, 9, 0.18) 45%, transparent 70%);
+  transition: opacity 0.8s ease;
+}
+
+
+.ss-hero {
+  position: absolute;
+  z-index: 6;
+  left: clamp(16px, 3vw, 40px);
+  right: clamp(16px, 3vw, 40px);
+  bottom: 40px;
+  color: var(--cream);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  pointer-events: none;
+  transition: opacity 0.7s ease;
+}
+
+
+.ss-hero__heading {
+  margin: 0;
+  font-family: var(--font-heading-family);
+  font-weight: var(--font-heading-weight);
+  font-size: clamp(56px, 10vw, 180px);
+  line-height: 0.88;
+  max-width: 58%;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: inherit;
+}
+
+.ss-hero__line {
+  display: block;
+}
+
+.ss-loaded .ss-hero .ss-letter {
+  transform: none;
+  transition-delay: calc(0.1s + var(--i) * 0.035s);
+}
+
+.ss-hero__foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+}
+
+.ss-hero__tagline {
+  margin: 0;
+  max-width: 440px;
+  font-size: 17px;
+  line-height: 1.6;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 1s ease 0.9s, transform 1s var(--ease) 0.9s;
+}
+
+.ss-loaded .ss-hero__tagline {
+  opacity: 0.9;
+  transform: none;
+}
+
+.ss-hero__cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  margin-right: 64px;
+}
+
+.ss-hero__cue-line {
+  position: relative;
+  width: 1px;
+  height: 40px;
+  overflow: hidden;
+  background: rgba(243, 240, 235, 0.25);
+}
+
+.ss-hero__cue-line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--cream);
+  animation: ss-cue 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes ss-cue {
+  0% { transform: translateY(-100%); }
+  60%, 100% { transform: translateY(100%); }
+}
+
+/* ---------- Manifesto ---------- */
+
+.ss-manifesto {
+  position: absolute;
+  z-index: 6;
+  left: 0;
+  right: 0;
+  top: 18%;
+  display: flex;
+  justify-content: center;
+  padding: 0 clamp(16px, 3vw, 40px);
+  pointer-events: none;
+  opacity: 0;
+}
+
+
+.ss-manifesto__text {
+  margin: 0;
+  max-width: 1100px;
+  text-align: center;
+  font-family: var(--font-heading-family);
+  font-size: clamp(30px, 4.2vw, 64px);
+  line-height: 1.12;
+  color: var(--ink);
+}
+
+.ss-manifesto__word {
+  opacity: clamp(0.16, calc(var(--m, 0) * var(--n) - var(--k)), 1);
+  transition: opacity 0.25s linear;
+}
+
+/* ---------- Chapter copy ---------- */
+
+.ss-chapter {
+  position: absolute;
+  z-index: 6;
+  left: clamp(16px, 3vw, 40px);
+  right: clamp(16px, 3vw, 40px);
+  top: calc(84px + clamp(44px, 6.6vw, 108px) + 28px);
+  bottom: 110px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(160px, 28%) minmax(0, 1fr);
+  column-gap: 24px;
+  pointer-events: none;
+}
+
+.ss-chapter__left,
+.ss-chapter__right {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  opacity: 0;
+  transition: opacity 0.9s ease, transform 1.2s var(--ease);
+  will-change: opacity, transform;
+}
+
+.ss-chapter__left {
+  transform: translateX(-30px);
+}
+
+.ss-chapter__right {
+  transform: translateX(30px);
+  justify-content: flex-end;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.ss-chapter.is-active {
+  pointer-events: auto;
+}
+
+.ss-chapter.is-active .ss-chapter__left,
+.ss-chapter.is-active .ss-chapter__right {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.15s;
+}
+
+.ss-chapter.is-past .ss-chapter__left {
+  transform: translateX(30px);
+}
+
+.ss-chapter.is-past .ss-chapter__right {
+  transform: translateX(-30px);
+}
+
+.ss-chapter__family {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-heading-family);
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.ss-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.ss-chapter__notes {
+  margin: 0;
+  max-width: 360px;
+  font-family: var(--font-heading-family);
+  font-size: clamp(22px, 2.2vw, 32px);
+  line-height: 1.2;
+}
+
+.ss-chapter__rule {
+  width: 64px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+.ss-chapter__meta {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  opacity: 0.8;
+}
+
+.ss-chapter__card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  max-width: 360px;
+}
+
+.ss-chapter__vendor {
+  font-family: var(--font-heading-family);
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.ss-chapter__name {
+  margin: 0;
+  font-family: var(--font-heading-family);
+  font-size: clamp(24px, 2.4vw, 36px);
+  line-height: 1.1;
+}
+
+.ss-chapter__desc {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+.ss-chapter__price .price {
+  justify-content: flex-end;
+}
+
+.ss-chapter__link {
+  font-size: 13px;
+}
+
+.ss-chapter__hint {
+  margin: 0;
+  font-size: 13px;
+  padding: 8px 12px;
+  border: 1px dashed currentColor;
+}
+
+/* Add to bag button (pill with rotating plus) */
+.ss-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 24px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: var(--font-body-weight-bold);
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease, transform 0.35s var(--ease);
+}
+
+.ss-add .icon {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.5s var(--ease);
+}
+
+.ss-add:hover {
+  background: var(--ink);
+  color: var(--cream);
+  transform: translateY(-2px);
+}
+
+.ss-add:hover .icon {
+  transform: rotate(90deg);
+}
+
+.ss-add--light {
+  border-color: var(--cream);
+  color: var(--cream);
+}
+
+.ss-add--light:hover {
+  background: var(--cream);
+  color: var(--ink);
+}
+
+.ss-add[aria-busy='true'] {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* ---------- Ritual ---------- */
+
+.ss-ritual {
+  position: absolute;
+  z-index: 6;
+  left: clamp(16px, 3vw, 40px);
+  top: 110px;
+  bottom: 110px;
+  color: var(--cream);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+
+.ss-ritual__label {
+  font-family: var(--font-heading-family);
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.ss-ritual__words {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ss-ritual__word {
+  font-family: var(--font-heading-family);
+  font-size: clamp(48px, 7vw, 112px);
+  line-height: 1;
+  opacity: 0.22;
+  transform: translateX(-12px);
+  transition: opacity 0.7s ease, transform 0.9s var(--ease);
+}
+
+.ss-stage[data-phase='0'] .ss-ritual__word[data-p='0'],
+.ss-stage[data-phase='1'] .ss-ritual__word[data-p='1'],
+.ss-stage[data-phase='2'] .ss-ritual__word[data-p='2'] {
+  opacity: 1;
+  transform: none;
+}
+
+.ss-ritual-side {
+  position: absolute;
+  z-index: 6;
+  right: clamp(16px, 3vw, 40px);
+  bottom: 120px;
+  max-width: 300px;
+  color: var(--cream);
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.9s ease;
+}
+
+.ss-ritual-side p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.65;
+  opacity: 0.85;
+}
+
+
+.ss-stage[data-idx='ritual'] .ss-ritual-side {
+  pointer-events: auto;
+}
+
+/* ---------- Picker pill ---------- */
+
+.ss-pill {
+  position: absolute;
+  z-index: 8;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.ss-pill__toggle {
+  height: 52px;
+  min-width: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 0 8px 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--ink);
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(25, 23, 20, 0.16);
+  transition: transform 0.35s var(--ease);
+}
+
+.ss-pill__toggle:hover {
+  transform: translateY(-2px);
+}
+
+.ss-pill__dots {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.ss-pill__dots span {
+  width: 8px;
+  border-radius: 4px;
+}
+
+.ss-pill__chev {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #efeae3;
+}
+
+.ss-pill__chev .icon {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.35s var(--ease);
+}
+
+.ss-pill__toggle[aria-expanded='true'] .ss-pill__chev .icon {
+  transform: rotate(180deg);
+}
+
+.ss-pill__menu {
+  min-width: 260px;
+  padding: 8px;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 20px 50px rgba(25, 23, 20, 0.18);
+  display: flex;
+  flex-direction: column;
+  animation: ss-menu 0.35s var(--ease);
+}
+
+@keyframes ss-menu {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+.ss-pill__option {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+  padding: 0 14px;
+  align-items: center;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 15px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.ss-pill__option:hover,
+.ss-pill__option[aria-current='true'] {
+  background: #efeae3;
+}
+
+/* ---------- Toast / veil / loader ---------- */
+
+.ss-toast {
+  position: absolute;
+  z-index: 9;
+  left: 50%;
+  top: 96px;
+  transform: translate(-50%, -20px);
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--cream);
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.5s var(--ease);
+  white-space: nowrap;
+}
+
+.ss-toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.ss-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  background: var(--cream);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.42s var(--ease);
+}
+
+.ss-veil.is-on {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ss-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  background: var(--ss-hero-bg);
+  color: var(--cream);
+  transition: opacity 0.9s var(--ease), visibility 0.9s;
+}
+
+.js .ss--loader .ss-loader {
+  display: flex;
+}
+
+.ss-loader.is-done {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.ss-loader__bottle svg {
+  width: 72px;
+  height: 108px;
+}
+
+.ss-loader__fill {
+  transition: transform 0.2s linear;
+}
+
+.ss-loader__pct {
+  font-family: var(--font-heading-family);
+  font-size: 14px;
+  letter-spacing: 0.3em;
+}
+
+.shopify-design-mode .ss-loader {
+  display: none !important;
+}
+
+/* ---------- Phone ---------- */
+
+@media screen and (max-width: 749px) {
+  .ss-hero__heading {
+    max-width: none;
+  }
+
+  .ss-ring {
+    left: 50%;
+    top: 40%;
+  }
+
+  .ss-title {
+    top: 76px;
+  }
+
+  .ss-chapter {
+    top: auto;
+    bottom: 96px;
+    grid-template-columns: 1fr;
+    row-gap: 12px;
+  }
+
+  .ss-chapter__gap,
+  .ss-chapter__rule,
+  .ss-chapter__desc,
+  .ss-chapter__meta {
+    display: none;
+  }
+
+  .ss-chapter__left {
+    gap: 6px;
+  }
+
+  .ss-chapter__notes {
+    font-size: 18px;
+  }
+
+  .ss-chapter__right {
+    align-items: stretch;
+    text-align: left;
+  }
+
+  .ss-chapter__card {
+    align-items: flex-start;
+    max-width: none;
+    padding: 16px;
+    border-radius: 16px;
+    background: rgba(243, 240, 235, 0.72);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .ss-chapter__price .price {
+    justify-content: flex-start;
+  }
+
+  .ss-hero {
+    bottom: 96px;
+  }
+
+  .ss-hero__cue {
+    display: none;
+  }
+
+  .ss-ritual {
+    top: 90px;
+    bottom: auto;
+  }
+
+  .ss-ritual-side {
+    left: clamp(16px, 3vw, 40px);
+    bottom: 96px;
+    max-width: none;
+    gap: 20px;
+  }
+
+  .ss-pill__toggle {
+    min-width: 220px;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .ss-ring,
+  .ss-loaded .ss-bottle__float,
+  .ss-hero__cue-line::after {
+    animation: none;
+  }
+  .ss-letter {
+    transition: none;
+  }
+}
+
+/* Real photos: the photo is wider than the bottle frame, centred on it */
+.ss-bottle__item .bottle-photo {
+  height: 92%;
+  bottom: 4%;
+}
+
+.photo-frame .ss-bottle__item .bottle-photo {
+  height: 82%;
+  bottom: 6%;
+}
+
+
+.ss-bottle {
+  --spot-stage: var(--ss-hero-bg);
+  --spot-light: #ede6dc;
+}
+
+/* ==========================================================================
+   Hero deck: two more scents fanned behind, notes drifting up, now-wearing tag
+   ========================================================================== */
+
+.ss-deck {
+  position: absolute;
+  z-index: 3;
+  left: 74%;
+  top: 52%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+
+.ss-stage:not([data-idx='0']) .ss-wearing {
+  pointer-events: none;
+}
+
+.ss-deck__card {
+  translate: calc(var(--gather, 0) * var(--gather-x, 0px)) calc(var(--gather, 0) * 40px);
+}
+
+.ss-deck__card--1 {
+  --gather-x: calc(var(--vh) * 0.18);
+}
+
+.ss-deck__card--2 {
+  --gather-x: calc(var(--vh) * -0.18);
+}
+
+.ss-deck__card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--vh) * 0.7 * 0.3);
+  height: calc(var(--vh) * 0.7);
+  margin-left: calc(var(--vh) * -0.105);
+  margin-top: calc(var(--vh) * -0.35);
+  opacity: 0;
+  will-change: transform;
+  transition: opacity 1.2s ease 0.6s, transform 1.6s var(--ease) 0.5s;
+}
+
+.ss-deck.is-settled .ss-deck__card {
+  transition: opacity 0.8s ease;
+}
+
+.ss-loaded .ss-deck__card {
+  opacity: 0.9;
+}
+
+/* Fanned out from behind the main arch; deeper layer moves less with the mouse */
+.ss-deck__card--1 {
+  transform: translate(-6%, 6%) scale(0.6) rotate(-4deg);
+}
+
+.ss-deck__card--2 {
+  transform: translate(6%, 6%) scale(0.6) rotate(4deg);
+}
+
+.ss-loaded .ss-deck__card--1 {
+  transform: translate(calc(var(--vh) * -0.25 + var(--mx, 0) * -14px), calc(var(--vh) * 0.02 + var(--my, 0) * -8px)) scale(0.72) rotate(-10deg);
+}
+
+.ss-loaded .ss-deck__card--2 {
+  transform: translate(calc(var(--vh) * 0.25 + var(--mx, 0) * -14px), calc(var(--vh) * 0.05 + var(--my, 0) * -8px)) scale(0.68) rotate(9deg);
+}
+
+@media screen and (max-width: 749px) {
+  .ss-loaded .ss-deck__card--1 {
+    transform: translate(calc(var(--vh) * -0.17), calc(var(--vh) * 0.02)) scale(0.7) rotate(-10deg);
+  }
+  .ss-loaded .ss-deck__card--2 {
+    transform: translate(calc(var(--vh) * 0.17), calc(var(--vh) * 0.04)) scale(0.66) rotate(9deg);
+  }
+}
+
+.ss-deck__card .ss-deck__float {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  animation: ss-bob 7s ease-in-out infinite;
+}
+
+.ss-deck__card--2 .ss-deck__float {
+  animation-duration: 8s;
+  animation-delay: -3s;
+}
+
+.ss-deck__card svg {
+  width: 100%;
+  height: 100%;
+  filter: brightness(0.92);
+}
+
+.photo-frame .ss-deck__card .bottle-photo {
+  height: 82%;
+  bottom: 6%;
+  filter: saturate(0.9) brightness(0.88);
+}
+
+/* Notes drifting up like scent lifting off skin */
+.ss-notes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.ss-note {
+  position: absolute;
+  white-space: nowrap;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cream);
+  background: rgba(23, 18, 15, 0.35);
+  border: 1px solid rgba(243, 240, 235, 0.28);
+  opacity: 0;
+  will-change: opacity, transform;
+  animation: ss-note-rise 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.ss-note--1 { left: calc(var(--vh) * -0.34); top: calc(var(--vh) * 0.18); animation-delay: 1.6s; }
+.ss-note--2 { left: calc(var(--vh) * 0.16); top: calc(var(--vh) * 0.08); animation-delay: 3.1s; }
+.ss-note--3 { left: calc(var(--vh) * -0.3); top: calc(var(--vh) * -0.02); animation-delay: 4.6s; }
+.ss-note--4 { left: calc(var(--vh) * 0.2); top: calc(var(--vh) * 0.22); animation-delay: 6.1s; }
+.ss-note--5 { left: calc(var(--vh) * -0.22); top: calc(var(--vh) * 0.3); animation-delay: 7.6s; }
+.ss-note--6 { left: calc(var(--vh) * 0.12); top: calc(var(--vh) * -0.06); animation-delay: 9.1s; }
+
+@keyframes ss-note-rise {
+  0% { opacity: 0; transform: translate3d(0, 24px, 0) scale(0.94); }
+  18% { opacity: 1; }
+  70% { opacity: 0.85; }
+  100% { opacity: 0; transform: translate3d(14px, -120px, 0) scale(1); }
+}
+
+/* Now wearing */
+.ss-wearing {
+  position: absolute;
+  z-index: 7;
+  left: 74%;
+  top: calc(52% + var(--vh) * 0.33);
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px 10px 14px;
+  border-radius: 999px;
+  background: rgba(23, 18, 15, 0.45);
+  border: 1px solid rgba(243, 240, 235, 0.2);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: var(--cream);
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.8s ease, background 0.3s ease;
+}
+
+.ss-loaded .ss-wearing {
+  opacity: 1;
+  transition-delay: 1.4s;
+}
+
+.ss-wearing:hover {
+  background: rgba(23, 18, 15, 0.72);
+}
+
+.ss-wearing__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e2b76a;
+  box-shadow: 0 0 0 0 rgba(226, 183, 106, 0.6);
+  animation: ss-pulse 2.4s ease-out infinite;
+}
+
+@keyframes ss-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(226, 183, 106, 0.6); }
+  100% { box-shadow: 0 0 0 10px rgba(226, 183, 106, 0); }
+}
+
+.ss-wearing__label {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.ss-wearing__name {
+  font-family: var(--font-heading-family);
+  font-size: 15px;
+}
+
+.ss-wearing__price {
+  opacity: 0.8;
+}
+
+.ss-wearing .icon {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.4s var(--ease);
+}
+
+.ss-wearing:hover .icon {
+  transform: translateX(3px);
+}
+
+@media screen and (max-width: 749px) {
+  .ss-deck {
+    left: 50%;
+    top: 36%;
+  }
+  .ss-deck__card {
+    width: calc(var(--vh) * 0.5 * 0.3);
+    height: calc(var(--vh) * 0.5);
+    margin-left: calc(var(--vh) * -0.075);
+    margin-top: calc(var(--vh) * -0.25);
+  }
+  .ss-note--5,
+  .ss-note--6 {
+    display: none;
+  }
+  .ss-wearing {
+    left: 50%;
+    top: calc(36% + var(--vh) * 0.24);
+    font-size: 12px;
+  }
+  .ss-wearing__label {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ss-note,
+  .ss-deck__float,
+  .ss-wearing__dot {
+    animation: none;
+  }
+  .ss-note {
+    opacity: 0.9;
+  }
+}
+
+/* ==========================================================================
+   Scroll-linked panels: opacity and drift are written by scent-story.js
+   ========================================================================== */
+
+.ss-hero,
+.ss-ring,
+.ss-scrim,
+.ss-water,
+.ss-manifesto,
+.ss-chapter,
+.ss-title,
+.ss-ritual,
+.ss-ritual-side {
+  transition-property: none;
+  will-change: opacity, transform;
+}
+
+.ss .ss-chapter .ss-chapter__left,
+.ss .ss-chapter .ss-chapter__right {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.ss-chapter,
+.ss-title {
+  opacity: 0;
+}
+
+.ss-bottle__item {
+  transform-origin: 50% 100%;
+}
+
+/* The incoming photo drifts up inside the arch as it is revealed */
+.photo-frame .ss-bottle__item .bottle-photo img {
+  transform: translate3d(0, calc(var(--wipe, 0) * 10%), 0) scale(1.06);
+  transition: none;
+}
+
+/* Only the top frame casts the shadow, so stacked frames never double it */
+.photo-frame .ss-bottle__item[style*='z-index: 1'] .bottle-photo {
+  box-shadow: none;
+}
+
+/* ==========================================================================
+   Fit the first view: --ss-inset is the height pushing the stage down
+   (announcement bar); it shrinks to 0 as the page scrolls.
+   ========================================================================== */
+
+.ss-hero {
+  bottom: calc(40px + var(--ss-inset, 0px));
+}
+
+.ss-pill {
+  bottom: calc(28px + var(--ss-inset, 0px));
+}
+
+.ss .ss-water-toggle {
+  bottom: calc(32px + var(--ss-inset, 0px));
+}
+
+/* The picker pill already invites scrolling; avoid crowding the "now wearing" tag */
+.ss-stage:has(.ss-wearing) .ss-hero__cue {
+  display: none;
+}
+
+.ss-ring,
+.ss-deck {
+  translate: 0 calc(var(--ss-inset, 0px) / -2);
+}
+
+.ss-wearing {
+  top: calc(52% + var(--vh) * 0.37 - var(--ss-inset, 0px) / 2);
+}
+
+@media screen and (max-width: 749px) {
+  .ss-hero {
+    bottom: calc(96px + var(--ss-inset, 0px));
+  }
+
+  .ss-wearing {
+    top: calc(36% + var(--vh) * 0.27 - var(--ss-inset, 0px) / 2);
+  }
+}

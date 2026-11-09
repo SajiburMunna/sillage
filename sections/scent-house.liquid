@@ -1,0 +1,120 @@
+{{ 'section-scent-sections.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign styles = 'round,flacon,spray' | split: ','
+  assign tones = '#E7B9C2,#9ED3D6,#D9A35F' | split: ','
+  assign widths = '82,104,82' | split: ','
+-%}
+
+<div
+  class="sh section-padding"
+  id="{{ section.settings.anchor | default: 'story' | handle }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px; background: {{ section.settings.bg }}; --sh-circle: {{ section.settings.circle }};"
+>
+  <div class="sh__inner">
+    <div class="sh__viz" data-reveal aria-hidden="true">
+      <div class="sh__circle"></div>
+      <svg class="sh__ring" viewBox="0 0 400 400" focusable="false">
+        <defs><path id="ShRing-{{ section.id }}" d="M200 200 m-176 0 a176 176 0 1 1 352 0 a176 176 0 1 1 -352 0"/></defs>
+        <text font-size="12"><textPath href="#ShRing-{{ section.id }}" textLength="1100" lengthAdjust="spacing">{{ section.settings.ring_text | upcase | escape }} · {{ section.settings.ring_text | upcase | escape }} · </textPath></text>
+        <circle cx="200" cy="200" r="150" fill="none" stroke="#E2B76A" stroke-opacity="0.18" stroke-width="0.8"/>
+      </svg>
+      <div class="sh__glow"></div>
+      {%- for i in (1..10) -%}
+        <span class="sh__dust" style="--x: {% cycle '12%', '22%', '34%', '46%', '58%', '66%', '74%', '84%', '28%', '90%' %}; --s: {% cycle '3px', '2px', '4px', '2px', '3px', '2px', '4px', '2px', '2px', '3px' %}; --t: {% cycle '9s', '11s', '8s', '12s', '10s', '9s', '11s', '10s', '13s', '9s' %}; --d: -{{ i | times: 0.8 }}s;"></span>
+      {%- endfor -%}
+      <div class="sh__bottles">
+        {%- for i in (0..2) -%}
+          {%- assign block = section.blocks[i] -%}
+          <div class="sh__bottle sh__bottle--{{ i | plus: 1 }}" style="--w: {{ widths[i] }}px;">
+            <div class="sh__float" style="--ft: {% cycle '6.5s', '7s', '6s' %}; --fd: {% cycle '-1.2s', '0s', '-2.6s' %};">
+              {%- assign house_product = block.settings.product | default: collections.all.products[i] -%}
+              {%- assign house_image = block.settings.image | default: house_product.featured_image -%}
+              {%- if house_image != blank -%}
+                {%- render 'bottle-photo', image: house_image, sizes: '260px', widths: '200, 300, 500', spot: true -%}
+              {%- else -%}
+                {%- capture uid -%}sh{{ i }}{{ section.id | handle | remove: '-' | slice: -4, 4 }}{%- endcapture -%}
+                {%- assign b_style = block.settings.bottle_style | default: styles[i] -%}
+                {%- assign b_liquid = block.settings.liquid | default: tones[i] -%}
+                {%- render 'perfume-bottle', style: b_style, liquid: b_liquid, label: block.settings.label, uid: uid -%}
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+      <span class="sh__caption sh__caption--left">{{ section.settings.caption | escape }}</span>
+      <span class="sh__caption sh__caption--right">{{ section.settings.est | escape }}</span>
+    </div>
+
+    <div class="sh__copy" data-reveal>
+      <span class="sc__eyebrow">{{ section.settings.eyebrow | escape }}</span>
+      <h2 class="sh__title">{{ section.settings.heading | escape }}</h2>
+      <div class="sh__text rte">{{ section.settings.text }}</div>
+      {%- if section.settings.button_label != blank -%}
+        <a href="{{ section.settings.button_link | default: '#visit' }}" class="sh__arrow">
+          {{ section.settings.button_label | escape }}
+          <span class="sh__arrow-icon">{% render 'icon', icon: 'arrow' %}</span>
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.scent_house.name",
+  "tag": "section",
+  "class": "section",
+  "max_blocks": 3,
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "text", "id": "eyebrow", "default": "Our story", "label": "t:sections.all.eyebrow" },
+    { "type": "text", "id": "heading", "default": "Every scent here was worn by our team first.", "label": "t:sections.all.heading" },
+    { "type": "richtext", "id": "text", "default": "<p>We started with one shelf and a handful of oils. Today we make a short list of scents we wear ourselves: small batches, clean ingredients and bottles that earn their place.</p>", "label": "t:sections.all.text" },
+    { "type": "text", "id": "button_label", "default": "Come and smell with us", "label": "t:sections.all.button_label" },
+    { "type": "url", "id": "button_link", "label": "t:sections.all.button_link" },
+    { "type": "text", "id": "ring_text", "default": "Blended · Worn · Bottled by hand", "label": "t:sections.scent_story.settings.ring_text.label" },
+    { "type": "text", "id": "caption", "default": "Worn by the team", "label": "t:sections.scent_house.settings.caption.label" },
+    { "type": "text", "id": "est", "default": "Est. 2024", "label": "t:sections.scent_house.settings.est.label" },
+    { "type": "color", "id": "bg", "default": "#CFC6BD", "label": "t:sections.scent_house.settings.bg.label" },
+    { "type": "color", "id": "circle", "default": "#1D1A17", "label": "t:sections.scent_house.settings.circle.label" },
+    { "type": "text", "id": "anchor", "default": "story", "label": "t:sections.scent_collection.settings.anchor.label" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 120 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 120 }
+  ],
+  "blocks": [
+    {
+      "type": "bottle",
+      "name": "t:sections.scent_house.blocks.bottle.name",
+      "settings": [
+        { "type": "product", "id": "product", "label": "t:sections.scent_story.blocks.scent.settings.product.label" },
+        { "type": "image_picker", "id": "image", "label": "t:sections.scent_story.blocks.scent.settings.image.label", "info": "t:sections.scent_story.blocks.scent.settings.image.info" },
+        {
+          "type": "select",
+          "id": "bottle_style",
+          "default": "round",
+          "label": "t:sections.scent_story.blocks.scent.settings.bottle_style.label",
+          "options": [
+            { "value": "flacon", "label": "t:sections.scent_story.blocks.scent.settings.bottle_style.options__1.label" },
+            { "value": "round", "label": "t:sections.scent_story.blocks.scent.settings.bottle_style.options__2.label" },
+            { "value": "tall", "label": "t:sections.scent_story.blocks.scent.settings.bottle_style.options__3.label" },
+            { "value": "spray", "label": "t:sections.scent_story.blocks.scent.settings.bottle_style.options__4.label" }
+          ]
+        },
+        { "type": "text", "id": "label", "default": "Eau", "label": "t:sections.scent_story.blocks.scent.settings.label.label" },
+        { "type": "color", "id": "liquid", "default": "#E7B9C2", "label": "t:sections.scent_story.blocks.scent.settings.liquid.label" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.scent_house.presets.name",
+      "blocks": [
+        { "type": "bottle", "settings": { "bottle_style": "round", "label": "Peony", "liquid": "#E7B9C2" } },
+        { "type": "bottle", "settings": { "bottle_style": "flacon", "label": "Aqua", "liquid": "#9ED3D6" } },
+        { "type": "bottle", "settings": { "bottle_style": "spray", "label": "Amber", "liquid": "#D9A35F" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

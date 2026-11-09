@@ -1,0 +1,55 @@
+{%- comment -%}
+  Renders one product media item (image, video, external video, 3D model).
+  Accepts:
+  - media {Object}
+  - loading {String}
+  - sizes {String}
+{%- endcomment -%}
+{%- case media.media_type -%}
+  {%- when 'image' -%}
+    <div class="media" style="aspect-ratio: {{ media.aspect_ratio | default: 1 }};">
+      {{
+        media
+        | image_url: width: 1800
+        | image_tag:
+          widths: '360, 540, 720, 900, 1100, 1400, 1800',
+          sizes: sizes,
+          loading: loading,
+          alt: media.alt | escape
+      }}
+    </div>
+  {%- when 'video', 'external_video' -%}
+    <deferred-media class="media deferred-media" style="aspect-ratio: {{ media.aspect_ratio | default: 1.7778 }};">
+      <button type="button" class="deferred-media__poster" data-deferred-poster>
+        <span class="visually-hidden">{{ 'products.product.media.play_video' | t }}</span>
+        <span class="deferred-media__play" aria-hidden="true">{% render 'icon', icon: 'play' %}</span>
+        {{
+          media.preview_image
+          | image_url: width: 1400
+          | image_tag: widths: '360, 720, 1100, 1400', sizes: sizes, loading: 'lazy', alt: media.alt | escape
+        }}
+      </button>
+      <template>
+        {%- if media.media_type == 'video' -%}
+          {{ media | video_tag: image_size: '1400x', controls: true, playsinline: true }}
+        {%- else -%}
+          {{ media | external_video_tag: loading: 'lazy' }}
+        {%- endif -%}
+      </template>
+    </deferred-media>
+  {%- when 'model' -%}
+    <deferred-media class="media deferred-media" style="aspect-ratio: 1;">
+      <button type="button" class="deferred-media__poster" data-deferred-poster>
+        <span class="visually-hidden">{{ 'products.product.media.view_in_3d' | t }}</span>
+        <span class="deferred-media__play" aria-hidden="true">3D</span>
+        {{
+          media.preview_image
+          | image_url: width: 1400
+          | image_tag: widths: '360, 720, 1100, 1400', sizes: sizes, loading: 'lazy', alt: media.alt | escape
+        }}
+      </button>
+      <template>
+        {{ media | model_viewer_tag: image_size: '1400x', reveal: 'interaction', toggleable: true }}
+      </template>
+    </deferred-media>
+{%- endcase -%}

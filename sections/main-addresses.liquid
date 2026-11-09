@@ -1,0 +1,60 @@
+<section class="customer section-padding" style="--pad-top: 72px; --pad-bottom: 96px;">
+  <div class="page-width" style="max-width: 76rem;">
+    <p><a href="{{ routes.account_url }}" class="link-underline">{% render 'icon', icon: 'arrow-left' %} {{ 'customer.account.return' | t }}</a></p>
+    <h1 class="h-display h-display--md">{{ 'customer.addresses.title' | t }}</h1>
+
+    {%- paginate customer.addresses by 10 -%}
+      <details class="accordion" {% if customer.addresses.size == 0 %}open{% endif %}>
+        <summary>{{ 'customer.addresses.add_new' | t }} {% render 'icon', icon: 'caret' %}</summary>
+        <div class="accordion__content">
+          {%- form 'customer_address', customer.new_address -%}
+            {% render 'address-form', form: form, id: 'new' %}
+            <button type="submit" class="button">{{ 'customer.addresses.add' | t }}</button>
+          {%- endform -%}
+        </div>
+      </details>
+
+      {%- for address in customer.addresses -%}
+        <details class="accordion">
+          <summary>
+            <span>
+              {%- if address == customer.default_address -%}<span class="badge">{{ 'customer.addresses.default' | t }}</span> {% endif -%}
+              {{ address.summary | escape }}
+            </span>
+            {% render 'icon', icon: 'caret' %}
+          </summary>
+          <div class="accordion__content">
+            {{ address | format_address }}
+            {%- form 'customer_address', address -%}
+              {% render 'address-form', form: form, id: address.id %}
+              <button type="submit" class="button">{{ 'customer.addresses.update' | t }}</button>
+            {%- endform -%}
+            <form method="post" action="{{ address.url }}" style="margin-top: 1.2rem;">
+              <input type="hidden" name="_method" value="delete">
+              <button type="submit" class="link">{{ 'customer.addresses.delete' | t }}</button>
+            </form>
+          </div>
+        </details>
+      {%- endfor -%}
+      {% render 'pagination', paginate: paginate %}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+<script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    if (!window.Shopify || !Shopify.CountryProvinceSelector) return;
+    document.querySelectorAll('[data-address-country]').forEach((select) => {
+      const id = select.dataset.addressCountry;
+      new Shopify.CountryProvinceSelector(`AddressCountry-${id}`, `AddressProvince-${id}`, { hideElement: `AddressProvinceContainer-${id}` });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "t:sections.customers.addresses",
+  "settings": []
+}
+{% endschema %}

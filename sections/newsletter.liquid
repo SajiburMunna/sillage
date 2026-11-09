@@ -1,0 +1,48 @@
+<section
+  class="section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width page-width--narrow text-center newsletter" data-reveal>
+    {%- if section.settings.heading != blank -%}
+      <h2 class="h-display h-display--md">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.text != blank -%}
+      <div class="rte">{{ section.settings.text }}</div>
+    {%- endif -%}
+    {%- assign newsletter_form_id = 'Newsletter-' | append: section.id -%}
+    {% render 'newsletter-form', form_id: newsletter_form_id %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .newsletter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+  .newsletter > * {
+    margin: 0;
+  }
+  .newsletter .newsletter-form-wrapper {
+    width: 100%;
+    max-width: 48rem;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.newsletter.name",
+  "tag": "div",
+  "class": "section",
+  "settings": [
+    { "type": "paragraph", "content": "t:sections.newsletter.settings.paragraph.content" },
+    { "type": "inline_richtext", "id": "heading", "default": "Samples, launches, rituals", "label": "t:sections.all.heading" },
+    { "type": "richtext", "id": "text", "default": "<p>Be first to try new scents and limited editions.</p>", "label": "t:sections.all.description" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-5" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 96 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 96 }
+  ],
+  "presets": [{ "name": "t:sections.newsletter.presets.name" }]
+}
+{% endschema %}

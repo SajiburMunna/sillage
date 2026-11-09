@@ -1,0 +1,41 @@
+{%- comment -%}
+  Country/region and language selectors.
+  Accepts:
+  - show_country {Boolean}
+  - show_language {Boolean}
+  - id_prefix {String} unique prefix for ids
+{%- endcomment -%}
+{%- if show_country and localization.available_countries.size > 1 or show_language and localization.available_languages.size > 1 -%}
+  <localization-form class="footer__localization">
+    {%- assign localization_form_id = id_prefix | append: '-LocalizationForm' -%}
+    {%- form 'localization', id: localization_form_id -%}
+      {%- if show_country and localization.available_countries.size > 1 -%}
+        <div class="field">
+          <label for="{{ id_prefix }}-Country" class="field__label">{{ 'localization.country_label' | t }}</label>
+          <select id="{{ id_prefix }}-Country" name="country_code">
+            {%- for country in localization.available_countries -%}
+              <option value="{{ country.iso_code }}"{% if country.iso_code == localization.country.iso_code %} selected{% endif %}>
+                {{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})
+              </option>
+            {%- endfor -%}
+          </select>
+        </div>
+      {%- endif -%}
+      {%- if show_language and localization.available_languages.size > 1 -%}
+        <div class="field">
+          <label for="{{ id_prefix }}-Language" class="field__label">{{ 'localization.language_label' | t }}</label>
+          <select id="{{ id_prefix }}-Language" name="locale_code">
+            {%- for language in localization.available_languages -%}
+              <option value="{{ language.iso_code }}" lang="{{ language.iso_code }}"{% if language.iso_code == localization.language.iso_code %} selected{% endif %}>
+                {{ language.endonym_name | capitalize }}
+              </option>
+            {%- endfor -%}
+          </select>
+        </div>
+      {%- endif -%}
+      <noscript>
+        <button type="submit" class="button button--small">{{ 'localization.update' | t }}</button>
+      </noscript>
+    {%- endform -%}
+  </localization-form>
+{%- endif -%}

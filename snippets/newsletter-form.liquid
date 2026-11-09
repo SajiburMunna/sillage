@@ -1,0 +1,42 @@
+{%- comment -%}
+  Newsletter sign-up form (creates a customer with marketing consent).
+  Accepts: form_id {String}
+{%- endcomment -%}
+{%- form 'customer', id: form_id, class: 'newsletter-form-wrapper' -%}
+  <input type="hidden" name="contact[tags]" value="newsletter">
+  <div class="newsletter-form">
+    <div class="field">
+      <label class="visually-hidden" for="{{ form_id }}-Email">{{ 'newsletter.label' | t }}</label>
+      <input
+        id="{{ form_id }}-Email"
+        type="email"
+        name="contact[email]"
+        value="{{ form.email }}"
+        autocomplete="email"
+        autocorrect="off"
+        autocapitalize="off"
+        placeholder="{{ 'newsletter.label' | t }}"
+        required
+        {% if form.errors %}
+          aria-invalid="true" aria-describedby="{{ form_id }}-Error"
+        {% elsif form.posted_successfully? %}
+          aria-describedby="{{ form_id }}-Success"
+        {% endif %}
+      >
+    </div>
+    <button type="submit" class="button" name="commit">{{ 'newsletter.button_label' | t }}</button>
+  </div>
+  {%- if form.errors -%}
+    <p class="form__message form__message--error" id="{{ form_id }}-Error">
+      {% render 'icon', icon: 'error' %}
+      {{ form.errors.translated_fields.email | capitalize }}
+      {{ form.errors.messages.email }}
+    </p>
+  {%- endif -%}
+  {%- if form.posted_successfully? -%}
+    <p class="form__message form__message--success" id="{{ form_id }}-Success" tabindex="-1" autofocus>
+      {% render 'icon', icon: 'check' %}
+      {{ 'newsletter.success' | t }}
+    </p>
+  {%- endif -%}
+{%- endform -%}

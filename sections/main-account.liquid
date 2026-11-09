@@ -1,0 +1,59 @@
+<section class="customer section-padding" style="--pad-top: 72px; --pad-bottom: 96px;">
+  <div class="page-width">
+    <div class="section-header">
+      <h1 class="h-display h-display--md section-header__title">{{ 'customer.account.title' | t }}</h1>
+      <a href="{{ routes.account_logout_url }}" class="link-underline">{{ 'customer.log_out' | t }}</a>
+    </div>
+
+    <div class="customer__grid">
+      <div>
+        <h2 class="h3">{{ 'customer.orders.title' | t }}</h2>
+        {%- paginate customer.orders by 20 -%}
+          {%- if customer.orders.size > 0 -%}
+            <div style="overflow-x: auto;">
+              <table class="customer__table" role="table">
+                <caption class="visually-hidden">{{ 'customer.orders.title' | t }}</caption>
+                <thead role="rowgroup">
+                  <tr role="row">
+                    <th scope="col" role="columnheader">{{ 'customer.orders.order_number' | t }}</th>
+                    <th scope="col" role="columnheader">{{ 'customer.orders.date' | t }}</th>
+                    <th scope="col" role="columnheader">{{ 'customer.orders.payment_status' | t }}</th>
+                    <th scope="col" role="columnheader">{{ 'customer.orders.fulfillment_status' | t }}</th>
+                    <th scope="col" role="columnheader">{{ 'customer.orders.total' | t }}</th>
+                  </tr>
+                </thead>
+                <tbody role="rowgroup">
+                  {%- for order in customer.orders -%}
+                    <tr role="row">
+                      <td role="cell"><a href="{{ order.customer_url }}" class="link" aria-label="{{ 'customer.orders.order_number_link' | t: number: order.name }}">{{ order.name }}</a></td>
+                      <td role="cell">{{ order.created_at | time_tag: format: 'date' }}</td>
+                      <td role="cell">{{ order.financial_status_label }}</td>
+                      <td role="cell">{{ order.fulfillment_status_label }}</td>
+                      <td role="cell">{{ order.total_net_amount | money_with_currency }}</td>
+                    </tr>
+                  {%- endfor -%}
+                </tbody>
+              </table>
+            </div>
+          {%- else -%}
+            <p>{{ 'customer.orders.none' | t }}</p>
+          {%- endif -%}
+          {% render 'pagination', paginate: paginate %}
+        {%- endpaginate -%}
+      </div>
+
+      <div>
+        <h2 class="h3">{{ 'customer.account.details' | t }}</h2>
+        {{ customer.default_address | format_address }}
+        <a href="{{ routes.account_addresses_url }}" class="link-underline">{{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.customers.account",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,117 @@
+<section
+  class="section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width page-width--narrow text-{{ section.settings.alignment }} rich-text" data-reveal>
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'eyebrow' -%}
+          <p class="eyebrow" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</p>
+        {%- when 'heading' -%}
+          <h2 class="h-display {{ block.settings.size }}" {{ block.shopify_attributes }}>{{ block.settings.heading }}</h2>
+        {%- when 'text' -%}
+          <div class="rte rich-text__text" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+        {%- when 'button' -%}
+          {%- if block.settings.label != blank -%}
+            <a
+              {% if block.settings.link != blank %}
+                href="{{ block.settings.link }}"
+              {% else %}
+                role="link" aria-disabled="true"
+              {% endif %}
+              class="button{% if block.settings.secondary %} button--secondary{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              {{- block.settings.label | escape -}}
+            </a>
+          {%- endif -%}
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .rich-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2.4rem;
+  }
+  .rich-text.text-center {
+    align-items: center;
+  }
+  .rich-text > * {
+    margin: 0;
+  }
+  .rich-text__text {
+    font-size: 1.8rem;
+    line-height: 1.7;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.rich_text.name",
+  "tag": "div",
+  "class": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "alignment",
+      "default": "center",
+      "label": "t:sections.all.alignment",
+      "options": [
+        { "value": "left", "label": "t:sections.all.alignment_options.left" },
+        { "value": "center", "label": "t:sections.all.alignment_options.center" }
+      ]
+    },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 96 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 96 }
+  ],
+  "blocks": [
+    {
+      "type": "eyebrow",
+      "name": "t:sections.all.eyebrow",
+      "settings": [{ "type": "text", "id": "text", "default": "The ritual", "label": "t:sections.all.text" }]
+    },
+    {
+      "type": "heading",
+      "name": "t:sections.all.heading",
+      "settings": [
+        { "type": "inline_richtext", "id": "heading", "default": "Spray, wait, breathe.", "label": "t:sections.all.heading" },
+        {
+          "type": "select",
+          "id": "size",
+          "default": "h-display--lg",
+          "label": "t:sections.all.size",
+          "options": [
+            { "value": "h-display--md", "label": "t:sections.all.size_options.medium" },
+            { "value": "h-display--lg", "label": "t:sections.all.size_options.large" },
+            { "value": "h-display--xl", "label": "t:sections.all.size_options.extra_large" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "t:sections.all.text",
+      "settings": [{ "type": "richtext", "id": "text", "default": "<p>Share a short message with customers: how to wear a scent, what makes your blends last, or a promise behind every bottle.</p>", "label": "t:sections.all.text" }]
+    },
+    {
+      "type": "button",
+      "name": "t:sections.all.button",
+      "settings": [
+        { "type": "text", "id": "label", "default": "Discover the ritual", "label": "t:sections.all.button_label" },
+        { "type": "url", "id": "link", "label": "t:sections.all.button_link" },
+        { "type": "checkbox", "id": "secondary", "default": true, "label": "t:sections.all.button_secondary" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.rich_text.presets.name",
+      "blocks": [{ "type": "eyebrow" }, { "type": "heading" }, { "type": "text" }, { "type": "button" }]
+    }
+  ]
+}
+{% endschema %}

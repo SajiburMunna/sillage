@@ -1,0 +1,415 @@
+{{ 'section-water-hero.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'water-flow.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign image = section.settings.image
+  assign focal_x = 50
+  assign focal_y = 50
+  if image != blank and image.presentation.focal_point
+    assign focal_x = image.presentation.focal_point.x
+    assign focal_y = image.presentation.focal_point.y
+  endif
+  assign has_video = false
+  if section.settings.media_type == 'video' and section.settings.video != blank
+    assign has_video = true
+  endif
+-%}
+
+<section
+  class="water-hero water-hero--{{ section.settings.height }} color-{{ section.settings.color_scheme }}"
+  style="--overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }}; --hero-deep: {{ section.settings.color_deep }}; --hero-shallow: {{ section.settings.color_shallow }};"
+  aria-label="{{ section.settings.aria_label | default: shop.name | escape }}"
+>
+  <water-flow
+    class="water-flow"
+    data-direction="{{ section.settings.flow_direction }}"
+    data-speed="{{ section.settings.flow_speed }}"
+    data-refraction="{{ section.settings.refraction }}"
+    data-caustics="{{ section.settings.caustics }}"
+    data-tint="{{ section.settings.tint }}"
+    data-deep="{{ section.settings.color_deep }}"
+    data-shallow="{{ section.settings.color_shallow }}"
+    data-light="{{ section.settings.color_light }}"
+    data-interactive="{{ section.settings.interactive }}"
+    data-quality="{{ section.settings.quality }}"
+    data-focal-x="{{ focal_x }}"
+    data-focal-y="{{ focal_y }}"
+  >
+    {%- if has_video -%}
+      {{
+        section.settings.video
+        | video_tag:
+          autoplay: true,
+          loop: true,
+          muted: true,
+          playsinline: true,
+          controls: false,
+          image_size: '1920x',
+          class: 'water-flow__media',
+          aria-hidden: 'true'
+      }}
+    {%- else -%}
+      {%- if image != blank -%}
+        {%- liquid
+          if section.index == 1
+            assign loading = 'eager'
+            assign priority = 'high'
+          else
+            assign loading = 'lazy'
+            assign priority = 'auto'
+          endif
+        -%}
+        {{
+          image
+          | image_url: width: 2400
+          | image_tag:
+            widths: '480, 750, 1100, 1500, 1920, 2400',
+            sizes: '100vw',
+            loading: loading,
+            fetchpriority: priority,
+            class: 'water-flow__media',
+            crossorigin: 'anonymous',
+            alt: image.alt
+        }}
+      {%- endif -%}
+      <canvas class="water-flow__canvas" aria-hidden="true"></canvas>
+    {%- endif -%}
+  </water-flow>
+
+  <div class="water-hero__overlay" aria-hidden="true"></div>
+
+  <div class="water-hero__inner page-width water-hero__inner--{{ section.settings.content_position }}">
+    <div class="water-hero__content text-{{ section.settings.text_alignment }}">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'eyebrow' -%}
+            <p class="water-hero__eyebrow eyebrow" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</p>
+          {%- when 'heading' -%}
+            {%- if section.index == 1 -%}
+              <h1 class="water-hero__heading h-display {{ block.settings.size }}" {{ block.shopify_attributes }}>
+                {{- block.settings.heading | newline_to_br -}}
+              </h1>
+            {%- else -%}
+              <h2 class="water-hero__heading h-display {{ block.settings.size }}" {{ block.shopify_attributes }}>
+                {{- block.settings.heading | newline_to_br -}}
+              </h2>
+            {%- endif -%}
+          {%- when 'text' -%}
+            <div class="water-hero__text rte" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+          {%- when 'buttons' -%}
+            <div class="water-hero__buttons" {{ block.shopify_attributes }}>
+              {%- if block.settings.button_label_1 != blank -%}
+                <a
+                  {% if block.settings.button_link_1 != blank %}
+                    href="{{ block.settings.button_link_1 }}"
+                  {% else %}
+                    role="link" aria-disabled="true"
+                  {% endif %}
+                  class="button{% if block.settings.button_style_secondary_1 %} button--secondary{% endif %}"
+                >
+                  {{- block.settings.button_label_1 | escape -}}
+                </a>
+              {%- endif -%}
+              {%- if block.settings.button_label_2 != blank -%}
+                <a
+                  {% if block.settings.button_link_2 != blank %}
+                    href="{{ block.settings.button_link_2 }}"
+                  {% else %}
+                    role="link" aria-disabled="true"
+                  {% endif %}
+                  class="button{% if block.settings.button_style_secondary_2 %} button--secondary{% endif %}"
+                >
+                  {{- block.settings.button_label_2 | escape -}}
+                </a>
+              {%- endif -%}
+            </div>
+          {%- when '@app' -%}
+            {% render block %}
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {%- if section.settings.show_scroll_cue -%}
+    <span class="water-hero__cue" aria-hidden="true">
+      <span class="water-hero__cue-line"></span>
+    </span>
+  {%- endif -%}
+
+  <button type="button" class="water-hero__toggle" data-water-toggle aria-pressed="false" aria-label="{{ 'accessibility.pause_animation' | t }}">
+    <span class="water-hero__toggle-pause">{% render 'icon', icon: 'pause' %}</span>
+    <span class="water-hero__toggle-play">{% render 'icon', icon: 'play' %}</span>
+  </button>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.water_hero.name",
+  "tag": "div",
+  "class": "section section--water-hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.water_hero.settings.header_media.content"
+    },
+    {
+      "type": "select",
+      "id": "media_type",
+      "label": "t:sections.water_hero.settings.media_type.label",
+      "default": "shader",
+      "options": [
+        { "value": "shader", "label": "t:sections.water_hero.settings.media_type.options__1.label" },
+        { "value": "video", "label": "t:sections.water_hero.settings.media_type.options__2.label" }
+      ]
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.water_hero.settings.image.label",
+      "info": "t:sections.water_hero.settings.image.info"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "t:sections.water_hero.settings.video.label",
+      "info": "t:sections.water_hero.settings.video.info"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.water_hero.settings.header_water.content"
+    },
+    {
+      "type": "color",
+      "id": "color_deep",
+      "label": "t:sections.water_hero.settings.color_deep.label",
+      "default": "#13262B"
+    },
+    {
+      "type": "color",
+      "id": "color_shallow",
+      "label": "t:sections.water_hero.settings.color_shallow.label",
+      "default": "#6FA3A6"
+    },
+    {
+      "type": "color",
+      "id": "color_light",
+      "label": "t:sections.water_hero.settings.color_light.label",
+      "default": "#F6EDE6"
+    },
+    {
+      "type": "range",
+      "id": "flow_speed",
+      "label": "t:sections.water_hero.settings.flow_speed.label",
+      "min": 10,
+      "max": 150,
+      "step": 5,
+      "default": 45,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "flow_direction",
+      "label": "t:sections.water_hero.settings.flow_direction.label",
+      "min": 0,
+      "max": 350,
+      "step": 10,
+      "default": 20,
+      "unit": "°"
+    },
+    {
+      "type": "range",
+      "id": "refraction",
+      "label": "t:sections.water_hero.settings.refraction.label",
+      "info": "t:sections.water_hero.settings.refraction.info",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 45,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "caustics",
+      "label": "t:sections.water_hero.settings.caustics.label",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 55,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "tint",
+      "label": "t:sections.water_hero.settings.tint.label",
+      "info": "t:sections.water_hero.settings.tint.info",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 30,
+      "unit": "%"
+    },
+    {
+      "type": "checkbox",
+      "id": "interactive",
+      "label": "t:sections.water_hero.settings.interactive.label",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "quality",
+      "label": "t:sections.water_hero.settings.quality.label",
+      "info": "t:sections.water_hero.settings.quality.info",
+      "default": "0.6",
+      "options": [
+        { "value": "0.4", "label": "t:sections.water_hero.settings.quality.options__1.label" },
+        { "value": "0.6", "label": "t:sections.water_hero.settings.quality.options__2.label" },
+        { "value": "0.85", "label": "t:sections.water_hero.settings.quality.options__3.label" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:sections.water_hero.settings.header_layout.content"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "t:sections.water_hero.settings.height.label",
+      "default": "full",
+      "options": [
+        { "value": "small", "label": "t:sections.water_hero.settings.height.options__1.label" },
+        { "value": "medium", "label": "t:sections.water_hero.settings.height.options__2.label" },
+        { "value": "large", "label": "t:sections.water_hero.settings.height.options__3.label" },
+        { "value": "full", "label": "t:sections.water_hero.settings.height.options__4.label" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "t:sections.water_hero.settings.content_position.label",
+      "default": "bottom-left",
+      "options": [
+        { "value": "top-left", "label": "t:sections.water_hero.settings.content_position.options__1.label" },
+        { "value": "center", "label": "t:sections.water_hero.settings.content_position.options__2.label" },
+        { "value": "bottom-left", "label": "t:sections.water_hero.settings.content_position.options__3.label" },
+        { "value": "bottom-center", "label": "t:sections.water_hero.settings.content_position.options__4.label" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "t:sections.water_hero.settings.text_alignment.label",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "t:sections.water_hero.settings.text_alignment.options__1.label" },
+        { "value": "center", "label": "t:sections.water_hero.settings.text_alignment.options__2.label" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "t:sections.water_hero.settings.overlay_opacity.label",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "default": 25,
+      "unit": "%"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_cue",
+      "label": "t:sections.water_hero.settings.show_scroll_cue.label",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.color_scheme.label",
+      "default": "scheme-4"
+    },
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "t:sections.water_hero.settings.aria_label.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "eyebrow",
+      "name": "t:sections.water_hero.blocks.eyebrow.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "t:sections.water_hero.blocks.eyebrow.settings.text.label",
+          "default": "Eau de parfum · Body mist"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "name": "t:sections.water_hero.blocks.heading.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "heading",
+          "label": "t:sections.water_hero.blocks.heading.settings.heading.label",
+          "default": "Wear the rain"
+        },
+        {
+          "type": "select",
+          "id": "size",
+          "label": "t:sections.water_hero.blocks.heading.settings.size.label",
+          "default": "h-display--xl",
+          "options": [
+            { "value": "h-display--md", "label": "t:sections.water_hero.blocks.heading.settings.size.options__1.label" },
+            { "value": "h-display--lg", "label": "t:sections.water_hero.blocks.heading.settings.size.options__2.label" },
+            { "value": "h-display--xl", "label": "t:sections.water_hero.blocks.heading.settings.size.options__3.label" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "t:sections.water_hero.blocks.text.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "t:sections.water_hero.blocks.text.settings.text.label",
+          "default": "<p>Introduce your signature scent here. Add a bottle or campaign image and it will ripple beneath the water.</p>"
+        }
+      ]
+    },
+    {
+      "type": "buttons",
+      "name": "t:sections.water_hero.blocks.buttons.name",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "button_label_1", "label": "t:sections.water_hero.blocks.buttons.settings.button_label_1.label", "default": "Shop fragrances" },
+        { "type": "url", "id": "button_link_1", "label": "t:sections.water_hero.blocks.buttons.settings.button_link_1.label" },
+        { "type": "checkbox", "id": "button_style_secondary_1", "label": "t:sections.water_hero.blocks.buttons.settings.button_style_secondary_1.label", "default": false },
+        { "type": "text", "id": "button_label_2", "label": "t:sections.water_hero.blocks.buttons.settings.button_label_2.label", "default": "Find your scent" },
+        { "type": "url", "id": "button_link_2", "label": "t:sections.water_hero.blocks.buttons.settings.button_link_2.label" },
+        { "type": "checkbox", "id": "button_style_secondary_2", "label": "t:sections.water_hero.blocks.buttons.settings.button_style_secondary_2.label", "default": true }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.water_hero.presets.name",
+      "blocks": [
+        { "type": "eyebrow" },
+        { "type": "heading" },
+        { "type": "text" },
+        { "type": "buttons" }
+      ]
+    }
+  ]
+}
+{% endschema %}

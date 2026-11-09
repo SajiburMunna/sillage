@@ -1,0 +1,76 @@
+{{ 'section-collection.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width">
+    <header class="collection-hero">
+      <h1 class="h-display h-display--md">{{ 'templates.search.title' | t }}</h1>
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search-modal__form" style="max-width: 64rem;">
+        <div class="field">
+          <label class="visually-hidden" for="Search-In-Template">{{ 'general.search.search' | t }}</label>
+          <input id="Search-In-Template" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}">
+          <input name="options[prefix]" type="hidden" value="last">
+        </div>
+        <button type="submit" class="button">{{ 'general.search.submit' | t }}</button>
+      </form>
+    </header>
+
+    {%- if search.performed -%}
+      {%- paginate search.results by section.settings.results_per_page -%}
+        {%- if section.settings.enable_filtering -%}
+          {% render 'facets', results: search, section_id: section.id, enable_sorting: true %}
+        {%- else -%}
+          <p class="text-muted" id="ProductCount" role="status">{{ 'templates.search.results_with_count' | t: terms: search.terms, count: search.results_count }}</p>
+        {%- endif -%}
+
+        <div id="ProductGridContainer" class="product-grid-container">
+          {%- if search.results_count == 0 -%}
+            <div class="collection-empty">
+              <p class="h3">{{ 'templates.search.no_results' | t: terms: search.terms }}</p>
+            </div>
+          {%- else -%}
+            <ul class="grid" role="list" style="--cols: 4; --cols-tablet: 3; --cols-mobile: 2;">
+              {%- for item in search.results -%}
+                <li>
+                  {%- case item.object_type -%}
+                    {%- when 'product' -%}
+                      {% render 'product-card', product: item, section_id: section.id %}
+                    {%- when 'article', 'page' -%}
+                      <article class="card">
+                        <div class="card__media media media--portrait">
+                          {%- if item.image -%}
+                            {{ item.image | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 500, 800', sizes: '(min-width: 990px) 25vw, 50vw', alt: item.image.alt | default: item.title }}
+                          {%- else -%}
+                            <span class="search-result__type eyebrow" style="position: absolute; inset: 0; display: grid; place-items: center;">{%- assign result_type_key = 'templates.search.' | append: item.object_type -%}{{ result_type_key | t }}</span>
+                          {%- endif -%}
+                        </div>
+                        <h3 class="card__title"><a href="{{ item.url }}" class="card__link link-underline">{{ item.title | escape }}</a></h3>
+                      </article>
+                  {%- endcase -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+            {% render 'pagination', paginate: paginate %}
+          {%- endif -%}
+        </div>
+      {%- endpaginate -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.main_search.name",
+  "tag": "div",
+  "class": "section",
+  "settings": [
+    { "type": "range", "id": "results_per_page", "min": 8, "max": 36, "step": 4, "default": 16, "label": "t:sections.main_search.settings.results_per_page.label" },
+    { "type": "checkbox", "id": "enable_filtering", "default": true, "label": "t:sections.main_collection.settings.enable_filtering.label" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 72 }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,26 @@
+{%- comment -%}
+  A real product photo of a bottle, sized by height and standing on the bottom edge.
+  When "Blend product photo backgrounds" is on, the photo's white background is
+  multiplied into a backdrop that matches the surface behind it (a soft spotlight
+  on dark surfaces), so studio photos sit naturally on any colour.
+
+  Accepts:
+  - image {Object} image or media
+  - sizes {String}
+  - loading {String}
+  - widths {String}
+  - nozzle {String} spray origin in the 300 × 1000 bottle frame (optional)
+  - spot {Boolean} fade the edges (use on busy or dark backgrounds)
+{%- endcomment -%}
+{%- liquid
+  assign ar = image.aspect_ratio | default: 1
+  assign img_loading = loading | default: 'lazy'
+  assign img_widths = widths | default: '300, 450, 600, 800, 1000'
+-%}
+<span class="bottle-photo{% if spot %} bottle-photo--spot{% endif %}" style="--ar: {{ ar }};">
+  {{
+    image
+    | image_url: width: 1000
+    | image_tag: widths: img_widths, sizes: sizes, loading: img_loading, alt: '', data-nozzle: nozzle
+  }}
+</span>

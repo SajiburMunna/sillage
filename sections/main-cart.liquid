@@ -1,0 +1,75 @@
+<section
+  class="section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width" id="main-cart" data-section-id="{{ section.id }}" data-cart-root>
+    <div class="section-header">
+      <h1 class="h-display h-display--md section-header__title">{{ 'sections.cart.title' | t }}</h1>
+      {%- unless cart.empty? -%}
+        <a href="{{ routes.all_products_collection_url }}" class="link-underline">{{ 'general.continue_shopping' | t }}</a>
+      {%- endunless -%}
+    </div>
+
+    {%- if cart.empty? -%}
+      <div class="cart-empty">
+        <p class="h3">{{ 'sections.cart.empty' | t }}</p>
+        <a href="{{ routes.all_products_collection_url }}" class="button">{{ 'general.continue_shopping' | t }}</a>
+        {%- if shop.customer_accounts_enabled and customer == null -%}
+          <p>{{ 'sections.cart.login.paragraph_html' | t: link: routes.account_login_url }}</p>
+        {%- endif -%}
+      </div>
+    {%- else -%}
+      <div class="cart-page">
+        <div class="cart-page__items">
+          {% render 'cart-line-items' %}
+          <noscript>
+            <form action="{{ routes.cart_url }}" method="post">
+              {%- for item in cart.items -%}
+                <input type="hidden" name="updates[]" value="{{ item.quantity }}">
+              {%- endfor -%}
+              <button type="submit" class="button button--secondary" name="update">{{ 'sections.cart.update' | t }}</button>
+            </form>
+          </noscript>
+        </div>
+        <aside class="cart-page__summary" aria-label="{{ 'sections.cart.summary' | t }}">
+          {% render 'cart-summary', context: 'page' %}
+        </aside>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .cart-page {
+    display: grid;
+    gap: 4rem;
+  }
+  @media screen and (min-width: 990px) {
+    .cart-page {
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      align-items: start;
+    }
+    .cart-page__summary {
+      position: sticky;
+      top: 10rem;
+    }
+  }
+  .cart-page__summary {
+    padding: 3.2rem;
+    background: rgb(var(--color-surface));
+    border-radius: var(--radius);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.main_cart.name",
+  "tag": "div",
+  "class": "section",
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 72 }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,152 @@
+{%- comment -%}
+  Scent families: a row of fragrance families (Fresh, Floral, Woody, Amber…)
+  each linking to a collection or filtered URL.
+{%- endcomment -%}
+<section
+  class="scent-families section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width">
+    <div class="section-header" data-reveal>
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        <h2 class="section-header__title h-display h-display--md">{{ section.settings.heading }}</h2>
+      </div>
+      {%- if section.settings.text != blank -%}
+        <div class="section-header__text rte">{{ section.settings.text }}</div>
+      {%- endif -%}
+    </div>
+
+    <ul class="scent-families__list" role="list">
+      {%- for block in section.blocks -%}
+        <li class="scent-families__item" data-reveal {{ block.shopify_attributes }} style="--tone: {{ block.settings.tone }};">
+          <a
+            {% if block.settings.link != blank %}
+              href="{{ block.settings.link }}"
+            {% else %}
+              role="link" aria-disabled="true"
+            {% endif %}
+            class="scent-families__link"
+          >
+            <span class="scent-families__media media media--portrait">
+              {%- if block.settings.image != blank -%}
+                {{
+                  block.settings.image
+                  | image_url: width: 900
+                  | image_tag: widths: '300, 450, 600, 900', sizes: '(min-width: 990px) 25vw, 70vw', loading: 'lazy', alt: block.settings.image.alt
+                }}
+              {%- else -%}
+                <span class="scent-families__swatch" aria-hidden="true"></span>
+              {%- endif -%}
+            </span>
+            <span class="scent-families__index text-muted" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+            <span class="scent-families__name">{{ block.settings.title | escape }}</span>
+            {%- if block.settings.notes != blank -%}
+              <span class="scent-families__notes text-muted">{{ block.settings.notes | escape }}</span>
+            {%- endif -%}
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% stylesheet %}
+  .scent-families__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(22rem, 1fr);
+    gap: 2.4rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 0.8rem;
+  }
+  .scent-families__item {
+    scroll-snap-align: start;
+  }
+  .scent-families__link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    text-decoration: none;
+  }
+  .scent-families__media img {
+    transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scent-families__link:hover .scent-families__media img {
+    transform: scale(1.05);
+  }
+  .scent-families__swatch {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(80% 60% at 30% 25%, rgba(255, 255, 255, 0.55), transparent 60%),
+      radial-gradient(90% 80% at 70% 90%, var(--tone), transparent 70%),
+      linear-gradient(160deg, rgb(var(--color-surface)), var(--tone));
+    transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), filter 1.2s ease;
+  }
+  .scent-families__link:hover .scent-families__swatch {
+    transform: scale(1.08);
+    filter: saturate(1.2);
+  }
+  .scent-families__index {
+    font-size: 1.2rem;
+    letter-spacing: 0.2em;
+    margin-top: 0.8rem;
+  }
+  .scent-families__name {
+    font-family: var(--font-heading-family);
+    font-size: 2.8rem;
+    line-height: 1.1;
+  }
+  .scent-families__notes {
+    font-size: 1.4rem;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.scent_families.name",
+  "tag": "div",
+  "class": "section",
+  "max_blocks": 8,
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "text", "id": "eyebrow", "default": "Find your scent", "label": "t:sections.all.eyebrow" },
+    { "type": "inline_richtext", "id": "heading", "default": "Shop by scent family", "label": "t:sections.all.heading" },
+    { "type": "richtext", "id": "text", "default": "<p>Group your fragrances by family so customers can explore by mood.</p>", "label": "t:sections.all.description" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 96 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 96 }
+  ],
+  "blocks": [
+    {
+      "type": "family",
+      "name": "t:sections.scent_families.blocks.family.name",
+      "settings": [
+        { "type": "text", "id": "title", "default": "Fresh", "label": "t:sections.scent_families.blocks.family.settings.title.label" },
+        { "type": "text", "id": "notes", "default": "Citrus, sea air, green tea", "label": "t:sections.scent_families.blocks.family.settings.notes.label" },
+        { "type": "image_picker", "id": "image", "label": "t:sections.all.image" },
+        { "type": "color", "id": "tone", "default": "#9ED3D6", "label": "t:sections.scent_families.blocks.family.settings.tone.label", "info": "t:sections.scent_families.blocks.family.settings.tone.info" },
+        { "type": "url", "id": "link", "label": "t:sections.all.link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.scent_families.presets.name",
+      "blocks": [
+        { "type": "family", "settings": { "title": "Fresh", "notes": "Citrus, sea air, green tea", "tone": "#9ED3D6" } },
+        { "type": "family", "settings": { "title": "Floral", "notes": "Rose, jasmine, peony", "tone": "#E7B9C2" } },
+        { "type": "family", "settings": { "title": "Woody", "notes": "Cedar, vetiver, sandalwood", "tone": "#B89B7A" } },
+        { "type": "family", "settings": { "title": "Amber", "notes": "Vanilla, resin, warm spice", "tone": "#D9A35F" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

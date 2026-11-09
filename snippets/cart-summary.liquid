@@ -1,0 +1,41 @@
+{%- comment -%} Cart totals, order-level discounts, note and checkout buttons. {%- endcomment -%}
+{%- if cart.cart_level_discount_applications.size > 0 -%}
+  <ul class="cart__discounts" role="list">
+    {%- for discount in cart.cart_level_discount_applications -%}
+      <li>{{ discount.title | escape }} (-{{ discount.total_allocated_amount | money }})</li>
+    {%- endfor -%}
+  </ul>
+{%- endif -%}
+
+<p class="cart__totals">
+  <span>{{ 'sections.cart.subtotal' | t }}</span>
+  <span>{{ cart.total_price | money_with_currency }}</span>
+</p>
+
+<p class="cart__tax-note">
+  {%- if cart.duties_included and cart.taxes_included -%}
+    {{ 'sections.cart.duties_and_taxes_included_shipping_at_checkout_with_policy_html' | t: link: shop.shipping_policy.url }}
+  {%- elsif cart.taxes_included -%}
+    {{ 'sections.cart.taxes_included_shipping_at_checkout_with_policy_html' | t: link: shop.shipping_policy.url }}
+  {%- else -%}
+    {{ 'sections.cart.taxes_and_shipping_at_checkout' | t }}
+  {%- endif -%}
+</p>
+
+{%- if settings.cart_show_note -%}
+  <cart-note class="cart__note field">
+    <label for="CartNote-{{ context }}" class="field__label">{{ 'sections.cart.note' | t }}</label>
+    <textarea id="CartNote-{{ context }}" name="note" form="CartForm-{{ context }}" class="field__input" rows="2">{{ cart.note }}</textarea>
+  </cart-note>
+{%- endif -%}
+
+<form action="{{ routes.cart_url }}" method="post" id="CartForm-{{ context }}" class="cart__ctas">
+  <button type="submit" name="checkout" class="button button--full"{% if cart.empty? %} disabled{% endif %}>
+    {{ 'sections.cart.checkout' | t }}
+  </button>
+  {%- if additional_checkout_buttons -%}
+    <div class="cart__dynamic-checkout-buttons additional-checkout-buttons">
+      {{ content_for_additional_checkout_buttons }}
+    </div>
+  {%- endif -%}
+</form>

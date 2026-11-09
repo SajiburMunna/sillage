@@ -1,0 +1,1155 @@
+{
+  "sections": {
+    "all": {
+      "alignment": "Alignment",
+      "alignment_options": {
+        "center": "Center",
+        "left": "Left"
+      },
+      "button": "Button",
+      "button_label": "Button label",
+      "button_link": "Button link",
+      "button_secondary": "Use outline button style",
+      "color_scheme": {
+        "label": "Color scheme"
+      },
+      "columns_desktop": "Number of columns on desktop",
+      "columns_mobile": "Number of columns on mobile",
+      "columns_mobile_options": {
+        "one": "1 column",
+        "two": "2 columns"
+      },
+      "custom_liquid": {
+        "info": "Add app snippets or other code to create advanced customizations.",
+        "label": "Custom Liquid",
+        "name": "Custom Liquid"
+      },
+      "description": "Description",
+      "eyebrow": "Eyebrow",
+      "heading": "Heading",
+      "image": "Image",
+      "image_ratio": {
+        "label": "Image ratio",
+        "options": {
+          "landscape": "Landscape",
+          "portrait": "Portrait",
+          "square": "Square"
+        }
+      },
+      "link": "Link",
+      "padding_bottom": "Bottom padding",
+      "padding_top": "Top padding",
+      "products_to_show": "Maximum products to show",
+      "show_country": {
+        "label": "Show country/region selector"
+      },
+      "show_language": {
+        "label": "Show language selector"
+      },
+      "size": "Size",
+      "size_options": {
+        "extra_large": "Extra large",
+        "large": "Large",
+        "medium": "Medium"
+      },
+      "text": "Text"
+    },
+    "announcement_bar": {
+      "blocks": {
+        "announcement": {
+          "name": "Announcement",
+          "settings": {
+            "link": {
+              "label": "Link"
+            },
+            "text": {
+              "label": "Text"
+            }
+          }
+        }
+      },
+      "name": "Announcement bar",
+      "presets": {
+        "name": "Announcement bar"
+      }
+    },
+    "apps": {
+      "name": "Apps",
+      "presets": {
+        "name": "Apps"
+      },
+      "settings": {
+        "include_margins": {
+          "label": "Make section margins the same as theme"
+        }
+      }
+    },
+    "cart_drawer": {
+      "name": "Cart drawer"
+    },
+    "cart_icon_bubble": {
+      "name": "Cart icon"
+    },
+    "collapsible_content": {
+      "blocks": {
+        "row": {
+          "name": "Collapsible row",
+          "settings": {
+            "page": {
+              "label": "Row content from page"
+            },
+            "row_content": {
+              "label": "Row content"
+            }
+          }
+        }
+      },
+      "name": "Collapsible content",
+      "presets": {
+        "name": "Collapsible content"
+      },
+      "settings": {
+        "open_first": {
+          "label": "Open first row by default"
+        }
+      }
+    },
+    "collection_list": {
+      "blocks": {
+        "collection": {
+          "name": "Collection",
+          "settings": {
+            "collection": {
+              "label": "Collection"
+            },
+            "image": {
+              "info": "Defaults to the collection image."
+            }
+          }
+        }
+      },
+      "name": "Collection list",
+      "presets": {
+        "name": "Collection list"
+      }
+    },
+    "contact_form": {
+      "name": "Contact form",
+      "presets": {
+        "name": "Contact form"
+      }
+    },
+    "customers": {
+      "account": "Account",
+      "activate_account": "Activate account",
+      "addresses": "Addresses",
+      "login": "Login",
+      "order": "Order",
+      "register": "Register",
+      "reset_password": "Reset password"
+    },
+    "featured_collection": {
+      "name": "Featured collection",
+      "presets": {
+        "name": "Featured collection"
+      },
+      "settings": {
+        "collection": {
+          "label": "Collection"
+        },
+        "show_view_all": {
+          "label": "Show view all"
+        }
+      }
+    },
+    "featured_product": {
+      "blocks": {
+        "view_details": {
+          "name": "View details link"
+        }
+      },
+      "name": "Featured product",
+      "presets": {
+        "name": "Featured product"
+      },
+      "settings": {
+        "product": {
+          "label": "Product"
+        }
+      }
+    },
+    "footer": {
+      "blocks": {
+        "link_list": {
+          "name": "Menu",
+          "settings": {
+            "heading": {
+              "label": "Heading"
+            },
+            "menu": {
+              "label": "Menu"
+            }
+          }
+        },
+        "newsletter": {
+          "name": "Newsletter",
+          "settings": {
+            "heading": {
+              "label": "Heading"
+            }
+          }
+        },
+        "text": {
+          "name": "Text",
+          "settings": {
+            "heading": {
+              "label": "Heading"
+            },
+            "text": {
+              "label": "Text"
+            }
+          }
+        }
+      },
+      "group_name": "Footer",
+      "name": "Footer",
+      "settings": {
+        "header_localization": {
+          "content": "Country/region and language selectors"
+        },
+        "legal_text": {
+          "label": "Legal note"
+        },
+        "payment_enable": {
+          "label": "Show payment icons"
+        },
+        "show_policy": {
+          "label": "Show policy links"
+        },
+        "show_social": {
+          "info": "Add social media links in theme settings.",
+          "label": "Show social media icons"
+        },
+        "show_wordmark": {
+          "label": "Show large store name"
+        }
+      }
+    },
+    "header": {
+      "group_name": "Header",
+      "name": "Header",
+      "settings": {
+        "cta_label": {
+          "label": "Button label"
+        },
+        "cta_link": {
+          "label": "Button link"
+        },
+        "header_localization": {
+          "content": "Country/region and language selectors"
+        },
+        "menu": {
+          "label": "Menu"
+        },
+        "open_on_hover": {
+          "label": "Open dropdown menus on hover"
+        },
+        "sticky_mode": {
+          "label": "Sticky header",
+          "options__1": {
+            "label": "Hide on scroll down, show on scroll up"
+          },
+          "options__2": {
+            "label": "Always visible"
+          },
+          "options__3": {
+            "label": "Not sticky"
+          }
+        },
+        "tagline": {
+          "label": "Tagline below logo"
+        },
+        "transparent_on_home": {
+          "info": "Header becomes transparent over the first section of the home page until the visitor scrolls.",
+          "label": "Transparent header on home page"
+        },
+        "transparent_text": {
+          "label": "Transparent header text color"
+        }
+      }
+    },
+    "image_with_text": {
+      "name": "Image with text",
+      "presets": {
+        "name": "Image with text"
+      },
+      "settings": {
+        "layout": {
+          "label": "Desktop layout",
+          "options__1": {
+            "label": "Image first"
+          },
+          "options__2": {
+            "label": "Image second"
+          }
+        }
+      }
+    },
+    "main_404": {
+      "name": "404 page"
+    },
+    "main_article": {
+      "name": "Blog post"
+    },
+    "main_blog": {
+      "name": "Blog posts",
+      "settings": {
+        "show_author": {
+          "label": "Show author"
+        },
+        "show_date": {
+          "label": "Show date"
+        },
+        "show_image": {
+          "label": "Show image"
+        }
+      }
+    },
+    "main_cart": {
+      "name": "Cart"
+    },
+    "main_collection": {
+      "name": "Product grid",
+      "settings": {
+        "enable_filtering": {
+          "info": "Customize filters with the Search & Discovery app.",
+          "label": "Enable filtering"
+        },
+        "enable_sorting": {
+          "label": "Enable sorting"
+        },
+        "products_per_page": {
+          "label": "Products per page"
+        },
+        "show_description": {
+          "label": "Show collection description"
+        },
+        "show_image": {
+          "label": "Show collection image"
+        }
+      }
+    },
+    "main_list_collections": {
+      "name": "Collections list page"
+    },
+    "main_page": {
+      "name": "Page"
+    },
+    "main_password": {
+      "name": "Password page"
+    },
+    "main_product": {
+      "blocks": {
+        "buy_buttons": {
+          "name": "Buy buttons",
+          "settings": {
+            "show_dynamic_checkout": {
+              "info": "Shows the payment methods available in your store, like PayPal or Apple Pay.",
+              "label": "Show dynamic checkout buttons"
+            },
+            "show_gift_card_recipient": {
+              "label": "Show recipient form for gift cards"
+            },
+            "show_pickup_availability": {
+              "label": "Show pickup availability"
+            },
+            "show_quantity": {
+              "label": "Show quantity selector"
+            }
+          }
+        },
+        "collapsible_tab": {
+          "name": "Collapsible row",
+          "settings": {
+            "content": {
+              "label": "Row content"
+            },
+            "heading": {
+              "label": "Heading"
+            },
+            "page": {
+              "label": "Row content from page"
+            }
+          }
+        },
+        "complementary": {
+          "name": "Complementary products",
+          "settings": {
+            "heading": {
+              "label": "Heading"
+            },
+            "paragraph": {
+              "content": "Select complementary products in the Search & Discovery app."
+            },
+            "product_count": {
+              "label": "Maximum products to show"
+            }
+          }
+        },
+        "description": {
+          "name": "Description"
+        },
+        "fragrance_notes": {
+          "name": "Fragrance notes",
+          "settings": {
+            "base_notes": {
+              "label": "Base notes"
+            },
+            "heading": {
+              "label": "Heading"
+            },
+            "heart_notes": {
+              "label": "Heart notes"
+            },
+            "intensity": {
+              "info": "Set to 0 to hide the intensity meter.",
+              "label": "Intensity"
+            },
+            "paragraph": {
+              "content": "Connect each field to a product metafield to show different notes for every fragrance."
+            },
+            "top_notes": {
+              "label": "Top notes"
+            }
+          }
+        },
+        "inventory": {
+          "name": "Inventory status",
+          "settings": {
+            "threshold": {
+              "label": "Low inventory threshold"
+            }
+          }
+        },
+        "price": {
+          "name": "Price"
+        },
+        "share": {
+          "name": "Share",
+          "settings": {
+            "share_label": {
+              "label": "Share label"
+            }
+          }
+        },
+        "text": {
+          "name": "Text",
+          "settings": {
+            "style": {
+              "label": "Text style",
+              "options__1": {
+                "label": "Eyebrow"
+              },
+              "options__2": {
+                "label": "Subtle"
+              }
+            },
+            "text": {
+              "label": "Text"
+            }
+          }
+        },
+        "title": {
+          "name": "Title"
+        },
+        "variant_picker": {
+          "name": "Variant picker",
+          "settings": {
+            "picker_type": {
+              "label": "Picker type",
+              "options__1": {
+                "label": "Buttons"
+              },
+              "options__2": {
+                "label": "Dropdown"
+              }
+            }
+          }
+        },
+        "vendor": {
+          "name": "Vendor"
+        }
+      },
+      "name": "Product information"
+    },
+    "main_search": {
+      "name": "Search results",
+      "settings": {
+        "results_per_page": {
+          "label": "Results per page"
+        }
+      }
+    },
+    "newsletter": {
+      "name": "Email signup",
+      "presets": {
+        "name": "Email signup"
+      },
+      "settings": {
+        "paragraph": {
+          "content": "Each email subscription creates a customer account."
+        }
+      }
+    },
+    "product_recommendations": {
+      "name": "Related products",
+      "presets": {
+        "name": "Related products"
+      },
+      "settings": {
+        "paragraph": {
+          "content": "Recommendations update over time. Customize them in the Search & Discovery app."
+        }
+      }
+    },
+    "rich_text": {
+      "name": "Rich text",
+      "presets": {
+        "name": "Rich text"
+      }
+    },
+    "scent_collection": {
+      "name": "Scent collection",
+      "presets": {
+        "name": "Scent collection"
+      },
+      "settings": {
+        "anchor": {
+          "label": "Anchor link name"
+        },
+        "paragraph": {
+          "content": "Transparent PNG product images look best. Notes come from the custom.notes product metafield when set."
+        }
+      }
+    },
+    "scent_families": {
+      "blocks": {
+        "family": {
+          "name": "Scent family",
+          "settings": {
+            "notes": {
+              "label": "Key notes"
+            },
+            "title": {
+              "label": "Title"
+            },
+            "tone": {
+              "info": "Used as the tile background when no image is set.",
+              "label": "Tone"
+            }
+          }
+        }
+      },
+      "name": "Scent families",
+      "presets": {
+        "name": "Scent families"
+      }
+    },
+    "scent_house": {
+      "blocks": {
+        "bottle": {
+          "name": "Bottle"
+        }
+      },
+      "name": "Scent house story",
+      "presets": {
+        "name": "Scent house story"
+      },
+      "settings": {
+        "bg": {
+          "label": "Background"
+        },
+        "caption": {
+          "label": "Left caption"
+        },
+        "circle": {
+          "label": "Circle color"
+        },
+        "est": {
+          "label": "Right caption"
+        }
+      }
+    },
+    "scent_story": {
+      "blocks": {
+        "scent": {
+          "name": "Scent",
+          "settings": {
+            "bg": {
+              "label": "Chapter background"
+            },
+            "bottle_style": {
+              "label": "Illustrated bottle style",
+              "options__1": {
+                "label": "Square flacon"
+              },
+              "options__2": {
+                "label": "Round flacon"
+              },
+              "options__3": {
+                "label": "Tall bottle"
+              },
+              "options__4": {
+                "label": "Body spray can"
+              }
+            },
+            "cap": {
+              "label": "Cap color"
+            },
+            "description": {
+              "info": "Leave blank to use the product description. Family and notes also fall back to the custom.scent_family and custom.notes metafields.",
+              "label": "Description"
+            },
+            "dot": {
+              "label": "Accent dot color"
+            },
+            "family": {
+              "label": "Scent family"
+            },
+            "header_bottle": {
+              "content": "Bottle"
+            },
+            "image": {
+              "info": "Use a transparent PNG of the bottle standing upright. Without an image, an illustrated bottle is shown.",
+              "label": "Bottle image"
+            },
+            "label": {
+              "label": "Bottle label text"
+            },
+            "liquid": {
+              "label": "Liquid color"
+            },
+            "meta": {
+              "label": "Detail line"
+            },
+            "notes": {
+              "label": "Notes"
+            },
+            "product": {
+              "label": "Product"
+            },
+            "title": {
+              "info": "Shown in large letters. Leave blank to use the product name.",
+              "label": "Chapter title"
+            }
+          }
+        }
+      },
+      "name": "Scent story",
+      "presets": {
+        "name": "Scent story"
+      },
+      "settings": {
+        "collection": {
+          "info": "Chapters without a product use this collection in order. Defaults to all products.",
+          "label": "Collection"
+        },
+        "header_hero": {
+          "content": "Hero"
+        },
+        "header_manifesto": {
+          "content": "Manifesto"
+        },
+        "header_picker": {
+          "content": "Scent picker"
+        },
+        "header_ritual": {
+          "content": "Ritual"
+        },
+        "hero_bg": {
+          "label": "Background deep color"
+        },
+        "hero_light": {
+          "label": "Background light color"
+        },
+        "hero_line_1": {
+          "label": "Heading line 1"
+        },
+        "hero_line_2": {
+          "label": "Heading line 2"
+        },
+        "hero_mid": {
+          "label": "Background middle color"
+        },
+        "hero_speed": {
+          "label": "Animation speed"
+        },
+        "hero_style": {
+          "label": "Hero background",
+          "options__1": {
+            "label": "Silk haze"
+          },
+          "options__2": {
+            "label": "Flowing water"
+          },
+          "options__3": {
+            "label": "Solid color"
+          }
+        },
+        "manifesto": {
+          "label": "Manifesto"
+        },
+        "manifesto_bg": {
+          "label": "Manifesto background"
+        },
+        "pill_all": {
+          "label": "Picker label"
+        },
+        "ring_text": {
+          "label": "Rotating ring text"
+        },
+        "ritual_bg": {
+          "label": "Ritual background"
+        },
+        "ritual_label": {
+          "label": "Ritual label"
+        },
+        "ritual_scent": {
+          "label": "Scent used in the ritual"
+        },
+        "ritual_text": {
+          "label": "Ritual text"
+        },
+        "ritual_word_1": {
+          "label": "First word"
+        },
+        "ritual_word_2": {
+          "label": "Second word"
+        },
+        "ritual_word_3": {
+          "label": "Third word"
+        },
+        "show_loader": {
+          "info": "Shown once per visit. Never shown in the theme editor.",
+          "label": "Show intro loader"
+        },
+        "tagline": {
+          "label": "Tagline"
+        }
+      }
+    },
+    "scent_visit": {
+      "blocks": {
+        "info": {
+          "name": "Info"
+        }
+      },
+      "name": "Scent visit",
+      "presets": {
+        "name": "Scent visit"
+      },
+      "settings": {
+        "header_bottle": {
+          "content": "Floating bottle"
+        },
+        "show_bottle": {
+          "info": "Desktop only.",
+          "label": "Show bottle that floats into the footer"
+        },
+        "text_color": {
+          "label": "Text color"
+        }
+      }
+    },
+    "water_hero": {
+      "blocks": {
+        "buttons": {
+          "name": "Buttons",
+          "settings": {
+            "button_label_1": {
+              "label": "First button label"
+            },
+            "button_label_2": {
+              "label": "Second button label"
+            },
+            "button_link_1": {
+              "label": "First button link"
+            },
+            "button_link_2": {
+              "label": "Second button link"
+            },
+            "button_style_secondary_1": {
+              "label": "Use outline style for first button"
+            },
+            "button_style_secondary_2": {
+              "label": "Use outline style for second button"
+            }
+          }
+        },
+        "eyebrow": {
+          "name": "Eyebrow",
+          "settings": {
+            "text": {
+              "label": "Text"
+            }
+          }
+        },
+        "heading": {
+          "name": "Heading",
+          "settings": {
+            "heading": {
+              "label": "Heading"
+            },
+            "size": {
+              "label": "Size",
+              "options__1": {
+                "label": "Medium"
+              },
+              "options__2": {
+                "label": "Large"
+              },
+              "options__3": {
+                "label": "Extra large"
+              }
+            }
+          }
+        },
+        "text": {
+          "name": "Text",
+          "settings": {
+            "text": {
+              "label": "Text"
+            }
+          }
+        }
+      },
+      "name": "Water flow hero",
+      "presets": {
+        "name": "Water flow hero"
+      },
+      "settings": {
+        "aria_label": {
+          "label": "Section label for screen readers"
+        },
+        "caustics": {
+          "label": "Light ripples"
+        },
+        "color_deep": {
+          "label": "Deep water color"
+        },
+        "color_light": {
+          "label": "Light color"
+        },
+        "color_shallow": {
+          "label": "Shallow water color"
+        },
+        "content_position": {
+          "label": "Content position",
+          "options__1": {
+            "label": "Top left"
+          },
+          "options__2": {
+            "label": "Center"
+          },
+          "options__3": {
+            "label": "Bottom left"
+          },
+          "options__4": {
+            "label": "Bottom center"
+          }
+        },
+        "flow_direction": {
+          "label": "Flow direction"
+        },
+        "flow_speed": {
+          "label": "Flow speed"
+        },
+        "header_layout": {
+          "content": "Layout"
+        },
+        "header_media": {
+          "content": "Media"
+        },
+        "header_water": {
+          "content": "Water"
+        },
+        "height": {
+          "label": "Section height",
+          "options__1": {
+            "label": "Small"
+          },
+          "options__2": {
+            "label": "Medium"
+          },
+          "options__3": {
+            "label": "Large"
+          },
+          "options__4": {
+            "label": "Full screen"
+          }
+        },
+        "image": {
+          "info": "Optional. The image is refracted through the moving water. Also used when animation is off.",
+          "label": "Image beneath the water"
+        },
+        "interactive": {
+          "label": "Ripple on pointer movement"
+        },
+        "media_type": {
+          "label": "Background",
+          "options__1": {
+            "label": "Animated water"
+          },
+          "options__2": {
+            "label": "Video"
+          }
+        },
+        "overlay_opacity": {
+          "label": "Overlay opacity"
+        },
+        "quality": {
+          "info": "Lower quality renders faster on older devices.",
+          "label": "Render quality",
+          "options__1": {
+            "label": "Performance"
+          },
+          "options__2": {
+            "label": "Balanced"
+          },
+          "options__3": {
+            "label": "High"
+          }
+        },
+        "refraction": {
+          "info": "How strongly the water bends the image.",
+          "label": "Refraction"
+        },
+        "show_scroll_cue": {
+          "label": "Show scroll cue"
+        },
+        "text_alignment": {
+          "label": "Text alignment",
+          "options__1": {
+            "label": "Left"
+          },
+          "options__2": {
+            "label": "Center"
+          }
+        },
+        "tint": {
+          "info": "Blends the water colors into the image.",
+          "label": "Water tint over image"
+        },
+        "video": {
+          "info": "Used when Background is set to Video. Plays muted and on loop.",
+          "label": "Video"
+        }
+      }
+    }
+  },
+  "settings_schema": {
+    "animations": {
+      "name": "Animations",
+      "settings": {
+        "custom_cursor": {
+          "info": "A soft dot that follows the mouse and grows over links. Hidden on touch screens.",
+          "label": "Custom cursor"
+        },
+        "reveal_on_scroll": {
+          "label": "Reveal sections on scroll"
+        }
+      }
+    },
+    "cart": {
+      "name": "Cart",
+      "settings": {
+        "cart_type": {
+          "label": "Cart type",
+          "options__1": {
+            "label": "Drawer"
+          },
+          "options__2": {
+            "label": "Page"
+          }
+        },
+        "show_note": {
+          "label": "Enable cart note"
+        }
+      }
+    },
+    "colors": {
+      "name": "Colors",
+      "settings": {
+        "accent": {
+          "label": "Accent"
+        },
+        "background": {
+          "label": "Background"
+        },
+        "button": {
+          "label": "Button"
+        },
+        "button_label": {
+          "label": "Button label"
+        },
+        "secondary_button_label": {
+          "label": "Outline button label"
+        },
+        "surface": {
+          "label": "Surface"
+        },
+        "text": {
+          "label": "Text"
+        }
+      }
+    },
+    "currency_format": {
+      "name": "Currency format",
+      "settings": {
+        "currency_code_enabled": {
+          "label": "Show currency codes"
+        },
+        "paragraph": {
+          "content": "Cart and checkout prices always show currency codes. Example: $1.00 USD."
+        }
+      }
+    },
+    "layout": {
+      "name": "Layout",
+      "settings": {
+        "button_shape": {
+          "label": "Button shape",
+          "options__1": {
+            "label": "Pill"
+          },
+          "options__2": {
+            "label": "Rounded"
+          },
+          "options__3": {
+            "label": "Square"
+          }
+        },
+        "page_width": {
+          "label": "Page width"
+        },
+        "radius": {
+          "label": "Corner radius"
+        }
+      }
+    },
+    "logo": {
+      "name": "Logo",
+      "settings": {
+        "favicon": {
+          "info": "Will be scaled down to 32 x 32px.",
+          "label": "Favicon image"
+        },
+        "logo_image": {
+          "label": "Logo"
+        },
+        "logo_width": {
+          "label": "Desktop logo width"
+        }
+      }
+    },
+    "product_cards": {
+      "name": "Product cards",
+      "settings": {
+        "bottle_photo_style": {
+          "info": "How product photos appear in the scent story, collection, story and visit sections. Arch frame suits any studio photo. Cut-out needs transparent PNGs. Blend suits photos on pure white.",
+          "label": "Bottle photo style",
+          "options__1": {
+            "label": "Arch frame"
+          },
+          "options__2": {
+            "label": "Cut-out (transparent PNG)"
+          },
+          "options__3": {
+            "label": "Blend white background"
+          }
+        },
+        "image_ratio": {
+          "label": "Image ratio",
+          "options__1": {
+            "label": "Adapt to image"
+          },
+          "options__2": {
+            "label": "Portrait"
+          },
+          "options__3": {
+            "label": "Square"
+          }
+        },
+        "show_quick_add": {
+          "label": "Enable quick add button"
+        },
+        "show_secondary_image": {
+          "label": "Show second image on hover"
+        },
+        "show_swatches": {
+          "label": "Show color swatches"
+        },
+        "show_vendor": {
+          "label": "Show vendor"
+        }
+      }
+    },
+    "search": {
+      "name": "Search behavior",
+      "settings": {
+        "predictive_search_enabled": {
+          "label": "Enable search suggestions"
+        }
+      }
+    },
+    "social_media": {
+      "name": "Social media",
+      "settings": {
+        "social_facebook_link": {
+          "label": "Facebook"
+        },
+        "social_instagram_link": {
+          "label": "Instagram"
+        },
+        "social_pinterest_link": {
+          "label": "Pinterest"
+        },
+        "social_tiktok_link": {
+          "label": "TikTok"
+        },
+        "social_x_link": {
+          "label": "X"
+        },
+        "social_youtube_link": {
+          "label": "YouTube"
+        }
+      }
+    },
+    "typography": {
+      "name": "Typography",
+      "settings": {
+        "body_scale": {
+          "label": "Font size scale"
+        },
+        "header__1": {
+          "content": "Headings"
+        },
+        "header__2": {
+          "content": "Body"
+        },
+        "heading_scale": {
+          "label": "Font size scale"
+        },
+        "heading_uppercase": {
+          "label": "Uppercase headings"
+        },
+        "type_body_font": {
+          "label": "Font"
+        },
+        "type_header_font": {
+          "label": "Font"
+        }
+      }
+    }
+  }
+}

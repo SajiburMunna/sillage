@@ -1,0 +1,79 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <title>{{ 'gift_cards.issued.title' | t: value: gift_card.balance, shop: shop.name | strip_html }}</title>
+    <meta name="description" content="{{ 'gift_cards.issued.subtext' | t }}">
+    <script src="{{ 'vendor/qrcode.js' | shopify_asset_url }}" defer></script>
+    {{ content_for_header }}
+    {% render 'css-variables' %}
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+  </head>
+  <body class="color-scheme-1">
+    <main id="MainContent" class="gift-card page-width page-width--narrow section-padding" role="main" style="--pad-top: 64px; --pad-bottom: 64px;">
+      <header style="margin-bottom: 3.2rem;">
+        <p class="header__logo-text">{{ shop.name }}</p>
+        <h1 class="h-display h-display--md">{{ 'gift_cards.issued.subtext' | t }}</h1>
+      </header>
+
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 2.4rem;">
+        <div class="media" style="width: min(100%, 48rem); aspect-ratio: 1.6; display: grid; place-items: center; background: linear-gradient(160deg, #6FA3A6, #13262B); color: #F3F0EB;">
+          <div style="position: relative; text-align: center;">
+            <p class="h-display h-display--md" style="margin: 0;">
+              {%- if settings.currency_code_enabled -%}
+                {{ gift_card.initial_value | money_with_currency }}
+              {%- else -%}
+                {{ gift_card.initial_value | money }}
+              {%- endif -%}
+            </p>
+            {%- if gift_card.enabled == false or gift_card.expired -%}
+              <p class="badge badge--sold-out">{{ 'gift_cards.issued.expired' | t }}</p>
+            {%- endif -%}
+          </div>
+        </div>
+
+        {%- if gift_card.balance != gift_card.initial_value -%}
+          <p>{{ 'gift_cards.issued.remaining_balance' | t }}: {{ gift_card.balance | money }}</p>
+        {%- endif -%}
+
+        {%- if gift_card.expires_on -%}
+          {%- assign expires_on = gift_card.expires_on | date: '%B %e, %Y' -%}
+          <p class="text-muted">{{ 'gift_cards.issued.expiration_date' | t: expires_on: expires_on }}</p>
+        {%- endif -%}
+
+        <div id="QrCode" data-identifier="{{ gift_card.qr_identifier }}"></div>
+
+        <div class="field" style="width: 100%; max-width: 40rem;">
+          <label class="field__label" for="GiftCardCode">{{ 'gift_cards.issued.how_to_use_gift_card' | t }}</label>
+          <input id="GiftCardCode" type="text" class="text-center" value="{{ gift_card.code | format_code }}" readonly onfocus="this.select()">
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+          {%- if gift_card.pass_url -%}
+            <a href="{{ gift_card.pass_url }}">
+              <img src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}" width="120" height="40" alt="{{ 'gift_cards.issued.add_to_apple_wallet' | t }}" loading="lazy">
+            </a>
+          {%- endif -%}
+          <a href="{{ shop.url }}" class="button" target="_blank" rel="noopener" aria-describedby="a11y-new-window-message">
+            {{ 'gift_cards.issued.shop_link' | t }}
+          </a>
+          <button type="button" class="button button--secondary" onclick="window.print();">{{ 'gift_cards.issued.print_gift_card' | t }}</button>
+        </div>
+      </div>
+      <p id="a11y-new-window-message" class="visually-hidden">({{ 'accessibility.link_messages.new_window' | t }})</p>
+    </main>
+
+    <script>
+      window.addEventListener('load', () => {
+        const qr = document.getElementById('QrCode');
+        if (window.QRCode && qr) {
+          new QRCode(qr, { text: qr.dataset.identifier, width: 120, height: 120, imageAltText: {{ 'gift_cards.issued.qr_image_alt' | t | json }} });
+        }
+      });
+    </script>
+  </body>
+</html>

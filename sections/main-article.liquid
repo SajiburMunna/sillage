@@ -1,0 +1,100 @@
+<article
+  class="section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width page-width--narrow">
+    <header class="text-center" style="margin-bottom: 4rem;">
+      <p class="eyebrow">{{ article.published_at | time_tag: format: 'date' }}</p>
+      <h1 class="h-display h-display--md">{{ article.title | escape }}</h1>
+      {%- if section.settings.show_author -%}
+        <p class="text-muted">{{ 'blogs.article.by_author' | t: author: article.author }}</p>
+      {%- endif -%}
+    </header>
+  </div>
+  {%- if article.image -%}
+    <div class="page-width" style="margin-bottom: 4.8rem;">
+      <div class="media media--wide">
+        {{
+          article.image
+          | image_url: width: 2000
+          | image_tag: widths: '750, 1100, 1500, 2000', sizes: '100vw', loading: 'eager', fetchpriority: 'high', alt: article.image.alt | default: article.title
+        }}
+      </div>
+    </div>
+  {%- endif -%}
+  <div class="page-width page-width--narrow">
+    <div class="rte" style="font-size: 1.8rem; line-height: 1.75;">{{ article.content }}</div>
+
+    {%- if article.tags.size > 0 -%}
+      <ul class="facets__active" role="list" style="list-style: none; padding: 0;">
+        {%- for tag in article.tags -%}
+          <li><a href="{{ blog.url }}/tagged/{{ tag | handleize }}" class="link-underline">#{{ tag }}</a></li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    {%- if blog.comments_enabled? -%}
+      <section class="article-comments" style="margin-top: 6.4rem;">
+        <h2 class="h3">{{ 'blogs.article.comments' | t: count: article.comments_count }}</h2>
+        {%- paginate article.comments by 10 -%}
+          {%- for comment in article.comments -%}
+            <div style="padding: 2rem 0; border-bottom: 1px solid rgba(var(--color-foreground), 0.12);">
+              <div class="rte">{{ comment.content }}</div>
+              <p class="text-muted">{{ comment.author }} · {{ comment.created_at | time_tag: format: 'date' }}</p>
+            </div>
+          {%- endfor -%}
+          {% render 'pagination', paginate: paginate %}
+        {%- endpaginate -%}
+
+        {%- form 'new_comment', article -%}
+          <h2 class="h3" style="margin-top: 4rem;">{{ 'blogs.article.comment_form_title' | t }}</h2>
+          {%- if form.errors -%}
+            <div class="form__message form__message--error" role="alert">{{ form.errors | default_errors }}</div>
+          {%- elsif form.posted_successfully? -%}
+            <p class="form__message form__message--success">
+              {%- if blog.moderated? -%}{{ 'blogs.article.success_moderated' | t }}{%- else -%}{{ 'blogs.article.success' | t }}{%- endif -%}
+            </p>
+          {%- endif -%}
+          <div class="field">
+            <label class="field__label" for="CommentForm-author">{{ 'blogs.article.name' | t }} <span aria-hidden="true">*</span></label>
+            <input type="text" name="comment[author]" id="CommentForm-author" autocomplete="name" value="{{ form.author }}" required aria-required="true">
+          </div>
+          <div class="field">
+            <label class="field__label" for="CommentForm-email">{{ 'blogs.article.email' | t }} <span aria-hidden="true">*</span></label>
+            <input type="email" name="comment[email]" id="CommentForm-email" autocomplete="email" value="{{ form.email }}" required aria-required="true">
+          </div>
+          <div class="field">
+            <label class="field__label" for="CommentForm-body">{{ 'blogs.article.message' | t }} <span aria-hidden="true">*</span></label>
+            <textarea rows="5" name="comment[body]" id="CommentForm-body" required aria-required="true">{{ form.body }}</textarea>
+          </div>
+          {%- if blog.moderated? -%}
+            <p class="text-muted">{{ 'blogs.article.moderated' | t }}</p>
+          {%- endif -%}
+          <button type="submit" class="button">{{ 'blogs.article.post' | t }}</button>
+        {%- endform -%}
+      </section>
+    {%- endif -%}
+
+    <p style="margin-top: 4.8rem;">
+      <a href="{{ blog.url }}" class="link-underline">{% render 'icon', icon: 'arrow-left' %} {{ 'blogs.article.back_to_blog' | t: title: blog.title }}</a>
+    </p>
+  </div>
+</article>
+
+<script type="application/ld+json">
+  {{ article | structured_data }}
+</script>
+
+{% schema %}
+{
+  "name": "t:sections.main_article.name",
+  "tag": "div",
+  "class": "section",
+  "settings": [
+    { "type": "checkbox", "id": "show_author", "default": true, "label": "t:sections.main_blog.settings.show_author.label" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 64 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 72 }
+  ]
+}
+{% endschema %}

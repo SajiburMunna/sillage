@@ -1,0 +1,44 @@
+{
+  "type": "header",
+  "name": "t:sections.header.group_name",
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement-1": {
+          "type": "announcement",
+          "settings": {
+            "text": "Free sample vial with every order",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "announcement-1"
+      ],
+      "settings": {
+        "color_scheme": "scheme-3"
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "menu": "main-menu",
+        "open_on_hover": false,
+        "tagline": "Maison de parfum",
+        "cta_label": "Shop scents",
+        "cta_link": "",
+        "transparent_on_home": true,
+        "transparent_text": "#F3F0EB",
+        "color_scheme": "scheme-1",
+        "show_country": true,
+        "show_language": true,
+        "sticky_mode": "always"
+      }
+    }
+  },
+  "order": [
+    "announcement-bar",
+    "header"
+  ]
+}

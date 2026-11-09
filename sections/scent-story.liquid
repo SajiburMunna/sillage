@@ -1,0 +1,716 @@
+{{ 'section-scent-story.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'scent-story.js' | asset_url }}" defer="defer"></script>
+{%- if section.settings.hero_style != 'solid' -%}
+  {{ 'section-water-hero.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'water-flow.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- liquid
+  assign scents = section.blocks | where: 'type', 'scent'
+  assign story_collection = section.settings.collection
+  if story_collection == blank
+    assign story_collection = collections.all
+  endif
+  assign story_products = story_collection.products
+  assign ritual_index = section.settings.ritual_scent | minus: 1
+  if ritual_index >= scents.size
+    assign ritual_index = scents.size | minus: 1
+  endif
+  assign ritual_block = scents[ritual_index]
+  assign ritual_product = ritual_block.settings.product | default: story_products[ritual_index]
+  assign heading_tag = 'h2'
+  if section.index == 1
+    assign heading_tag = 'h1'
+  endif
+-%}
+
+{%- capture stage_colors -%}
+  {{- section.settings.hero_bg -}}|{{- section.settings.manifesto_bg -}}
+  {%- for block in scents -%}|{{ block.settings.bg }}{%- endfor -%}
+  |{{- section.settings.ritual_bg -}}
+{%- endcapture -%}
+
+<scent-story
+  class="ss{% if section.settings.show_loader %} ss--loader{% endif %}"
+  data-section-id="{{ section.id }}"
+  data-colors="{{ stage_colors | strip }}"
+  data-chapters="{{ scents.size }}"
+  data-ritual="{{ ritual_index | plus: 1 }}"
+  data-added-template="{{ 'sections.scent_story.added' | t: name: '[name]' | escape }}"
+  data-header-tone="dark"
+  style="--ss-hero-bg: {{ section.settings.hero_bg }};"
+>
+  <div class="ss-track">
+    <span class="ss-anchor" id="ScentStory-top" data-anchor="0"></span>
+    {%- for block in scents -%}
+      <span class="ss-anchor" id="ScentStory-{{ forloop.index }}" data-anchor="{{ forloop.index }}"></span>
+    {%- endfor -%}
+    <span class="ss-anchor" id="ScentStory-ritual" data-anchor="ritual"></span>
+
+    <div class="ss-stage" data-idx="0" data-phase="0">
+      {%- comment -%} ---------- Water (hero background) ---------- {%- endcomment -%}
+      {%- if section.settings.hero_style != 'solid' -%}
+        <water-flow
+          class="water-flow ss-water"
+          data-mode="{{ section.settings.hero_style }}"
+          data-direction="200"
+          data-speed="{{ section.settings.water_speed }}"
+          data-refraction="40"
+          data-caustics="{{ section.settings.water_light }}"
+          data-tint="30"
+          data-deep="{{ section.settings.hero_bg }}"
+          data-shallow="{{ section.settings.water_shallow }}"
+          data-light="{{ section.settings.hero_light }}"
+          data-interactive="{% if section.settings.hero_style == 'water' %}true{% else %}false{% endif %}"
+          data-quality="0.55"
+          data-focal-x="{% if section.settings.hero_style == 'silk' %}74{% else %}50{% endif %}"
+          data-focal-y="48"
+          data-external="true"
+          style="--hero-deep: {{ section.settings.hero_bg }}; --hero-shallow: {{ section.settings.water_shallow }};"
+        >
+          <canvas class="water-flow__canvas" aria-hidden="true"></canvas>
+        </water-flow>
+      {%- endif -%}
+
+      {%- comment -%} ---------- Rotating ring ---------- {%- endcomment -%}
+      <svg class="ss-ring" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
+        <defs><path id="SsRing-{{ section.id }}" d="M200 200 m-170 0 a170 170 0 1 1 340 0 a170 170 0 1 1 -340 0"/></defs>
+        <text font-size="13"><textPath href="#SsRing-{{ section.id }}" textLength="1060" lengthAdjust="spacing">{{ section.settings.ring_text | upcase | escape }} · {{ section.settings.ring_text | upcase | escape }} · </textPath></text>
+      </svg>
+
+      {%- comment -%} ---------- Chapter titles (giant letters) ---------- {%- endcomment -%}
+      {%- for block in scents -%}
+        {%- assign p = block.settings.product | default: story_products[forloop.index0] -%}
+        {%- assign short_title = p.title | remove: ' Eau de Parfum' | remove: ' Extrait de Parfum' | remove: ' Eau de Toilette' | remove: ' Body Spray' | remove: ' Body Mist' | remove: ' Perfume' -%}
+        {%- assign title_text = block.settings.title | default: short_title | default: 'Scent' -%}
+        {%- capture title_full -%}0{{ forloop.index }} {{ title_text }}{%- endcapture -%}
+        <div class="ss-title" data-chapter="{{ forloop.index }}" aria-hidden="true">
+          <p class="ss-title__text">
+            {%- assign words = title_full | split: ' ' -%}
+            {%- assign n = 0 -%}
+            {%- for word in words -%}
+              <span class="ss-word">
+                {%- assign chars = word | split: '' -%}
+                {%- for ch in chars -%}
+                  <span class="ss-letter" style="--i: {{ n }};">{{ ch }}</span>
+                  {%- assign n = n | plus: 1 -%}
+                {%- endfor -%}
+              </span>
+              {%- unless forloop.last %} {% endunless -%}
+            {%- endfor -%}
+          </p>
+        </div>
+      {%- endfor -%}
+
+      {%- comment -%} ---------- Hero deck: next scents fanned behind, notes drifting up ---------- {%- endcomment -%}
+      {%- liquid
+        assign hero_block = scents.first
+        assign hero_product = hero_block.settings.product | default: story_products[0]
+        assign hero_mf = hero_product.metafields.custom
+        capture hero_notes_raw
+          echo hero_mf.top_notes.value
+          echo ','
+          echo hero_mf.heart_notes.value
+          echo ','
+          echo hero_mf.base_notes.value
+        endcapture
+        assign hero_notes = hero_notes_raw | split: ','
+        assign has_notes = hero_notes_raw | remove: ',' | strip
+        if has_notes == blank
+          assign skip = 'perfume,spray,gifting,attar,dab-on,elixir,oil,extrait de parfum,eau de parfum'
+          assign skip_list = skip | split: ','
+          capture tag_notes
+            for tag in hero_product.tags
+              assign lower = tag | downcase
+              if lower == tag
+                unless skip_list contains tag
+                  echo tag | replace: '-', ' '
+                  echo ','
+                endunless
+              endif
+            endfor
+          endcapture
+          assign hero_notes = tag_notes | split: ','
+        endif
+      -%}
+      <div class="ss-deck" aria-hidden="true">
+        {%- for k in (1..2) -%}
+          {%- assign deck_block = scents[k] -%}
+          {%- assign deck_product = deck_block.settings.product | default: story_products[k] -%}
+          {%- assign deck_image = deck_block.settings.image | default: deck_product.featured_image -%}
+          <div class="ss-deck__card ss-deck__card--{{ k }}">
+            <div class="ss-deck__float">
+              {%- if deck_image != blank -%}
+                {%- render 'bottle-photo', image: deck_image, sizes: '25vh', loading: 'eager', spot: true -%}
+              {%- elsif deck_block != blank -%}
+                {%- capture deck_uid -%}ssd{{ k }}{{ section.id | handle | remove: '-' | slice: -5, 5 }}{%- endcapture -%}
+                {%- render 'perfume-bottle', style: deck_block.settings.bottle_style, liquid: deck_block.settings.liquid, cap: deck_block.settings.cap, label: deck_block.settings.label, uid: deck_uid -%}
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+
+        <ul class="ss-notes" role="list">
+          {%- assign shown = 0 -%}
+          {%- for note in hero_notes -%}
+            {%- assign n = note | strip -%}
+            {%- if n != blank and shown < 6 -%}
+              <li class="ss-note ss-note--{{ shown | plus: 1 }}">{{ n | escape }}</li>
+              {%- assign shown = shown | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+
+      {%- if hero_product != blank -%}
+        <a href="{{ hero_product.url }}" class="ss-wearing">
+          <span class="ss-wearing__dot" aria-hidden="true"></span>
+          <span class="ss-wearing__label">{{ 'sections.scent_story.now_wearing' | t }}</span>
+          <span class="ss-wearing__name">{{ hero_product.title | escape }}</span>
+          <span class="ss-wearing__price">{{ hero_product.price | money }}</span>
+          {% render 'icon', icon: 'arrow' %}
+        </a>
+      {%- endif -%}
+
+      {%- comment -%} ---------- THE bottle ---------- {%- endcomment -%}
+      <div class="ss-bottle" data-bottle>
+        <div class="ss-bottle__float">
+          {%- for block in scents -%}
+            {%- assign p = block.settings.product | default: story_products[forloop.index0] -%}
+            <div class="ss-bottle__item{% if forloop.first %} is-active{% endif %}" data-item="{{ forloop.index0 }}" aria-hidden="true">
+              {%- assign bottle_image = block.settings.image | default: p.featured_image -%}
+              {%- if bottle_image != blank -%}
+                {%- liquid
+                  assign nozzle = '150,170'
+                  if settings.bottle_photo_style == 'frame'
+                    assign nozzle = '150,330'
+                  endif
+                -%}
+                {%- render 'bottle-photo', image: bottle_image, sizes: '(min-width: 750px) 40vh, 50vw', loading: 'eager', nozzle: nozzle, spot: true -%}
+              {%- else -%}
+                {%- capture bottle_uid -%}ss{{ section.id | handle | remove: '-' | slice: -6, 6 }}{{ forloop.index }}{%- endcapture -%}
+                {%- render 'perfume-bottle',
+                  style: block.settings.bottle_style,
+                  liquid: block.settings.liquid,
+                  cap: block.settings.cap,
+                  label: block.settings.label,
+                  uid: bottle_uid
+                -%}
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      {%- comment -%} ---------- HERO ---------- {%- endcomment -%}
+      <div class="ss-scrim" aria-hidden="true"></div>
+      <div class="ss-hero" data-panel="0">
+        <{{ heading_tag }} class="ss-hero__heading">
+          {%- assign lines = section.settings.hero_line_1 | append: '|' | append: section.settings.hero_line_2 | split: '|' -%}
+          {%- assign n = 0 -%}
+          {%- for line in lines -%}
+            {%- if line != blank -%}
+              <span class="ss-hero__line">
+                {%- assign words = line | split: ' ' -%}
+                {%- for word in words -%}
+                  <span class="ss-word">
+                    {%- assign chars = word | split: '' -%}
+                    {%- for ch in chars -%}
+                      <span class="ss-letter" style="--i: {{ n }};">{{ ch }}</span>
+                      {%- assign n = n | plus: 1 -%}
+                    {%- endfor -%}
+                  </span>
+                  {%- unless forloop.last %} {% endunless -%}
+                {%- endfor -%}
+              </span>
+            {%- endif -%}
+          {%- endfor -%}
+        </{{ heading_tag }}>
+        <div class="ss-hero__foot">
+          <p class="ss-hero__tagline">{{ section.settings.tagline | escape }}</p>
+          <span class="ss-hero__cue" aria-hidden="true">{{ 'sections.scent_story.scroll' | t }} <span class="ss-hero__cue-line"></span></span>
+        </div>
+      </div>
+
+      {%- comment -%} ---------- MANIFESTO ---------- {%- endcomment -%}
+      <div class="ss-manifesto" data-panel="1">
+        {%- assign man_words = section.settings.manifesto | split: ' ' -%}
+        <p class="ss-manifesto__text" style="--n: {{ man_words.size }};">
+          {%- for w in man_words -%}
+            <span class="ss-manifesto__word" style="--k: {{ forloop.index0 }};">{{ w }} </span>
+          {%- endfor -%}
+        </p>
+      </div>
+
+      {%- comment -%} ---------- CHAPTER COPY ---------- {%- endcomment -%}
+      {%- for block in scents -%}
+        {%- assign p = block.settings.product | default: story_products[forloop.index0] -%}
+        <div class="ss-chapter" data-chapter="{{ forloop.index }}" {{ block.shopify_attributes }} aria-hidden="true" inert>
+          {%- liquid
+            assign mf = p.metafields.custom
+            assign family = block.settings.family | default: mf.scent_family.value | default: p.type
+            assign notes = block.settings.notes | default: mf.notes.value
+            assign meta = block.settings.meta
+            if meta == blank and mf.heart_notes.value != blank
+              assign meta = 'products.product.fragrance.heart' | t | append: ': ' | append: mf.heart_notes.value
+            endif
+          -%}
+          <div class="ss-chapter__left">
+            <span class="ss-chapter__family"><span class="ss-dot" style="background: {{ block.settings.dot }};"></span>{{ family | escape }}</span>
+            <p class="ss-chapter__notes">{{ notes | escape }}</p>
+            <span class="ss-chapter__rule"></span>
+          </div>
+          <div class="ss-chapter__gap"></div>
+          <div class="ss-chapter__right">
+            <span class="ss-chapter__meta">{{ meta | escape }}</span>
+            <div class="ss-chapter__card">
+              <span class="ss-chapter__vendor">{{ p.vendor | default: shop.name | escape }}</span>
+              <p class="ss-chapter__name">{{ p.title | default: block.settings.title | escape }}</p>
+              <p class="ss-chapter__desc">
+                {%- if block.settings.description != blank -%}
+                  {{ block.settings.description | escape }}
+                {%- elsif p.description != blank -%}
+                  {{ p.description | strip_html | truncatewords: 22 }}
+                {%- endif -%}
+              </p>
+              {%- if p != blank -%}
+                <div class="ss-chapter__price">{% render 'price', product: p, use_variant: true %}</div>
+                {%- if p.selected_or_first_available_variant.available -%}
+                  <button type="button" class="ss-add" data-add="{{ p.selected_or_first_available_variant.id }}" data-name="{{ p.title | escape }}">
+                    {% render 'icon', icon: 'plus' %}
+                    <span>{{ 'products.product.add_to_cart' | t }}</span>
+                  </button>
+                {%- else -%}
+                  <span class="badge badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
+                {%- endif -%}
+                <a href="{{ p.url }}" class="ss-chapter__link link-underline">{{ 'products.product.view_full_details' | t }}</a>
+              {%- elsif request.design_mode -%}
+                <p class="ss-chapter__hint">{{ 'sections.scent_story.choose_product' | t }}</p>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+
+      {%- comment -%} ---------- RITUAL ---------- {%- endcomment -%}
+      <div class="ss-ritual" data-panel="ritual" aria-hidden="true">
+        <span class="ss-ritual__label">0{{ scents.size | plus: 1 }} · {{ section.settings.ritual_label | escape }}</span>
+        <div class="ss-ritual__words">
+          <span class="ss-ritual__word" data-p="0">{{ section.settings.ritual_word_1 | escape }}</span>
+          <span class="ss-ritual__word" data-p="1">{{ section.settings.ritual_word_2 | escape }}</span>
+          <span class="ss-ritual__word" data-p="2">{{ section.settings.ritual_word_3 | escape }}</span>
+        </div>
+        <span></span>
+      </div>
+      <div class="ss-ritual-side" aria-hidden="true" inert>
+        <p>{{ section.settings.ritual_text | escape }}</p>
+        {%- if ritual_product != blank and ritual_product.selected_or_first_available_variant.available -%}
+          <button type="button" class="ss-add ss-add--light" data-add="{{ ritual_product.selected_or_first_available_variant.id }}" data-name="{{ ritual_product.title | escape }}">
+            {% render 'icon', icon: 'plus' %}
+            <span>{{ 'products.product.add_to_cart' | t }} · {{ ritual_product.selected_or_first_available_variant.price | money }}</span>
+          </button>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} ---------- Scent picker pill ---------- {%- endcomment -%}
+      <div class="ss-pill">
+        <div class="ss-pill__menu" id="ScentPicker-{{ section.id }}" hidden>
+          <button type="button" class="ss-pill__option" data-jump="0"><span>{{ section.settings.pill_all | escape }}</span><span></span></button>
+          {%- for block in scents -%}
+            <button type="button" class="ss-pill__option" data-jump="{{ forloop.index }}">
+              {%- assign p = block.settings.product | default: story_products[forloop.index0] -%}
+              {%- assign short_title = p.title | remove: ' Eau de Parfum' | remove: ' Extrait de Parfum' | remove: ' Eau de Toilette' | remove: ' Body Spray' | remove: ' Body Mist' | remove: ' Perfume' -%}
+              <span>{{ block.settings.title | default: short_title | escape }}</span><span class="text-muted">0{{ forloop.index }}</span>
+            </button>
+          {%- endfor -%}
+          <button type="button" class="ss-pill__option" data-jump="ritual">
+            <span>{{ section.settings.ritual_label | escape }}</span><span class="text-muted">0{{ scents.size | plus: 1 }}</span>
+          </button>
+        </div>
+        <button type="button" class="ss-pill__toggle" aria-expanded="false" aria-controls="ScentPicker-{{ section.id }}">
+          <span class="ss-pill__dots" aria-hidden="true">
+            {%- for block in scents -%}
+              <span style="background: {{ block.settings.dot }}; height: {% cycle '24px', '30px' %};"></span>
+            {%- endfor -%}
+          </span>
+          <span class="ss-pill__label" data-pill-label data-all="{{ section.settings.pill_all | escape }}" data-ritual="{{ section.settings.ritual_label | escape }}">{{ section.settings.pill_all | escape }}</span>
+          <span class="ss-pill__chev">{% render 'icon', icon: 'caret' %}</span>
+        </button>
+      </div>
+
+      {%- if section.settings.hero_style != 'solid' -%}
+        <button type="button" class="water-hero__toggle ss-water-toggle" data-water-toggle aria-pressed="false" aria-label="{{ 'accessibility.pause_animation' | t }}">
+          <span class="water-hero__toggle-pause">{% render 'icon', icon: 'pause' %}</span>
+          <span class="water-hero__toggle-play">{% render 'icon', icon: 'play' %}</span>
+        </button>
+      {%- endif -%}
+
+      <div class="ss-toast" role="status" aria-live="polite"></div>
+    </div>
+  </div>
+
+  {%- comment -%} Veil used for long jumps, and the intro loader {%- endcomment -%}
+  <div class="ss-veil" aria-hidden="true"></div>
+  {%- if section.settings.show_loader -%}
+    <div class="ss-loader" aria-hidden="true">
+      <div class="ss-loader__bottle">
+        <svg viewBox="0 0 120 180">
+          <defs>
+            <clipPath id="SsLoaderClip-{{ section.id }}"><rect x="14" y="66" width="92" height="106" rx="12"/></clipPath>
+          </defs>
+          <rect x="46" y="22" width="28" height="30" rx="4" fill="none" stroke="currentColor" stroke-width="2"/>
+          <rect x="52" y="52" width="16" height="14" fill="none" stroke="currentColor" stroke-width="2"/>
+          <rect x="14" y="66" width="92" height="106" rx="12" fill="none" stroke="currentColor" stroke-width="2"/>
+          <g clip-path="url(#SsLoaderClip-{{ section.id }})"><rect class="ss-loader__fill" x="0" y="172" width="120" height="110" fill="currentColor"/></g>
+        </svg>
+      </div>
+      <span class="ss-loader__pct">0</span>
+    </div>
+  {%- endif -%}
+</scent-story>
+
+{% schema %}
+{
+  "name": "t:sections.scent_story.name",
+  "tag": "section",
+  "class": "section section--scent-story",
+  "max_blocks": 4,
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "t:sections.scent_story.settings.collection.label",
+      "info": "t:sections.scent_story.settings.collection.info"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.scent_story.settings.header_hero.content"
+    },
+    {
+      "type": "text",
+      "id": "hero_line_1",
+      "default": "Scent that",
+      "label": "t:sections.scent_story.settings.hero_line_1.label"
+    },
+    {
+      "type": "text",
+      "id": "hero_line_2",
+      "default": "lingers",
+      "label": "t:sections.scent_story.settings.hero_line_2.label"
+    },
+    {
+      "type": "textarea",
+      "id": "tagline",
+      "default": "A small house of honest scents. Every bottle worn, sprayed and argued over before it reaches the shelf.",
+      "label": "t:sections.scent_story.settings.tagline.label"
+    },
+    {
+      "type": "text",
+      "id": "ring_text",
+      "default": "Small batch \u00b7 Skin first \u00b7 Worn before stocked",
+      "label": "t:sections.scent_story.settings.ring_text.label"
+    },
+    {
+      "type": "color",
+      "id": "hero_bg",
+      "default": "#17120F",
+      "label": "t:sections.scent_story.settings.hero_bg.label"
+    },
+    {
+      "type": "select",
+      "id": "hero_style",
+      "default": "silk",
+      "label": "t:sections.scent_story.settings.hero_style.label",
+      "options": [
+        {
+          "value": "silk",
+          "label": "t:sections.scent_story.settings.hero_style.options__1.label"
+        },
+        {
+          "value": "water",
+          "label": "t:sections.scent_story.settings.hero_style.options__2.label"
+        },
+        {
+          "value": "solid",
+          "label": "t:sections.scent_story.settings.hero_style.options__3.label"
+        }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "water_shallow",
+      "default": "#6B4632",
+      "label": "t:sections.scent_story.settings.hero_mid.label"
+    },
+    {
+      "type": "color",
+      "id": "hero_light",
+      "default": "#E8C39A",
+      "label": "t:sections.scent_story.settings.hero_light.label"
+    },
+    {
+      "type": "range",
+      "id": "water_speed",
+      "min": 10,
+      "max": 150,
+      "step": 5,
+      "default": 40,
+      "unit": "%",
+      "label": "t:sections.scent_story.settings.hero_speed.label"
+    },
+    {
+      "type": "range",
+      "id": "water_light",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 45,
+      "unit": "%",
+      "label": "t:sections.water_hero.settings.caustics.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_loader",
+      "default": true,
+      "label": "t:sections.scent_story.settings.show_loader.label",
+      "info": "t:sections.scent_story.settings.show_loader.info"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.scent_story.settings.header_manifesto.content"
+    },
+    {
+      "type": "textarea",
+      "id": "manifesto",
+      "default": "We wear every scent before it reaches the shelf. Small batches, honest prices, and perfume worth spraying on an ordinary Tuesday.",
+      "label": "t:sections.scent_story.settings.manifesto.label"
+    },
+    {
+      "type": "color",
+      "id": "manifesto_bg",
+      "default": "#CFC6BD",
+      "label": "t:sections.scent_story.settings.manifesto_bg.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.scent_story.settings.header_ritual.content"
+    },
+    {
+      "type": "text",
+      "id": "ritual_label",
+      "default": "The ritual",
+      "label": "t:sections.scent_story.settings.ritual_label.label"
+    },
+    {
+      "type": "text",
+      "id": "ritual_word_1",
+      "default": "Uncap.",
+      "label": "t:sections.scent_story.settings.ritual_word_1.label"
+    },
+    {
+      "type": "text",
+      "id": "ritual_word_2",
+      "default": "Spray.",
+      "label": "t:sections.scent_story.settings.ritual_word_2.label"
+    },
+    {
+      "type": "text",
+      "id": "ritual_word_3",
+      "default": "Breathe.",
+      "label": "t:sections.scent_story.settings.ritual_word_3.label"
+    },
+    {
+      "type": "textarea",
+      "id": "ritual_text",
+      "default": "Spray on warm skin, then leave it alone. Give it ten minutes. The top notes lift, the heart opens, and it starts to smell like you.",
+      "label": "t:sections.scent_story.settings.ritual_text.label"
+    },
+    {
+      "type": "range",
+      "id": "ritual_scent",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 1,
+      "label": "t:sections.scent_story.settings.ritual_scent.label"
+    },
+    {
+      "type": "color",
+      "id": "ritual_bg",
+      "default": "#1A1E1D",
+      "label": "t:sections.scent_story.settings.ritual_bg.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.scent_story.settings.header_picker.content"
+    },
+    {
+      "type": "text",
+      "id": "pill_all",
+      "default": "Our scents",
+      "label": "t:sections.scent_story.settings.pill_all.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "scent",
+      "name": "t:sections.scent_story.blocks.scent.name",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "t:sections.scent_story.blocks.scent.settings.product.label"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "t:sections.scent_story.blocks.scent.settings.title.label",
+          "info": "t:sections.scent_story.blocks.scent.settings.title.info"
+        },
+        {
+          "type": "text",
+          "id": "family",
+          "label": "t:sections.scent_story.blocks.scent.settings.family.label"
+        },
+        {
+          "type": "text",
+          "id": "notes",
+          "label": "t:sections.scent_story.blocks.scent.settings.notes.label"
+        },
+        {
+          "type": "text",
+          "id": "meta",
+          "label": "t:sections.scent_story.blocks.scent.settings.meta.label"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "t:sections.scent_story.blocks.scent.settings.description.label",
+          "info": "t:sections.scent_story.blocks.scent.settings.description.info"
+        },
+        {
+          "type": "header",
+          "content": "t:sections.scent_story.blocks.scent.settings.header_bottle.content"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.scent_story.blocks.scent.settings.image.label",
+          "info": "t:sections.scent_story.blocks.scent.settings.image.info"
+        },
+        {
+          "type": "select",
+          "id": "bottle_style",
+          "default": "flacon",
+          "label": "t:sections.scent_story.blocks.scent.settings.bottle_style.label",
+          "options": [
+            {
+              "value": "flacon",
+              "label": "t:sections.scent_story.blocks.scent.settings.bottle_style.options__1.label"
+            },
+            {
+              "value": "round",
+              "label": "t:sections.scent_story.blocks.scent.settings.bottle_style.options__2.label"
+            },
+            {
+              "value": "tall",
+              "label": "t:sections.scent_story.blocks.scent.settings.bottle_style.options__3.label"
+            },
+            {
+              "value": "spray",
+              "label": "t:sections.scent_story.blocks.scent.settings.bottle_style.options__4.label"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "default": "Aqua",
+          "label": "t:sections.scent_story.blocks.scent.settings.label.label"
+        },
+        {
+          "type": "color",
+          "id": "liquid",
+          "default": "#9ED3D6",
+          "label": "t:sections.scent_story.blocks.scent.settings.liquid.label"
+        },
+        {
+          "type": "color",
+          "id": "cap",
+          "default": "#191714",
+          "label": "t:sections.scent_story.blocks.scent.settings.cap.label"
+        },
+        {
+          "type": "color",
+          "id": "bg",
+          "default": "#BFCFCD",
+          "label": "t:sections.scent_story.blocks.scent.settings.bg.label"
+        },
+        {
+          "type": "color",
+          "id": "dot",
+          "default": "#2F6B73",
+          "label": "t:sections.scent_story.blocks.scent.settings.dot.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.scent_story.presets.name",
+      "blocks": [
+        {
+          "type": "scent",
+          "settings": {
+            "bottle_style": "flacon",
+            "label": "Aqua",
+            "liquid": "#9ED3D6",
+            "cap": "#191714",
+            "bg": "#BFCFCD",
+            "dot": "#2F6B73"
+          }
+        },
+        {
+          "type": "scent",
+          "settings": {
+            "bottle_style": "round",
+            "label": "Peony",
+            "liquid": "#E7B9C2",
+            "cap": "#E9D8B4",
+            "bg": "#DCC6C3",
+            "dot": "#8A4A5B"
+          }
+        },
+        {
+          "type": "scent",
+          "settings": {
+            "bottle_style": "tall",
+            "label": "Cedar",
+            "liquid": "#B89B7A",
+            "cap": "#3A2E26",
+            "bg": "#CDBFB2",
+            "dot": "#5A4234"
+          }
+        },
+        {
+          "type": "scent",
+          "settings": {
+            "bottle_style": "spray",
+            "label": "Amber",
+            "liquid": "#D9A35F",
+            "cap": "#F3F0EB",
+            "bg": "#D6C3A6",
+            "dot": "#9A6A2C"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

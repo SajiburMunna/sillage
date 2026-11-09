@@ -1,0 +1,15 @@
+{%- comment -%} Rendered only through the Section Rendering API to refresh the header cart count. {%- endcomment -%}
+<span id="cart-icon-bubble">
+  {%- render 'icon', icon: 'bag' -%}
+  {%- if cart.item_count > 0 -%}
+    <span class="cart-count" aria-hidden="true">{{ cart.item_count }}</span>
+  {%- endif -%}
+  <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
+</span>
+
+{% schema %}
+{
+  "name": "t:sections.cart_icon_bubble.name",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,139 @@
+{%- comment -%}
+  Product form: quantity, add to cart, dynamic checkout, gift card recipient, pickup availability.
+  Accepts:
+  - product {Object}
+  - block {Object}
+  - section_id {String}
+  - show_quantity {Boolean}
+{%- endcomment -%}
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+<div class="buy-buttons" {{ block.shopify_attributes }}>
+  <product-form>
+    {%- assign product_form_id = 'ProductForm-' | append: section_id -%}
+    {%- form 'product', product, id: product_form_id, novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+      <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+      {%- if product.gift_card? and block.settings.show_gift_card_recipient -%}
+        <details class="accordion gift-card-recipient">
+          <summary>{{ 'recipient.form.checkbox' | t }} {% render 'icon', icon: 'caret' %}</summary>
+          <div class="accordion__content">
+            <input type="hidden" name="properties[__shopify_send_gift_card_to_recipient]" value="on">
+            <div class="field">
+              <label class="field__label" for="Recipient-email-{{ section_id }}">{{ 'recipient.form.email_label' | t }}</label>
+              <input id="Recipient-email-{{ section_id }}" type="email" name="properties[Recipient email]" autocomplete="email">
+            </div>
+            <div class="field">
+              <label class="field__label" for="Recipient-name-{{ section_id }}">{{ 'recipient.form.name_label' | t }}</label>
+              <input id="Recipient-name-{{ section_id }}" type="text" name="properties[Recipient name]" autocomplete="name">
+            </div>
+            <div class="field">
+              <label class="field__label" for="Recipient-message-{{ section_id }}">{{ 'recipient.form.message_label' | t }}</label>
+              <textarea id="Recipient-message-{{ section_id }}" name="properties[Message]" maxlength="200" rows="3"></textarea>
+            </div>
+            <div class="field">
+              <label class="field__label" for="Recipient-date-{{ section_id }}">{{ 'recipient.form.send_on_label' | t }}</label>
+              <input id="Recipient-date-{{ section_id }}" type="date" name="properties[Send on]" pattern="\d{4}-\d{2}-\d{2}">
+            </div>
+          </div>
+        </details>
+      {%- endif -%}
+
+      {%- comment -%} Selling plans (subscriptions) {%- endcomment -%}
+      {%- if product.selling_plan_groups.size > 0 -%}
+        <fieldset class="selling-plans" data-product-update="selling-plans">
+          <legend class="variant-picker__legend">{{ 'products.product.purchase_options' | t }}</legend>
+          {%- unless product.requires_selling_plan -%}
+            <label class="selling-plans__option">
+              <input type="radio" name="selling_plan" value="" {% unless current_variant.selected_selling_plan_allocation %}checked{% endunless %}>
+              {{ 'products.product.one_time_purchase' | t }}
+            </label>
+          {%- endunless -%}
+          {%- for group in product.selling_plan_groups -%}
+            {%- for plan in group.selling_plans -%}
+              <label class="selling-plans__option">
+                <input
+                  type="radio"
+                  name="selling_plan"
+                  value="{{ plan.id }}"
+                  {% if product.requires_selling_plan and forloop.parentloop.first and forloop.first %}
+                    checked
+                  {% elsif plan.selected %}
+                    checked
+                  {% endif %}
+                >
+                {{ group.name }} · {{ plan.name }}
+              </label>
+            {%- endfor -%}
+          {%- endfor -%}
+        </fieldset>
+      {%- endif -%}
+
+      <div class="buy-buttons__row">
+        {%- if show_quantity -%}
+          <quantity-input class="quantity">
+            <button class="quantity__button" name="minus" type="button" aria-label="{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}">
+              {% render 'icon', icon: 'minus' %}
+            </button>
+            <label class="visually-hidden" for="Quantity-{{ section_id }}">{{ 'products.product.quantity.label' | t }}</label>
+            <input
+              class="quantity__input"
+              type="number"
+              name="quantity"
+              id="Quantity-{{ section_id }}"
+              min="{{ current_variant.quantity_rule.min }}"
+              {% if current_variant.quantity_rule.max != null %}
+                max="{{ current_variant.quantity_rule.max }}"
+              {% endif %}
+              step="{{ current_variant.quantity_rule.increment }}"
+              value="{{ current_variant.quantity_rule.min }}"
+            >
+            <button class="quantity__button" name="plus" type="button" aria-label="{{ 'products.product.quantity.increase' | t: product: product.title | escape }}">
+              {% render 'icon', icon: 'plus' %}
+            </button>
+          </quantity-input>
+        {%- endif -%}
+
+        <div data-product-update="add-button" style="flex: 1;">
+          <button
+            type="submit"
+            name="add"
+            class="button button--full"
+            {% if current_variant.available == false or current_variant == null %}
+              aria-disabled="true" data-sold-out
+            {% endif %}
+          >
+            <span class="button__label">
+              {%- if current_variant == null -%}
+                {{ 'products.product.unavailable' | t }}
+              {%- elsif current_variant.available -%}
+                {{ 'products.product.add_to_cart' | t }}
+              {%- else -%}
+                {{ 'products.product.sold_out' | t }}
+              {%- endif -%}
+            </span>
+            <span class="loading-spinner" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+
+      {%- if block.settings.show_dynamic_checkout -%}
+        <div class="buy-buttons__dynamic">
+          {{ form | payment_button }}
+        </div>
+      {%- endif -%}
+
+      <p class="form__message form__message--error" data-product-form-error role="alert" hidden></p>
+    {%- endform -%}
+  </product-form>
+
+  {%- if block.settings.show_pickup_availability -%}
+    <pickup-availability
+      class="pickup-availability"
+      data-root-url="{{ routes.root_url | append: '/' | replace: '//', '/' }}"
+      data-variant-id="{{ current_variant.id }}"
+      {% if current_variant.available == false %}
+        hidden
+      {% endif %}
+    ></pickup-availability>
+  {%- endif -%}
+</div>

@@ -1,0 +1,162 @@
+{%- comment -%}
+  Original illustrated perfume bottles, drawn on a shared 300 × 1000 frame
+  with the base standing on the bottom edge. The cap and pump are separate
+  groups so the scroll story can lift the cap and press the pump.
+
+  Accepts:
+  - style {String} 'flacon' | 'round' | 'tall' | 'spray'
+  - liquid {String} hex colour of the juice / can finish
+  - cap {String} hex colour of the cap
+  - label {String} text on the label
+  - uid {String} unique id prefix for gradients
+  - class {String}
+
+  The nozzle position (in frame units) is exposed as data-nozzle so the
+  mist can be emitted from the right spot.
+{%- endcomment -%}
+{%- liquid
+  assign s = style | default: 'flacon'
+  assign c_liquid = liquid | default: '#E7B9C2'
+  assign c_cap = cap | default: '#191714'
+  assign id = uid | default: 'pb'
+  case s
+    when 'round'
+      assign nozzle = '150,452'
+    when 'tall'
+      assign nozzle = '150,372'
+    when 'spray'
+      assign nozzle = '150,262'
+    else
+      assign nozzle = '150,442'
+  endcase
+-%}
+<svg
+  class="perfume-bottle perfume-bottle--{{ s }}{% if class %} {{ class }}{% endif %}"
+  viewBox="0 0 300 1000"
+  data-nozzle="{{ nozzle }}"
+  aria-hidden="true"
+  focusable="false"
+>
+  <defs>
+    <linearGradient id="{{ id }}-glass" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="0.18" stop-color="#ffffff" stop-opacity="0.12"/>
+      <stop offset="0.55" stop-color="#ffffff" stop-opacity="0.06"/>
+      <stop offset="0.86" stop-color="#ffffff" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.5"/>
+    </linearGradient>
+    <linearGradient id="{{ id }}-juice" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="{{ c_liquid }}" stop-opacity="0.95"/>
+      <stop offset="0.4" stop-color="{{ c_liquid }}" stop-opacity="0.7"/>
+      <stop offset="0.75" stop-color="{{ c_liquid }}" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="{{ c_liquid }}"/>
+    </linearGradient>
+    <linearGradient id="{{ id }}-juice-depth" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.28"/>
+    </linearGradient>
+    <linearGradient id="{{ id }}-metal" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8C7A5B"/>
+      <stop offset="0.3" stop-color="#E9D8B4"/>
+      <stop offset="0.55" stop-color="#B49A6A"/>
+      <stop offset="0.8" stop-color="#F3E6C8"/>
+      <stop offset="1" stop-color="#7D6A4C"/>
+    </linearGradient>
+    <linearGradient id="{{ id }}-cap" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="{{ c_cap }}"/>
+      <stop offset="0.35" stop-color="#ffffff" stop-opacity="0.22"/>
+      <stop offset="0.36" stop-color="{{ c_cap }}" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.35"/>
+    </linearGradient>
+    <linearGradient id="{{ id }}-can" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="{{ c_liquid }}"/>
+      <stop offset="0.22" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="0.3" stop-color="{{ c_liquid }}"/>
+      <stop offset="0.75" stop-color="{{ c_liquid }}"/>
+      <stop offset="0.9" stop-color="#000000" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="{{ c_liquid }}"/>
+    </linearGradient>
+    <radialGradient id="{{ id }}-shadow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#000000" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <ellipse cx="150" cy="984" rx="128" ry="14" fill="url(#{{ id }}-shadow)"/>
+
+  {%- case s -%}
+    {%- when 'round' -%}
+      {%- comment -%} Round flacon {%- endcomment -%}
+      <g class="pb-body">
+        <clipPath id="{{ id }}-clip"><circle cx="150" cy="770" r="140"/></clipPath>
+        <circle cx="150" cy="770" r="140" fill="{{ c_liquid }}" fill-opacity="0.12"/>
+        <g clip-path="url(#{{ id }}-clip)">
+          <rect x="0" y="690" width="300" height="240" fill="url(#{{ id }}-juice)"/>
+          <rect x="0" y="690" width="300" height="240" fill="url(#{{ id }}-juice-depth)"/>
+          <ellipse cx="150" cy="690" rx="150" ry="8" fill="#ffffff" fill-opacity="0.35"/>
+        </g>
+        <circle cx="150" cy="770" r="140" fill="url(#{{ id }}-glass)"/>
+        <circle cx="150" cy="770" r="139" fill="none" stroke="#ffffff" stroke-opacity="0.55" stroke-width="2"/>
+        <path d="M60 700 A110 110 0 0 1 120 650" stroke="#ffffff" stroke-opacity="0.8" stroke-width="7" stroke-linecap="round" fill="none"/>
+        <rect x="95" y="770" width="110" height="70" rx="4" fill="#F6F1EA" fill-opacity="0.92"/>
+        <text x="150" y="800" text-anchor="middle" font-family="Georgia, serif" font-size="15" letter-spacing="4" fill="#191714">{{ label | default: 'EAU' | upcase | truncate: 12, '' }}</text>
+        <line x1="115" y1="812" x2="185" y2="812" stroke="#191714" stroke-opacity="0.4"/>
+        <text x="150" y="830" text-anchor="middle" font-family="Georgia, serif" font-size="9" letter-spacing="3" fill="#191714">PARFUM</text>
+      </g>
+      <rect x="118" y="612" width="64" height="28" rx="3" fill="url(#{{ id }}-metal)"/>
+      <g class="pb-pump"><rect x="134" y="452" width="32" height="20" rx="3" fill="url(#{{ id }}-metal)"/><rect x="141" y="472" width="18" height="142" fill="url(#{{ id }}-metal)"/></g>
+      <g class="pb-cap"><circle cx="150" cy="520" r="78" fill="{{ c_cap }}"/><circle cx="150" cy="520" r="78" fill="url(#{{ id }}-cap)"/><rect x="112" y="590" width="76" height="26" rx="4" fill="{{ c_cap }}"/></g>
+    {%- when 'tall' -%}
+      {%- comment -%} Slim tall bottle {%- endcomment -%}
+      <g class="pb-body">
+        <rect x="80" y="430" width="140" height="550" rx="18" fill="{{ c_liquid }}" fill-opacity="0.12"/>
+        <rect x="88" y="520" width="124" height="452" rx="12" fill="url(#{{ id }}-juice)"/>
+        <rect x="88" y="520" width="124" height="452" rx="12" fill="url(#{{ id }}-juice-depth)"/>
+        <rect x="80" y="430" width="140" height="550" rx="18" fill="url(#{{ id }}-glass)"/>
+        <rect x="81" y="431" width="138" height="548" rx="17" fill="none" stroke="#ffffff" stroke-opacity="0.55" stroke-width="2"/>
+        <rect x="96" y="450" width="8" height="500" rx="4" fill="#ffffff" fill-opacity="0.55"/>
+        <rect x="104" y="690" width="92" height="150" fill="#F6F1EA" fill-opacity="0.92"/>
+        <text x="150" y="745" text-anchor="middle" font-family="Georgia, serif" font-size="14" letter-spacing="3" fill="#191714">{{ label | default: 'EAU' | upcase | truncate: 10, '' }}</text>
+        <line x1="118" y1="762" x2="182" y2="762" stroke="#191714" stroke-opacity="0.4"/>
+        <text x="150" y="790" text-anchor="middle" font-family="Georgia, serif" font-size="9" letter-spacing="3" fill="#191714">EAU DE</text>
+        <text x="150" y="806" text-anchor="middle" font-family="Georgia, serif" font-size="9" letter-spacing="3" fill="#191714">PARFUM</text>
+      </g>
+      <rect x="120" y="404" width="60" height="30" rx="3" fill="url(#{{ id }}-metal)"/>
+      <g class="pb-pump"><rect x="134" y="372" width="32" height="20" rx="3" fill="url(#{{ id }}-metal)"/><rect x="141" y="390" width="18" height="18" fill="url(#{{ id }}-metal)"/></g>
+      <g class="pb-cap"><rect x="104" y="170" width="92" height="238" rx="8" fill="{{ c_cap }}"/><rect x="104" y="170" width="92" height="238" rx="8" fill="url(#{{ id }}-cap)"/></g>
+    {%- when 'spray' -%}
+      {%- comment -%} Body spray can {%- endcomment -%}
+      <g class="pb-body">
+        <path d="M70 360 Q70 300 150 296 Q230 300 230 360 L230 960 Q230 980 210 980 L90 980 Q70 980 70 960 Z" fill="url(#{{ id }}-can)"/>
+        <path d="M70 360 Q70 300 150 296 Q230 300 230 360 L230 960 Q230 980 210 980 L90 980 Q70 980 70 960 Z" fill="none" stroke="#000000" stroke-opacity="0.12" stroke-width="2"/>
+        <rect x="70" y="560" width="160" height="260" fill="#F6F1EA" fill-opacity="0.9"/>
+        <text x="150" y="640" text-anchor="middle" font-family="Georgia, serif" font-size="20" letter-spacing="4" fill="#191714">{{ label | default: 'MIST' | upcase | truncate: 10, '' }}</text>
+        <line x1="100" y1="662" x2="200" y2="662" stroke="#191714" stroke-opacity="0.4"/>
+        <text x="150" y="694" text-anchor="middle" font-family="Georgia, serif" font-size="11" letter-spacing="4" fill="#191714">BODY SPRAY</text>
+        <text x="150" y="790" text-anchor="middle" font-family="Georgia, serif" font-size="10" letter-spacing="2" fill="#191714" fill-opacity="0.7">150 ML</text>
+        <rect x="70" y="940" width="160" height="10" fill="#000000" fill-opacity="0.1"/>
+      </g>
+      <rect x="112" y="282" width="76" height="20" rx="4" fill="url(#{{ id }}-metal)"/>
+      <g class="pb-pump"><path d="M122 250 h56 v34 h-56 z" fill="#EDE7DD"/><rect x="122" y="250" width="56" height="34" fill="url(#{{ id }}-glass)"/><circle cx="128" cy="262" r="4" fill="#191714" fill-opacity="0.7"/></g>
+      <g class="pb-cap"><path d="M78 340 Q78 200 150 196 Q222 200 222 340 Z" fill="{{ c_cap }}"/><path d="M78 340 Q78 200 150 196 Q222 200 222 340 Z" fill="url(#{{ id }}-cap)"/></g>
+    {%- else -%}
+      {%- comment -%} Square eau de parfum flacon {%- endcomment -%}
+      <g class="pb-body">
+        <rect x="40" y="510" width="220" height="470" rx="28" fill="{{ c_liquid }}" fill-opacity="0.12"/>
+        <rect x="54" y="600" width="192" height="366" rx="18" fill="url(#{{ id }}-juice)"/>
+        <rect x="54" y="600" width="192" height="366" rx="18" fill="url(#{{ id }}-juice-depth)"/>
+        <ellipse cx="150" cy="600" rx="96" ry="6" fill="#ffffff" fill-opacity="0.35"/>
+        <rect x="40" y="510" width="220" height="470" rx="28" fill="url(#{{ id }}-glass)"/>
+        <rect x="41" y="511" width="218" height="468" rx="27" fill="none" stroke="#ffffff" stroke-opacity="0.6" stroke-width="2"/>
+        <rect x="58" y="530" width="10" height="420" rx="5" fill="#ffffff" fill-opacity="0.6"/>
+        <rect x="232" y="560" width="5" height="360" rx="3" fill="#ffffff" fill-opacity="0.35"/>
+        <rect x="90" y="720" width="120" height="120" fill="#F6F1EA" fill-opacity="0.92"/>
+        <text x="150" y="770" text-anchor="middle" font-family="Georgia, serif" font-size="16" letter-spacing="4" fill="#191714">{{ label | default: 'EAU' | upcase | truncate: 10, '' }}</text>
+        <line x1="108" y1="788" x2="192" y2="788" stroke="#191714" stroke-opacity="0.4"/>
+        <text x="150" y="816" text-anchor="middle" font-family="Georgia, serif" font-size="10" letter-spacing="3" fill="#191714">EAU DE PARFUM</text>
+      </g>
+      <rect x="116" y="478" width="68" height="36" rx="4" fill="url(#{{ id }}-metal)"/>
+      <g class="pb-pump"><rect x="132" y="442" width="36" height="22" rx="3" fill="url(#{{ id }}-metal)"/><rect x="141" y="462" width="18" height="20" fill="url(#{{ id }}-metal)"/></g>
+      <g class="pb-cap"><rect x="92" y="250" width="116" height="234" rx="12" fill="{{ c_cap }}"/><rect x="92" y="250" width="116" height="234" rx="12" fill="url(#{{ id }}-cap)"/><rect x="92" y="456" width="116" height="10" fill="#000000" fill-opacity="0.15"/></g>
+  {%- endcase -%}
+</svg>

@@ -1,0 +1,37 @@
+{%- comment -%} Slide-out cart drawer. Inner content is refreshed via the Section Rendering API (section: cart-drawer). {%- endcomment -%}
+<cart-drawer id="CartDrawer" class="drawer" role="dialog" aria-modal="true" aria-labelledby="CartDrawer-Title" tabindex="-1">
+  <button type="button" class="drawer__overlay" data-drawer-close tabindex="-1" aria-label="{{ 'accessibility.close' | t }}"></button>
+  <div class="drawer__panel color-scheme-1" tabindex="-1" data-cart-root>
+    <div id="CartDrawer-Inner" class="drawer__inner" style="display: contents;">
+      <div class="drawer__header">
+        <h2 class="drawer__title" id="CartDrawer-Title">
+          {{ 'sections.cart.title' | t }}
+          {%- if cart.item_count > 0 %} <span class="text-muted">({{ cart.item_count }})</span>{% endif -%}
+        </h2>
+        <button type="button" class="icon-button" data-drawer-close data-drawer-focus aria-label="{{ 'accessibility.close' | t }}">
+          {% render 'icon', icon: 'close' %}
+        </button>
+      </div>
+
+      <div class="drawer__body">
+        {%- if cart.empty? -%}
+          <div class="cart-empty">
+            <p class="h3">{{ 'sections.cart.empty' | t }}</p>
+            <a href="{{ routes.all_products_collection_url }}" class="button">{{ 'general.continue_shopping' | t }}</a>
+            {%- if shop.customer_accounts_enabled and customer == null -%}
+              <p>{{ 'sections.cart.login.paragraph_html' | t: link: routes.account_login_url }}</p>
+            {%- endif -%}
+          </div>
+        {%- else -%}
+          {% render 'cart-line-items' %}
+        {%- endif -%}
+      </div>
+
+      {%- unless cart.empty? -%}
+        <div class="drawer__footer">
+          {% render 'cart-summary', context: 'drawer' %}
+        </div>
+      {%- endunless -%}
+    </div>
+  </div>
+</cart-drawer>

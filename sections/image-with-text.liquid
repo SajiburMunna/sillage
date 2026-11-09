@@ -1,0 +1,151 @@
+<section
+  class="image-with-text section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width image-with-text__grid{% if section.settings.layout == 'text_first' %} image-with-text__grid--reverse{% endif %}">
+    <div class="image-with-text__media media media--{{ section.settings.image_ratio }}" data-reveal>
+      {%- if section.settings.image != blank -%}
+        {{
+          section.settings.image
+          | image_url: width: 1600
+          | image_tag:
+            widths: '375, 550, 750, 1100, 1600',
+            sizes: '(min-width: 990px) 50vw, 100vw',
+            loading: 'lazy',
+            alt: section.settings.image.alt
+        }}
+      {%- else -%}
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+    </div>
+    <div class="image-with-text__content" data-reveal>
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'eyebrow' -%}
+            <p class="eyebrow" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</p>
+          {%- when 'heading' -%}
+            <h2 class="h-display h-display--md" {{ block.shopify_attributes }}>{{ block.settings.heading }}</h2>
+          {%- when 'text' -%}
+            <div class="rte" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+          {%- when 'button' -%}
+            {%- if block.settings.label != blank -%}
+              <a
+                {% if block.settings.link != blank %}
+                  href="{{ block.settings.link }}"
+                {% else %}
+                  role="link" aria-disabled="true"
+                {% endif %}
+                class="button{% if block.settings.secondary %} button--secondary{% endif %}"
+                {{ block.shopify_attributes }}
+              >
+                {{- block.settings.label | escape }}
+                {% render 'icon', icon: 'arrow' %}
+              </a>
+            {%- endif -%}
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .image-with-text__grid {
+    display: grid;
+    gap: 4rem;
+    align-items: center;
+  }
+  @media screen and (min-width: 750px) {
+    .image-with-text__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(4rem, 7vw, 10rem);
+    }
+    .image-with-text__grid--reverse .image-with-text__media {
+      order: 2;
+    }
+  }
+  .image-with-text__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+  .image-with-text__content > * {
+    margin: 0;
+  }
+  .image-with-text__content .rte {
+    font-size: 1.7rem;
+    max-width: 48rem;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.image_with_text.name",
+  "tag": "div",
+  "class": "section",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "t:sections.all.image" },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "default": "portrait",
+      "label": "t:sections.all.image_ratio.label",
+      "options": [
+        { "value": "portrait", "label": "t:sections.all.image_ratio.options.portrait" },
+        { "value": "square", "label": "t:sections.all.image_ratio.options.square" },
+        { "value": "landscape", "label": "t:sections.all.image_ratio.options.landscape" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "default": "image_first",
+      "label": "t:sections.image_with_text.settings.layout.label",
+      "options": [
+        { "value": "image_first", "label": "t:sections.image_with_text.settings.layout.options__1.label" },
+        { "value": "text_first", "label": "t:sections.image_with_text.settings.layout.options__2.label" }
+      ]
+    },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-5" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 96 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 96 }
+  ],
+  "blocks": [
+    {
+      "type": "eyebrow",
+      "name": "t:sections.all.eyebrow",
+      "limit": 1,
+      "settings": [{ "type": "text", "id": "text", "default": "Our story", "label": "t:sections.all.text" }]
+    },
+    {
+      "type": "heading",
+      "name": "t:sections.all.heading",
+      "limit": 1,
+      "settings": [{ "type": "inline_richtext", "id": "heading", "default": "Every scent is worn by our team first.", "label": "t:sections.all.heading" }]
+    },
+    {
+      "type": "text",
+      "name": "t:sections.all.text",
+      "limit": 1,
+      "settings": [{ "type": "richtext", "id": "text", "default": "<p>Pair text with an image to share your brand story: where your ingredients come from, who blends them, and why each bottle exists.</p>", "label": "t:sections.all.text" }]
+    },
+    {
+      "type": "button",
+      "name": "t:sections.all.button",
+      "limit": 2,
+      "settings": [
+        { "type": "text", "id": "label", "default": "Read our story", "label": "t:sections.all.button_label" },
+        { "type": "url", "id": "link", "label": "t:sections.all.button_link" },
+        { "type": "checkbox", "id": "secondary", "default": false, "label": "t:sections.all.button_secondary" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.image_with_text.presets.name",
+      "blocks": [{ "type": "eyebrow" }, { "type": "heading" }, { "type": "text" }, { "type": "button" }]
+    }
+  ]
+}
+{% endschema %}
