@@ -38,12 +38,13 @@
                 {%- assign first_char = property.first | slice: 0 -%}
                 {%- if property.last != blank and first_char != '_' -%}
                   <div>
-                    <dt>{{ property.first }}:</dt>
+                    <dt>{{ property.first | escape }}:</dt>
                     <dd>
-                      {%- if property.last contains '/uploads/' -%}
-                        <a href="{{ property.last }}" class="link" target="_blank" rel="noopener">{{ property.last | split: '/' | last }}</a>
+                      {%- assign prop_scheme = property.last | slice: 0, 8 -%}
+                      {%- if prop_scheme == 'https://' and property.last contains '/uploads/' -%}
+                        <a href="{{ property.last | escape }}" class="link" target="_blank" rel="noopener">{{ property.last | split: "/" | last | escape }}</a>
                       {%- else -%}
-                        {{ property.last }}
+                        {{ property.last | escape }}
                       {%- endif -%}
                     </dd>
                   </div>

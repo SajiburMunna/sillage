@@ -18,8 +18,10 @@
   endcase
 
   assign loading = 'lazy'
+  assign priority = 'auto'
   if lazy == false
     assign loading = 'eager'
+    assign priority = 'high'
   endif
   assign img_sizes = sizes | default: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw'
 -%}
@@ -43,6 +45,7 @@
             widths: '240, 360, 480, 600, 800, 1000, 1200',
             sizes: img_sizes,
             loading: loading,
+            fetchpriority: priority,
             alt: featured.alt | default: product.title,
             class: 'card__image'
         }}

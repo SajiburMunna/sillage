@@ -25,7 +25,7 @@
 {%- if settings.cart_show_note -%}
   <cart-note class="cart__note field">
     <label for="CartNote-{{ context }}" class="field__label">{{ 'sections.cart.note' | t }}</label>
-    <textarea id="CartNote-{{ context }}" name="note" form="CartForm-{{ context }}" class="field__input" rows="2">{{ cart.note }}</textarea>
+    <textarea id="CartNote-{{ context }}" name="note" form="CartForm-{{ context }}" class="field__input" rows="2">{{ cart.note | escape }}</textarea>
   </cart-note>
 {%- endif -%}
 

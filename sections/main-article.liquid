@@ -57,15 +57,15 @@
           {%- endif -%}
           <div class="field">
             <label class="field__label" for="CommentForm-author">{{ 'blogs.article.name' | t }} <span aria-hidden="true">*</span></label>
-            <input type="text" name="comment[author]" id="CommentForm-author" autocomplete="name" value="{{ form.author }}" required aria-required="true">
+            <input type="text" name="comment[author]" id="CommentForm-author" autocomplete="name" value="{{ form.author | escape }}" required aria-required="true">
           </div>
           <div class="field">
             <label class="field__label" for="CommentForm-email">{{ 'blogs.article.email' | t }} <span aria-hidden="true">*</span></label>
-            <input type="email" name="comment[email]" id="CommentForm-email" autocomplete="email" value="{{ form.email }}" required aria-required="true">
+            <input type="email" name="comment[email]" id="CommentForm-email" autocomplete="email" value="{{ form.email | escape }}" required aria-required="true">
           </div>
           <div class="field">
             <label class="field__label" for="CommentForm-body">{{ 'blogs.article.message' | t }} <span aria-hidden="true">*</span></label>
-            <textarea rows="5" name="comment[body]" id="CommentForm-body" required aria-required="true">{{ form.body }}</textarea>
+            <textarea rows="5" name="comment[body]" id="CommentForm-body" required aria-required="true">{{ form.body | escape }}</textarea>
           </div>
           {%- if blog.moderated? -%}
             <p class="text-muted">{{ 'blogs.article.moderated' | t }}</p>

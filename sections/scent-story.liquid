@@ -205,12 +205,13 @@
       {%- comment -%} ---------- HERO ---------- {%- endcomment -%}
       <div class="ss-scrim" aria-hidden="true"></div>
       <div class="ss-hero" data-panel="0">
-        <{{ heading_tag }} class="ss-hero__heading">
+        {%- capture hero_label -%}{{ section.settings.hero_line_1 }} {{ section.settings.hero_line_2 }}{%- endcapture -%}
+        <{{ heading_tag }} class="ss-hero__heading" aria-label="{{ hero_label | strip | escape }}">
           {%- assign lines = section.settings.hero_line_1 | append: '|' | append: section.settings.hero_line_2 | split: '|' -%}
           {%- assign n = 0 -%}
           {%- for line in lines -%}
             {%- if line != blank -%}
-              <span class="ss-hero__line">
+              <span class="ss-hero__line" aria-hidden="true">
                 {%- assign words = line | split: ' ' -%}
                 {%- for word in words -%}
                   <span class="ss-word">

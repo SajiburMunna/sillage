@@ -1,7 +1,7 @@
 {
-  "current": "Default",
+  "current": "Sillage",
   "presets": {
-    "Default": {
+    "Sillage": {
       "logo_width": 120,
       "type_header_font": "marcellus_n4",
       "type_body_font": "nunito_sans_n4",

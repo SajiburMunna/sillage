@@ -21,20 +21,20 @@
       <div class="contact-form__row">
         <div class="field">
           <label class="field__label" for="ContactForm-name">{{ 'templates.contact.form.name' | t }}</label>
-          <input id="ContactForm-name" type="text" autocomplete="name" name="contact[{{ 'templates.contact.form.name' | t }}]" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}">
+          <input id="ContactForm-name" type="text" autocomplete="name" name="contact[{{ 'templates.contact.form.name' | t }}]" value="{% if form.name %}{{ form.name | escape }}{% elsif customer %}{{ customer.name | escape }}{% endif %}">
         </div>
         <div class="field">
           <label class="field__label" for="ContactForm-email">{{ 'templates.contact.form.email' | t }} <span aria-hidden="true">*</span></label>
-          <input id="ContactForm-email" type="email" autocomplete="email" name="contact[email]" required aria-required="true" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}">
+          <input id="ContactForm-email" type="email" autocomplete="email" name="contact[email]" required aria-required="true" value="{% if form.email %}{{ form.email | escape }}{% elsif customer %}{{ customer.email | escape }}{% endif %}">
         </div>
       </div>
       <div class="field">
         <label class="field__label" for="ContactForm-phone">{{ 'templates.contact.form.phone' | t }}</label>
-        <input id="ContactForm-phone" type="tel" autocomplete="tel" name="contact[{{ 'templates.contact.form.phone' | t }}]" pattern="[0-9\-]*" value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}">
+        <input id="ContactForm-phone" type="tel" autocomplete="tel" name="contact[{{ 'templates.contact.form.phone' | t }}]" pattern="[0-9\-]*" value="{% if form.phone %}{{ form.phone | escape }}{% elsif customer %}{{ customer.phone | escape }}{% endif %}">
       </div>
       <div class="field">
         <label class="field__label" for="ContactForm-body">{{ 'templates.contact.form.comment' | t }}</label>
-        <textarea rows="8" id="ContactForm-body" name="contact[{{ 'templates.contact.form.comment' | t }}]">{{- form.body -}}</textarea>
+        <textarea rows="8" id="ContactForm-body" name="contact[{{ 'templates.contact.form.comment' | t }}]">{{- form.body | escape -}}</textarea>
       </div>
       <button type="submit" class="button">{{ 'templates.contact.form.send' | t }}</button>
     {%- endform -%}

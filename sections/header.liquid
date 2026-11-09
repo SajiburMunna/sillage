@@ -67,7 +67,7 @@
       </nav>
     </div>
 
-    {%- if template.name == 'index' -%}<h1 class="header__logo">{%- else -%}<div class="header__logo">{%- endif -%}
+    <div class="header__logo">
       <a href="{{ routes.root_url }}" class="header__logo" style="text-decoration: none;">
         {%- if settings.logo != blank -%}
           {%- assign logo_2x = settings.logo_width | times: 2 -%}
@@ -88,7 +88,7 @@
           <span class="eyebrow" style="margin: 0; font-size: 0.9rem; letter-spacing: 0.4em;">{{ section.settings.tagline | escape }}</span>
         {%- endif -%}
       </a>
-    {%- if template.name == 'index' -%}</h1>{%- else -%}</div>{%- endif -%}
+    </div>
 
     <div class="header__icons">
       <a

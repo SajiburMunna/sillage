@@ -9,7 +9,7 @@
 >
   <div class="sv__inner">
     <div class="sv__top">
-      <h2 class="sv__title" data-reveal>{{ section.settings.heading | newline_to_br }}</h2>
+      <h2 class="sv__title" data-reveal>{{ section.settings.heading | escape | newline_to_br }}</h2>
       <div class="sv__slot" data-slot aria-hidden="true"></div>
       <div class="sv__ctas" data-reveal>
         {%- if section.settings.button_label_1 != blank -%}

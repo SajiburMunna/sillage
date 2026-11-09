@@ -87,11 +87,11 @@
           {%- when 'heading' -%}
             {%- if section.index == 1 -%}
               <h1 class="water-hero__heading h-display {{ block.settings.size }}" {{ block.shopify_attributes }}>
-                {{- block.settings.heading | newline_to_br -}}
+                {{- block.settings.heading | escape | newline_to_br -}}
               </h1>
             {%- else -%}
               <h2 class="water-hero__heading h-display {{ block.settings.size }}" {{ block.shopify_attributes }}>
-                {{- block.settings.heading | newline_to_br -}}
+                {{- block.settings.heading | escape | newline_to_br -}}
               </h2>
             {%- endif -%}
           {%- when 'text' -%}

@@ -11,7 +11,7 @@
         id="{{ form_id }}-Email"
         type="email"
         name="contact[email]"
-        value="{{ form.email }}"
+        value="{{ form.email | escape }}"
         autocomplete="email"
         autocorrect="off"
         autocapitalize="off"

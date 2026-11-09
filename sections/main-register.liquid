@@ -19,15 +19,15 @@
       {%- endif -%}
       <div class="field">
         <label for="RegisterForm-FirstName" class="field__label">{{ 'customer.register.first_name' | t }}</label>
-        <input type="text" name="customer[first_name]" id="RegisterForm-FirstName" autocomplete="given-name" {% if form.first_name %}value="{{ form.first_name }}"{% endif %}>
+        <input type="text" name="customer[first_name]" id="RegisterForm-FirstName" autocomplete="given-name" {% if form.first_name %}value="{{ form.first_name | escape }}"{% endif %}>
       </div>
       <div class="field">
         <label for="RegisterForm-LastName" class="field__label">{{ 'customer.register.last_name' | t }}</label>
-        <input type="text" name="customer[last_name]" id="RegisterForm-LastName" autocomplete="family-name" {% if form.last_name %}value="{{ form.last_name }}"{% endif %}>
+        <input type="text" name="customer[last_name]" id="RegisterForm-LastName" autocomplete="family-name" {% if form.last_name %}value="{{ form.last_name | escape }}"{% endif %}>
       </div>
       <div class="field">
         <label for="RegisterForm-email" class="field__label">{{ 'customer.register.email' | t }}</label>
-        <input type="email" name="customer[email]" id="RegisterForm-email" autocomplete="email" autocorrect="off" autocapitalize="off" {% if form.email %}value="{{ form.email }}"{% endif %} {% if form.errors contains 'email' %}aria-invalid="true"{% endif %}>
+        <input type="email" name="customer[email]" id="RegisterForm-email" autocomplete="email" autocorrect="off" autocapitalize="off" {% if form.email %}value="{{ form.email | escape }}"{% endif %} {% if form.errors contains 'email' %}aria-invalid="true"{% endif %}>
       </div>
       <div class="field">
         <label for="RegisterForm-password" class="field__label">{{ 'customer.register.password' | t }}</label>

@@ -1071,12 +1071,16 @@
   text-decoration: none;
   white-space: nowrap;
   opacity: 0;
-  transition: opacity 0.8s ease, background 0.3s ease;
+  transition: background 0.3s ease;
 }
 
+/* First appearance only; afterwards opacity follows the scroll with no delay */
 .ss-loaded .ss-wearing {
-  opacity: 1;
-  transition-delay: 1.4s;
+  animation: ss-wearing-in 0.8s ease 1.4s backwards;
+}
+
+@keyframes ss-wearing-in {
+  from { opacity: 0; }
 }
 
 .ss-wearing:hover {

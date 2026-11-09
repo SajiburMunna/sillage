@@ -4,14 +4,15 @@
 {%- if pick_up_availabilities.size > 0 -%}
   <div data-pickup-availability>
     {%- assign closest_location = pick_up_availabilities.first -%}
+    {%- assign location_name = closest_location.location.name | escape -%}
     <p style="display: flex; gap: 0.8rem; align-items: flex-start; margin: 0;">
       {% render 'icon', icon: 'pin' %}
       <span>
         {%- if closest_location.available -%}
-          {{ 'products.product.pickup_availability.pick_up_available_at_html' | t: location_name: closest_location.location.name }}
+          {{ 'products.product.pickup_availability.pick_up_available_at_html' | t: location_name: location_name }}
           <br><span class="text-muted">{{ closest_location.pick_up_time }}</span>
         {%- else -%}
-          {{ 'products.product.pickup_availability.pick_up_unavailable_at_html' | t: location_name: closest_location.location.name }}
+          {{ 'products.product.pickup_availability.pick_up_unavailable_at_html' | t: location_name: location_name }}
         {%- endif -%}
         <br>
         <button type="button" class="link" data-pickup-open aria-controls="PickupDrawer" aria-haspopup="dialog">
