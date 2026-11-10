@@ -1,0 +1,73 @@
+{{ 'section-marketing.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'marketing.js' | asset_url }}" defer="defer"></script>
+
+<promo-popup
+  class="pp"
+  data-delay="{{ section.settings.delay }}"
+  data-days="{{ section.settings.days }}"
+  data-id="{{ section.id }}"
+  hidden
+>
+  <div class="pp__overlay" data-pp-close></div>
+  <div class="pp__dialog color-{{ section.settings.color_scheme }}" role="dialog" aria-modal="true" aria-labelledby="PromoPopup-{{ section.id }}" tabindex="-1">
+    <button type="button" class="icon-button pp__close" data-pp-close aria-label="{{ 'accessibility.close' | t }}">{% render 'icon', icon: 'close' %}</button>
+    {%- if section.settings.image != blank -%}
+      <div class="pp__media media">
+        {{ section.settings.image | image_url: width: 800 | image_tag: widths: '400, 600, 800', sizes: '(min-width: 750px) 360px, 100vw', loading: 'lazy', alt: section.settings.image.alt }}
+      </div>
+    {%- endif -%}
+    <div class="pp__content">
+      {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+      <h2 class="h2 pp__title" id="PromoPopup-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
+      {%- if section.settings.text != blank -%}<div class="rte">{{ section.settings.text }}</div>{%- endif -%}
+      {%- case section.settings.action -%}
+        {%- when 'newsletter' -%}
+          {%- assign popup_form_id = 'PromoPopupForm-' | append: section.id -%}
+          {% render 'newsletter-form', form_id: popup_form_id %}
+        {%- when 'code' -%}
+          {%- if section.settings.code != blank -%}
+            <button type="button" class="pp__code" data-pp-copy="{{ section.settings.code | escape }}">
+              <span>{{ section.settings.code | escape }}</span>
+              <span class="pp__code-hint" data-copied="{{ 'sections.promo_popup.copied' | t | escape }}">{{ 'sections.promo_popup.copy' | t }}</span>
+            </button>
+          {%- endif -%}
+      {%- endcase -%}
+      {%- if section.settings.button_label != blank -%}
+        <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="button">{{ section.settings.button_label | escape }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</promo-popup>
+
+{% schema %}
+{
+  "name": "t:sections.promo_popup.name",
+  "tag": "div",
+  "class": "section-popup",
+  "enabled_on": { "groups": ["footer"] },
+  "settings": [
+    { "type": "range", "id": "delay", "min": 2, "max": 60, "step": 1, "unit": "s", "default": 8, "label": "t:sections.promo_popup.settings.delay.label" },
+    { "type": "range", "id": "days", "min": 1, "max": 30, "step": 1, "default": 7, "label": "t:sections.promo_popup.settings.days.label", "info": "t:sections.promo_popup.settings.days.info" },
+    { "type": "image_picker", "id": "image", "label": "t:sections.all.image" },
+    { "type": "text", "id": "eyebrow", "default": "Welcome", "label": "t:sections.all.eyebrow" },
+    { "type": "text", "id": "heading", "default": "10% off your first bottle", "label": "t:sections.all.heading" },
+    { "type": "richtext", "id": "text", "default": "<p>Join the list for new scents, restocks and a welcome gift.</p>", "label": "t:sections.all.text" },
+    {
+      "type": "select",
+      "id": "action",
+      "default": "newsletter",
+      "label": "t:sections.promo_popup.settings.action.label",
+      "options": [
+        { "value": "newsletter", "label": "t:sections.promo_popup.settings.action.options__1.label" },
+        { "value": "code", "label": "t:sections.promo_popup.settings.action.options__2.label" },
+        { "value": "none", "label": "t:sections.promo_popup.settings.action.options__3.label" }
+      ]
+    },
+    { "type": "text", "id": "code", "default": "WELCOME10", "label": "t:sections.promo_popup.settings.code.label", "info": "t:sections.promo_popup.settings.code.info" },
+    { "type": "text", "id": "button_label", "label": "t:sections.all.button_label" },
+    { "type": "url", "id": "button_link", "label": "t:sections.all.button_link" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" }
+  ],
+  "presets": [{ "name": "t:sections.promo_popup.presets.name" }]
+}
+{% endschema %}

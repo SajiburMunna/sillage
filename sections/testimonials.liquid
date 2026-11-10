@@ -1,0 +1,78 @@
+{{ 'section-marketing.css' | asset_url | stylesheet_tag }}
+
+<div
+  class="tm section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <div class="section-header" data-reveal>
+        <div>
+          {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+          <h2 class="section-header__title h-display h-display--md">{{ section.settings.heading | escape }}</h2>
+        </div>
+      </div>
+    {%- endif -%}
+    <ul class="tm__grid" role="list">
+      {%- for block in section.blocks -%}
+        <li class="tm__card" data-reveal style="--delay: {{ forloop.index0 | modulo: 3 | times: 0.08 }}s;" {{ block.shopify_attributes }}>
+          {%- if block.settings.rating > 0 -%}
+            <p class="tm__stars" aria-label="{{ 'sections.testimonials.rating' | t: rating: block.settings.rating }}">
+              {%- for i in (1..5) -%}<span aria-hidden="true" class="{% if i <= block.settings.rating %}is-on{% endif %}">★</span>{%- endfor -%}
+            </p>
+          {%- endif -%}
+          <blockquote class="tm__quote">{{ block.settings.quote | escape | newline_to_br }}</blockquote>
+          <p class="tm__author">
+            <span class="tm__name">{{ block.settings.author | escape }}</span>
+            {%- if block.settings.detail != blank -%}<span class="tm__detail">{{ block.settings.detail | escape }}</span>{%- endif -%}
+          </p>
+          {%- assign p = block.settings.product -%}
+          {%- if p != blank -%}
+            <a href="{{ p.url }}" class="tm__product">
+              {%- if p.featured_media -%}
+                {{ p.featured_media | image_url: width: 96 | image_tag: loading: 'lazy', widths: '48, 96', sizes: '48px', alt: '' }}
+              {%- endif -%}
+              <span class="link-underline">{{ p.title | escape }}</span>
+            </a>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.testimonials.name",
+  "tag": "section",
+  "class": "section",
+  "max_blocks": 9,
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "text", "id": "eyebrow", "default": "Kind words", "label": "t:sections.all.eyebrow" },
+    { "type": "text", "id": "heading", "default": "Worn and loved", "label": "t:sections.all.heading" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 96 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 96 }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "t:sections.testimonials.blocks.testimonial.name",
+      "settings": [
+        { "type": "textarea", "id": "quote", "default": "Share what a customer loved about your scents, in their own words.", "label": "t:sections.testimonials.blocks.testimonial.settings.quote.label" },
+        { "type": "text", "id": "author", "default": "Customer name", "label": "t:sections.testimonials.blocks.testimonial.settings.author.label" },
+        { "type": "text", "id": "detail", "default": "Verified buyer", "label": "t:sections.testimonials.blocks.testimonial.settings.detail.label" },
+        { "type": "range", "id": "rating", "min": 0, "max": 5, "step": 1, "default": 5, "label": "t:sections.testimonials.blocks.testimonial.settings.rating.label", "info": "t:sections.testimonials.blocks.testimonial.settings.rating.info" },
+        { "type": "product", "id": "product", "label": "t:sections.testimonials.blocks.testimonial.settings.product.label" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.testimonials.presets.name",
+      "blocks": [{ "type": "testimonial" }, { "type": "testimonial" }, { "type": "testimonial" }]
+    }
+  ]
+}
+{% endschema %}

@@ -4,8 +4,8 @@
     "link_messages": {
       "new_window": "Opens in a new window."
     },
-    "pause_animation": "Pause water animation",
-    "play_animation": "Play water animation",
+    "pause_animation": "Pause background animation",
+    "play_animation": "Play background animation",
     "skip_to_text": "Skip to content",
     "unit_price_separator": "per",
     "vendor": "Vendor:"
@@ -260,7 +260,9 @@
       "taxes_included": "Taxes included.",
       "unavailable": "Unavailable",
       "variant_sold_out_or_unavailable": "Variant sold out or unavailable",
-      "view_full_details": "View full details"
+      "view_full_details": "View full details",
+      "quick_view": "Quick view",
+      "quick_view_named": "Quick view {{ title }}"
     }
   },
   "recipient": {
@@ -292,7 +294,13 @@
       "taxes_and_shipping_at_checkout": "Taxes, discounts and shipping calculated at checkout.",
       "taxes_included_shipping_at_checkout_with_policy_html": "Taxes included. Discounts and <a href=\"{{ link }}\" class=\"link\">shipping</a> calculated at checkout.",
       "title": "Your bag",
-      "update": "Update"
+      "update": "Update",
+      "free_shipping_remaining_html": "You're <strong>{{ amount }}</strong> away from free shipping",
+      "free_shipping_unlocked": "You've unlocked free shipping",
+      "free_shipping_progress": "Progress towards free shipping",
+      "gift_wrap_label": "Add gift wrapping",
+      "gift_message_label": "Gift message",
+      "gift_message_placeholder": "Write a note for the recipient (optional)"
     },
     "collection": {
       "clear_all": "Clear all",
@@ -331,6 +339,54 @@
       "now_wearing": "Now wearing",
       "scroll": "Scroll to explore",
       "spray": "Spray {{ name }}"
+    },
+    "scent_quiz": {
+      "start": "Start the quiz",
+      "next": "Next",
+      "back": "Back",
+      "show_results": "Show my matches",
+      "restart": "Start again",
+      "step": "Question {{ current }} of {{ total }}",
+      "results_eyebrow": "Picked for you",
+      "match": "{{ percent }}% match",
+      "family_hints": {
+        "fresh": "Citrus, sea air, green notes",
+        "floral": "Rose, jasmine, soft petals",
+        "woody": "Cedar, oud, sandalwood",
+        "amber": "Vanilla, resin, warm spice"
+      },
+      "occasions": {
+        "day": "Every day",
+        "evening": "Evenings out",
+        "both": "A bit of both"
+      },
+      "strengths": {
+        "light": "Light and close",
+        "balanced": "Balanced",
+        "bold": "Bold and lasting"
+      }
+    },
+    "discovery_set": {
+      "chosen": "{{ chosen }} of {{ size }} chosen",
+      "add": "Add set to bag",
+      "property": "Discovery set"
+    },
+    "testimonials": {
+      "rating": "Rated {{ rating }} out of 5"
+    },
+    "promo_popup": {
+      "copy": "Tap to copy",
+      "copied": "Copied"
+    },
+    "countdown": {
+      "days": "Days",
+      "hours": "Hours",
+      "minutes": "Min",
+      "seconds": "Sec"
+    },
+    "store_locations": {
+      "hours": "Opening hours",
+      "directions": "Get directions"
     }
   },
   "templates": {

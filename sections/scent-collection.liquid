@@ -2,10 +2,8 @@
 <script src="{{ 'scent-sections.js' | asset_url }}" defer="defer"></script>
 
 {%- liquid
-  assign collection = section.settings.collection
-  if collection == blank
-    assign collection = collections.all
-  endif
+  assign tabs = section.blocks | where: 'type', 'tab'
+  assign single = section.settings.collection | default: collections.all
   assign styles = 'flacon,round,tall,spray' | split: ','
   assign tones = '#9ED3D6,#E7B9C2,#B89B7A,#D9A35F' | split: ','
 -%}
@@ -20,7 +18,7 @@
       <div>
         <span class="sc__eyebrow">
           {{- section.settings.eyebrow | escape }}
-          {%- if collection != blank %} · {{ 'sections.scent_collection.count' | t: count: collection.products_count }}{% endif -%}
+          {%- if tabs.size == 0 and single != blank %} · {{ 'sections.scent_collection.count' | t: count: single.products_count }}{% endif -%}
         </span>
         <h2 class="sc__title">{{ section.settings.heading | escape }}</h2>
       </div>
@@ -29,76 +27,118 @@
       {%- endif -%}
     </header>
 
-    <ul class="sc__grid" role="list">
-      {%- if collection != blank and collection.products_count > 0 -%}
-        {%- for product in collection.products limit: section.settings.limit -%}
+    {%- if tabs.size > 0 -%}
+      <sc-tabs class="sc-tabs">
+        <div class="sc-tabs__nav" role="tablist" aria-label="{{ section.settings.heading | escape }}">
+          {%- for block in tabs -%}
+            <button
+              type="button"
+              role="tab"
+              class="sc-tabs__tab"
+              id="ScTab-{{ block.id }}"
+              aria-controls="ScPanel-{{ block.id }}"
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              {{- block.settings.title | escape -}}
+            </button>
+          {%- endfor -%}
+        </div>
+
+        {%- for block in tabs -%}
           {%- liquid
-            assign variant = product.selected_or_first_available_variant
-            assign in_cart = 0
-            for item in cart.items
-              if item.variant_id == variant.id
-                assign in_cart = in_cart | plus: item.quantity
-              endif
-            endfor
-            assign style_index = forloop.index0 | modulo: 4
-            assign notes = product.metafields.custom.notes | default: product.metafields.custom.top_notes
+            assign source = block.settings.source
+            assign value = block.settings.value | strip
+            assign value_lower = value | downcase
+            assign tab_collection = block.settings.collection | default: collections.all
+            assign view_all = tab_collection.url
+            if source == 'type' and value != blank
+              assign encoded = value | url_encode
+              assign view_all = routes.collections_url | append: '/types?q=' | append: encoded
+            elsif source == 'tag' and value != blank
+              assign tag_handle = value | handle
+              assign view_all = routes.all_products_collection_url | append: '/' | append: tag_handle
+            endif
+            assign shown = 0
           -%}
-          <li class="sc-card" data-reveal style="--delay: {{ forloop.index0 | modulo: 4 | times: 0.08 }}s;">
-            <a href="{{ product.url }}" class="sc-card__media" tabindex="-1" aria-hidden="true">
-              {%- if in_cart > 0 -%}
-                <span class="sc-card__badge">{% render 'icon', icon: 'check' %} {{ 'sections.scent_collection.in_bag' | t: count: in_cart }}</span>
-              {%- elsif product.available == false -%}
-                <span class="sc-card__badge">{{ 'products.product.sold_out' | t }}</span>
-              {%- endif -%}
-              <span class="sc-card__bottle">
-                {%- if product.featured_media -%}
-                  {%- render 'bottle-photo', image: product.featured_media, sizes: '(min-width: 990px) 25vw, 50vw' -%}
-                {%- else -%}
-                  {%- capture uid -%}sc{{ forloop.index }}{{ product.id | slice: -4, 4 }}{%- endcapture -%}
-                  {%- render 'perfume-bottle', style: styles[style_index], liquid: tones[style_index], label: product.title, uid: uid -%}
+          <div
+            class="sc-tabs__panel"
+            role="tabpanel"
+            id="ScPanel-{{ block.id }}"
+            aria-labelledby="ScTab-{{ block.id }}"
+            tabindex="0"
+            {% unless forloop.first %}
+              hidden
+            {% endunless %}
+          >
+            <ul class="sc__grid" role="list">
+              {%- for product in tab_collection.products -%}
+                {%- liquid
+                  assign include = true
+                  if source == 'type' and value != blank
+                    assign ptype = product.type | downcase
+                    if ptype != value_lower
+                      assign include = false
+                    endif
+                  elsif source == 'tag' and value != blank
+                    assign include = false
+                    for tag in product.tags
+                      assign t_lower = tag | downcase
+                      if t_lower == value_lower
+                        assign include = true
+                      endif
+                    endfor
+                  endif
+                  if shown >= section.settings.limit
+                    assign include = false
+                  endif
+                -%}
+                {%- if include -%}
+                  {%- capture uid_prefix -%}sc{{ block.id | slice: -5, 5 }}{%- endcapture -%}
+                  {%- render 'scent-card', product: product, index: shown, uid_prefix: uid_prefix -%}
+                  {%- assign shown = shown | plus: 1 -%}
                 {%- endif -%}
-              </span>
-            </a>
-            <span class="sc-card__vendor">{{ product.vendor | escape }}</span>
-            <h3 class="sc-card__title"><a href="{{ product.url }}" class="link-underline">{{ product.title | escape }}</a></h3>
-            <p class="sc-card__notes">
-              {%- if notes != blank -%}{{ notes | escape }}{%- else -%}{{ product.description | strip_html | truncatewords: 12 }}{%- endif -%}
-            </p>
-            <div class="sc-card__price">{% render 'price', product: product %}</div>
-            {%- if product.has_only_default_variant and variant.available -%}
-              <cart-stepper class="sc-card__action" data-variant="{{ variant.id }}" data-qty="{{ in_cart }}" data-name="{{ product.title | escape }}">
-                <button type="button" class="sc-add" data-stepper-add{% if in_cart > 0 %} hidden{% endif %} aria-label="{{ 'products.product.add_to_cart_named' | t: title: product.title | escape }}">
-                  {% render 'icon', icon: 'plus' %}
-                  {{ 'products.product.add_to_cart' | t }}
-                </button>
-                <div class="sc-stepper" role="group" aria-label="{{ 'products.product.quantity.label' | t }}"{% if in_cart == 0 %} hidden{% endif %}>
-                  <button type="button" class="sc-stepper__btn" data-stepper="-1" aria-label="{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}">{% render 'icon', icon: 'minus' %}</button>
-                  <span class="sc-stepper__qty" aria-live="polite" data-stepper-label="{{ 'sections.scent_collection.in_bag' | t: count: 0 | replace: '0', '[count]' }}">{{ 'sections.scent_collection.in_bag' | t: count: in_cart }}</span>
-                  <button type="button" class="sc-stepper__btn" data-stepper="1" aria-label="{{ 'products.product.quantity.increase' | t: product: product.title | escape }}">{% render 'icon', icon: 'plus' %}</button>
-                </div>
-              </cart-stepper>
-            {%- elsif product.available -%}
-              <a href="{{ product.url }}" class="sc-add">{{ 'products.product.choose_options' | t }}</a>
+              {%- endfor -%}
+            </ul>
+            {%- if shown == 0 -%}
+              <p class="sc-tabs__empty">{{ 'sections.collection.empty' | t }}</p>
+            {%- elsif block.settings.show_view_all -%}
+              <div class="sc-tabs__more">
+                <a href="{{ view_all }}" class="button button--secondary">
+                  {{ 'sections.featured_collection.view_all' | t }}
+                  <span class="visually-hidden">{{ block.settings.title | escape }}</span>
+                  {% render 'icon', icon: 'arrow' %}
+                </a>
+              </div>
             {%- endif -%}
-          </li>
+          </div>
         {%- endfor -%}
-      {%- else -%}
-        {%- for i in (1..4) -%}
-          {%- assign style_index = i | minus: 1 -%}
-          <li class="sc-card" data-reveal style="--delay: {{ style_index | times: 0.08 }}s;">
-            <div class="sc-card__media">
-              <span class="sc-card__bottle">
-                {%- capture uid -%}scp{{ i }}{%- endcapture -%}
-                {%- render 'perfume-bottle', style: styles[style_index], liquid: tones[style_index], uid: uid -%}
-              </span>
-            </div>
-            <span class="sc-card__vendor">{{ shop.name | escape }}</span>
-            <h3 class="sc-card__title">{{ 'onboarding.product_title' | t }}</h3>
-            <p class="sc-card__notes">{{ 'sections.scent_collection.placeholder_notes' | t }}</p>
-          </li>
-        {%- endfor -%}
-      {%- endif -%}
-    </ul>
+      </sc-tabs>
+    {%- else -%}
+      <ul class="sc__grid" role="list">
+        {%- if single.products_count > 0 -%}
+          {%- for product in single.products limit: section.settings.limit -%}
+            {%- render 'scent-card', product: product, index: forloop.index0, uid_prefix: 'sc' -%}
+          {%- endfor -%}
+        {%- else -%}
+          {%- for i in (1..4) -%}
+            {%- assign style_index = i | minus: 1 -%}
+            <li class="sc-card" data-reveal style="--delay: {{ style_index | times: 0.08 }}s;">
+              <div class="sc-card__media">
+                <span class="sc-card__bottle">
+                  {%- capture uid -%}scp{{ i }}{%- endcapture -%}
+                  {%- render 'perfume-bottle', style: styles[style_index], liquid: tones[style_index], uid: uid -%}
+                </span>
+              </div>
+              <span class="sc-card__vendor">{{ shop.name | escape }}</span>
+              <h3 class="sc-card__title">{{ 'onboarding.product_title' | t }}</h3>
+              <p class="sc-card__notes">{{ 'sections.scent_collection.placeholder_notes' | t }}</p>
+            </li>
+          {%- endfor -%}
+        {%- endif -%}
+      </ul>
+    {%- endif -%}
   </div>
 </div>
 
@@ -107,19 +147,165 @@
   "name": "t:sections.scent_collection.name",
   "tag": "section",
   "class": "section",
-  "disabled_on": { "groups": ["header", "footer"] },
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
   "settings": [
-    { "type": "text", "id": "eyebrow", "default": "Shop", "label": "t:sections.all.eyebrow" },
-    { "type": "text", "id": "heading", "default": "The collection", "label": "t:sections.all.heading" },
-    { "type": "richtext", "id": "text", "default": "<p>Every scent on the shelf right now. Members save on every bottle.</p>", "label": "t:sections.all.description" },
-    { "type": "collection", "id": "collection", "label": "t:sections.featured_collection.settings.collection.label" },
-    { "type": "range", "id": "limit", "min": 4, "max": 16, "step": 1, "default": 8, "label": "t:sections.all.products_to_show" },
-    { "type": "paragraph", "content": "t:sections.scent_collection.settings.paragraph.content" },
-    { "type": "text", "id": "anchor", "default": "collection", "label": "t:sections.scent_collection.settings.anchor.label" },
-    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" },
-    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 96 },
-    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 120 }
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "default": "Shop",
+      "label": "t:sections.all.eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "The collection",
+      "label": "t:sections.all.heading"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "default": "<p>Every scent on the shelf right now. Members save on every bottle.</p>",
+      "label": "t:sections.all.description"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "t:sections.featured_collection.settings.collection.label",
+      "info": "t:sections.scent_collection.settings.collection.info"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "min": 4,
+      "max": 16,
+      "step": 1,
+      "default": 8,
+      "label": "t:sections.all.products_to_show"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:sections.scent_collection.settings.paragraph.content"
+    },
+    {
+      "type": "text",
+      "id": "anchor",
+      "default": "collection",
+      "label": "t:sections.scent_collection.settings.anchor.label"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding_top",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding_bottom",
+      "default": 120
+    }
   ],
-  "presets": [{ "name": "t:sections.scent_collection.presets.name" }]
+  "presets": [
+    {
+      "name": "t:sections.scent_collection.presets.name",
+      "blocks": [
+        {
+          "type": "tab",
+          "settings": {
+            "title": "Featured",
+            "source": "collection"
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "title": "Eaux de parfum",
+            "source": "type",
+            "value": "Eau de parfum"
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "title": "Attars",
+            "source": "type",
+            "value": "Oil-based attar"
+          }
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "t:sections.scent_collection.blocks.tab.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Featured",
+          "label": "t:sections.scent_collection.blocks.tab.settings.title.label"
+        },
+        {
+          "type": "select",
+          "id": "source",
+          "default": "collection",
+          "label": "t:sections.scent_collection.blocks.tab.settings.source.label",
+          "options": [
+            {
+              "value": "collection",
+              "label": "t:sections.scent_collection.blocks.tab.settings.source.options__1.label"
+            },
+            {
+              "value": "type",
+              "label": "t:sections.scent_collection.blocks.tab.settings.source.options__2.label"
+            },
+            {
+              "value": "tag",
+              "label": "t:sections.scent_collection.blocks.tab.settings.source.options__3.label"
+            }
+          ]
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "t:sections.scent_collection.blocks.tab.settings.collection.label",
+          "info": "t:sections.scent_collection.blocks.tab.settings.collection.info"
+        },
+        {
+          "type": "text",
+          "id": "value",
+          "label": "t:sections.scent_collection.blocks.tab.settings.value.label",
+          "info": "t:sections.scent_collection.blocks.tab.settings.value.info"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_view_all",
+          "default": true,
+          "label": "t:sections.featured_collection.settings.show_view_all.label"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6
 }
 {% endschema %}

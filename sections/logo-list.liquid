@@ -1,0 +1,67 @@
+{{ 'section-marketing.css' | asset_url | stylesheet_tag }}
+
+<div
+  class="ll section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <p class="eyebrow ll__heading">{{ section.settings.heading | escape }}</p>
+    {%- endif -%}
+    <ul class="ll__list" role="list">
+      {%- for block in section.blocks -%}
+        <li class="ll__item" {{ block.shopify_attributes }}>
+          {%- capture logo -%}
+            {%- if block.settings.image != blank -%}
+              {{ block.settings.image | image_url: width: 400 | image_tag: loading: 'lazy', widths: '200, 400', sizes: '160px', alt: block.settings.image.alt | default: block.settings.name }}
+            {%- else -%}
+              <span class="ll__text">{{ block.settings.name | escape }}</span>
+            {%- endif -%}
+          {%- endcapture -%}
+          {%- if block.settings.link != blank -%}
+            <a href="{{ block.settings.link }}" class="ll__link">{{ logo }}</a>
+          {%- else -%}
+            {{ logo }}
+          {%- endif -%}
+          {%- if block.settings.quote != blank -%}
+            <p class="ll__quote">“{{ block.settings.quote | escape }}”</p>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.logo_list.name",
+  "tag": "section",
+  "class": "section",
+  "max_blocks": 8,
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "text", "id": "heading", "default": "As seen in", "label": "t:sections.all.heading" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 48 }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "t:sections.logo_list.blocks.logo.name",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "t:sections.all.image", "info": "t:sections.logo_list.blocks.logo.settings.image.info" },
+        { "type": "text", "id": "name", "default": "Publication", "label": "t:sections.logo_list.blocks.logo.settings.name.label" },
+        { "type": "text", "id": "quote", "label": "t:sections.logo_list.blocks.logo.settings.quote.label" },
+        { "type": "url", "id": "link", "label": "t:sections.all.link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.logo_list.presets.name",
+      "blocks": [{ "type": "logo" }, { "type": "logo" }, { "type": "logo" }, { "type": "logo" }]
+    }
+  ]
+}
+{% endschema %}

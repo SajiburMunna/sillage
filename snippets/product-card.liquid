@@ -65,6 +65,19 @@
         {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
       {%- endif -%}
 
+      {%- if settings.card_show_quick_view -%}
+        <button
+          type="button"
+          class="card__quick-view"
+          data-quick-view="{{ product.url }}"
+          aria-label="{{ 'products.product.quick_view_named' | t: title: product.title | escape }}"
+          aria-haspopup="dialog"
+        >
+          {% render 'icon', icon: 'search' %}
+          <span>{{ 'products.product.quick_view' | t }}</span>
+        </button>
+      {%- endif -%}
+
       <div class="card__badges">
         {%- if product.available == false -%}
           <span class="badge badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
@@ -137,6 +150,9 @@
             href="{{ product.url }}"
             class="button button--secondary button--small button--full"
             aria-label="{{ 'products.product.choose_options_named' | t: title: product.title | escape }}"
+            {% if settings.card_show_quick_view %}
+              data-quick-view="{{ product.url }}" aria-haspopup="dialog"
+            {% endif %}
           >
             {{- 'products.product.choose_options' | t -}}
           </a>

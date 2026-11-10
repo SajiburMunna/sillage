@@ -1,0 +1,191 @@
+{
+  "sections": {
+    "intro": {
+      "type": "rich-text",
+      "blocks": {
+        "e": {
+          "type": "eyebrow",
+          "settings": {
+            "text": "Our story"
+          }
+        },
+        "h": {
+          "type": "heading",
+          "settings": {
+            "heading": "A small house of honest scents",
+            "size": "h-display--lg"
+          }
+        },
+        "t": {
+          "type": "text",
+          "settings": {
+            "text": "<p>We started with one shelf and a handful of oils. Today we blend a short list of scents we wear ourselves, in small batches, with clean ingredients.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "e",
+        "h",
+        "t"
+      ],
+      "settings": {
+        "alignment": "center",
+        "color_scheme": "scheme-1",
+        "padding_top": 96,
+        "padding_bottom": 72
+      }
+    },
+    "house": {
+      "type": "scent-house",
+      "blocks": {
+        "b1": {
+          "type": "bottle",
+          "settings": {
+            "bottle_style": "round",
+            "label": "Peony",
+            "liquid": "#E7B9C2"
+          }
+        },
+        "b2": {
+          "type": "bottle",
+          "settings": {
+            "bottle_style": "flacon",
+            "label": "Aqua",
+            "liquid": "#9ED3D6"
+          }
+        },
+        "b3": {
+          "type": "bottle",
+          "settings": {
+            "bottle_style": "spray",
+            "label": "Amber",
+            "liquid": "#D9A35F"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3"
+      ],
+      "settings": {
+        "eyebrow": "How we work",
+        "heading": "Every scent is worn by our team first.",
+        "text": "<p>Nothing reaches the shelf until we have worn it for weeks: at work, at dinner, in the rain. If it doesn't earn its place, it doesn't ship.</p>",
+        "button_label": "Find your scent",
+        "button_link": "",
+        "ring_text": "Blended \u00b7 Worn \u00b7 Bottled by hand",
+        "caption": "Worn by the team",
+        "est": "Est. 2024",
+        "bg": "#CFC6BD",
+        "circle": "#1D1A17",
+        "anchor": "story",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    },
+    "video": {
+      "type": "video",
+      "settings": {
+        "heading": "Made by hand, one batch at a time",
+        "ratio": "16 / 9",
+        "full_width": false,
+        "color_scheme": "scheme-1",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "blocks": {
+        "t1": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "I get asked what I'm wearing every single time. It lasts all day and never feels too much.",
+            "author": "Amira K.",
+            "detail": "Verified buyer",
+            "rating": 5
+          }
+        },
+        "t2": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The discovery set was the best way to find my scent. Now I own two full bottles.",
+            "author": "Daniel R.",
+            "detail": "Verified buyer",
+            "rating": 5
+          }
+        },
+        "t3": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Beautiful bottles, warm and honest scents, and the gift wrapping made it feel special.",
+            "author": "Sofia M.",
+            "detail": "Verified buyer",
+            "rating": 5
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "settings": {
+        "eyebrow": "Kind words",
+        "heading": "Worn and loved",
+        "color_scheme": "scheme-1",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    },
+    "logos": {
+      "type": "logo-list",
+      "blocks": {
+        "l0": {
+          "type": "logo",
+          "settings": {
+            "name": "Vogue"
+          }
+        },
+        "l1": {
+          "type": "logo",
+          "settings": {
+            "name": "Elle"
+          }
+        },
+        "l2": {
+          "type": "logo",
+          "settings": {
+            "name": "Monocle"
+          }
+        },
+        "l3": {
+          "type": "logo",
+          "settings": {
+            "name": "Kinfolk"
+          }
+        }
+      },
+      "block_order": [
+        "l0",
+        "l1",
+        "l2",
+        "l3"
+      ],
+      "settings": {
+        "heading": "As seen in",
+        "color_scheme": "scheme-1",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    }
+  },
+  "order": [
+    "intro",
+    "house",
+    "video",
+    "testimonials",
+    "logos"
+  ]
+}

@@ -11,6 +11,7 @@
   style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
   data-product-root
   data-section="{{ section.id }}"
+  data-viewed-handle="{{ product.handle }}"
 >
   <div class="page-width product__grid">
     {%- comment -%} Media {%- endcomment -%}
@@ -174,6 +175,27 @@
   <script type="application/json" data-selected-variant hidden>
     {{ current_variant | json }}
   </script>
+
+  {%- if section.settings.show_sticky_cart and product.available -%}
+    <sticky-atc class="sticky-atc color-{{ section.settings.color_scheme }}" data-form="ProductForm-{{ section.id }}" hidden>
+      <div class="page-width sticky-atc__inner">
+        <div class="sticky-atc__product">
+          {%- if featured_media -%}
+            {{ featured_media.preview_image | image_url: width: 120 | image_tag: loading: 'lazy', widths: '60, 120', sizes: '48px', alt: '', class: 'sticky-atc__image' }}
+          {%- endif -%}
+          <div>
+            <p class="sticky-atc__title">{{ product.title | escape }}</p>
+            <div class="sticky-atc__price" data-product-update="sticky-price">
+              {% render 'price', product: product, use_variant: true %}
+            </div>
+          </div>
+        </div>
+        <button type="submit" form="ProductForm-{{ section.id }}" name="add" class="button sticky-atc__button" data-product-update-button>
+          {{ 'products.product.add_to_cart' | t }}
+        </button>
+      </div>
+    </sticky-atc>
+  {%- endif -%}
 </section>
 
 <script type="application/ld+json">
@@ -186,27 +208,52 @@
   "tag": "div",
   "class": "section",
   "blocks": [
-    { "type": "@app" },
+    {
+      "type": "@app"
+    },
     {
       "type": "text",
       "name": "t:sections.main_product.blocks.text.name",
       "settings": [
-        { "type": "inline_richtext", "id": "text", "default": "Text block", "label": "t:sections.main_product.blocks.text.settings.text.label" },
+        {
+          "type": "inline_richtext",
+          "id": "text",
+          "default": "Text block",
+          "label": "t:sections.main_product.blocks.text.settings.text.label"
+        },
         {
           "type": "select",
           "id": "style",
           "default": "eyebrow",
           "label": "t:sections.main_product.blocks.text.settings.style.label",
           "options": [
-            { "value": "eyebrow", "label": "t:sections.main_product.blocks.text.settings.style.options__1.label" },
-            { "value": "text-muted", "label": "t:sections.main_product.blocks.text.settings.style.options__2.label" }
+            {
+              "value": "eyebrow",
+              "label": "t:sections.main_product.blocks.text.settings.style.options__1.label"
+            },
+            {
+              "value": "text-muted",
+              "label": "t:sections.main_product.blocks.text.settings.style.options__2.label"
+            }
           ]
         }
       ]
     },
-    { "type": "vendor", "name": "t:sections.main_product.blocks.vendor.name", "limit": 1 },
-    { "type": "title", "name": "t:sections.main_product.blocks.title.name", "limit": 1 },
-    { "type": "price", "name": "t:sections.main_product.blocks.price.name", "limit": 1 },
+    {
+      "type": "vendor",
+      "name": "t:sections.main_product.blocks.vendor.name",
+      "limit": 1
+    },
+    {
+      "type": "title",
+      "name": "t:sections.main_product.blocks.title.name",
+      "limit": 1
+    },
+    {
+      "type": "price",
+      "name": "t:sections.main_product.blocks.price.name",
+      "limit": 1
+    },
     {
       "type": "variant_picker",
       "name": "t:sections.main_product.blocks.variant_picker.name",
@@ -218,8 +265,14 @@
           "default": "buttons",
           "label": "t:sections.main_product.blocks.variant_picker.settings.picker_type.label",
           "options": [
-            { "value": "buttons", "label": "t:sections.main_product.blocks.variant_picker.settings.picker_type.options__1.label" },
-            { "value": "dropdown", "label": "t:sections.main_product.blocks.variant_picker.settings.picker_type.options__2.label" }
+            {
+              "value": "buttons",
+              "label": "t:sections.main_product.blocks.variant_picker.settings.picker_type.options__1.label"
+            },
+            {
+              "value": "dropdown",
+              "label": "t:sections.main_product.blocks.variant_picker.settings.picker_type.options__2.label"
+            }
           ]
         }
       ]
@@ -229,10 +282,31 @@
       "name": "t:sections.main_product.blocks.buy_buttons.name",
       "limit": 1,
       "settings": [
-        { "type": "checkbox", "id": "show_quantity", "default": true, "label": "t:sections.main_product.blocks.buy_buttons.settings.show_quantity.label" },
-        { "type": "checkbox", "id": "show_dynamic_checkout", "default": true, "label": "t:sections.main_product.blocks.buy_buttons.settings.show_dynamic_checkout.label", "info": "t:sections.main_product.blocks.buy_buttons.settings.show_dynamic_checkout.info" },
-        { "type": "checkbox", "id": "show_gift_card_recipient", "default": true, "label": "t:sections.main_product.blocks.buy_buttons.settings.show_gift_card_recipient.label" },
-        { "type": "checkbox", "id": "show_pickup_availability", "default": true, "label": "t:sections.main_product.blocks.buy_buttons.settings.show_pickup_availability.label" }
+        {
+          "type": "checkbox",
+          "id": "show_quantity",
+          "default": true,
+          "label": "t:sections.main_product.blocks.buy_buttons.settings.show_quantity.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_dynamic_checkout",
+          "default": true,
+          "label": "t:sections.main_product.blocks.buy_buttons.settings.show_dynamic_checkout.label",
+          "info": "t:sections.main_product.blocks.buy_buttons.settings.show_dynamic_checkout.info"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_gift_card_recipient",
+          "default": true,
+          "label": "t:sections.main_product.blocks.buy_buttons.settings.show_gift_card_recipient.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_pickup_availability",
+          "default": true,
+          "label": "t:sections.main_product.blocks.buy_buttons.settings.show_pickup_availability.label"
+        }
       ]
     },
     {
@@ -240,30 +314,84 @@
       "name": "t:sections.main_product.blocks.inventory.name",
       "limit": 1,
       "settings": [
-        { "type": "range", "id": "threshold", "min": 1, "max": 20, "step": 1, "default": 5, "label": "t:sections.main_product.blocks.inventory.settings.threshold.label" }
+        {
+          "type": "range",
+          "id": "threshold",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "default": 5,
+          "label": "t:sections.main_product.blocks.inventory.settings.threshold.label"
+        }
       ]
     },
-    { "type": "description", "name": "t:sections.main_product.blocks.description.name", "limit": 1 },
+    {
+      "type": "description",
+      "name": "t:sections.main_product.blocks.description.name",
+      "limit": 1
+    },
     {
       "type": "fragrance_notes",
       "name": "t:sections.main_product.blocks.fragrance_notes.name",
       "limit": 1,
       "settings": [
-        { "type": "paragraph", "content": "t:sections.main_product.blocks.fragrance_notes.settings.paragraph.content" },
-        { "type": "text", "id": "heading", "default": "Fragrance notes", "label": "t:sections.main_product.blocks.fragrance_notes.settings.heading.label" },
-        { "type": "text", "id": "top_notes", "label": "t:sections.main_product.blocks.fragrance_notes.settings.top_notes.label" },
-        { "type": "text", "id": "heart_notes", "label": "t:sections.main_product.blocks.fragrance_notes.settings.heart_notes.label" },
-        { "type": "text", "id": "base_notes", "label": "t:sections.main_product.blocks.fragrance_notes.settings.base_notes.label" },
-        { "type": "range", "id": "intensity", "min": 0, "max": 5, "step": 1, "default": 3, "label": "t:sections.main_product.blocks.fragrance_notes.settings.intensity.label", "info": "t:sections.main_product.blocks.fragrance_notes.settings.intensity.info" }
+        {
+          "type": "paragraph",
+          "content": "t:sections.main_product.blocks.fragrance_notes.settings.paragraph.content"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Fragrance notes",
+          "label": "t:sections.main_product.blocks.fragrance_notes.settings.heading.label"
+        },
+        {
+          "type": "text",
+          "id": "top_notes",
+          "label": "t:sections.main_product.blocks.fragrance_notes.settings.top_notes.label"
+        },
+        {
+          "type": "text",
+          "id": "heart_notes",
+          "label": "t:sections.main_product.blocks.fragrance_notes.settings.heart_notes.label"
+        },
+        {
+          "type": "text",
+          "id": "base_notes",
+          "label": "t:sections.main_product.blocks.fragrance_notes.settings.base_notes.label"
+        },
+        {
+          "type": "range",
+          "id": "intensity",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "default": 3,
+          "label": "t:sections.main_product.blocks.fragrance_notes.settings.intensity.label",
+          "info": "t:sections.main_product.blocks.fragrance_notes.settings.intensity.info"
+        }
       ]
     },
     {
       "type": "collapsible_tab",
       "name": "t:sections.main_product.blocks.collapsible_tab.name",
       "settings": [
-        { "type": "text", "id": "heading", "default": "How to wear", "label": "t:sections.main_product.blocks.collapsible_tab.settings.heading.label" },
-        { "type": "richtext", "id": "content", "label": "t:sections.main_product.blocks.collapsible_tab.settings.content.label" },
-        { "type": "page", "id": "page", "label": "t:sections.main_product.blocks.collapsible_tab.settings.page.label" }
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "How to wear",
+          "label": "t:sections.main_product.blocks.collapsible_tab.settings.heading.label"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "t:sections.main_product.blocks.collapsible_tab.settings.content.label"
+        },
+        {
+          "type": "page",
+          "id": "page",
+          "label": "t:sections.main_product.blocks.collapsible_tab.settings.page.label"
+        }
       ]
     },
     {
@@ -271,7 +399,12 @@
       "name": "t:sections.main_product.blocks.share.name",
       "limit": 1,
       "settings": [
-        { "type": "text", "id": "share_label", "default": "Share", "label": "t:sections.main_product.blocks.share.settings.share_label.label" }
+        {
+          "type": "text",
+          "id": "share_label",
+          "default": "Share",
+          "label": "t:sections.main_product.blocks.share.settings.share_label.label"
+        }
       ]
     },
     {
@@ -279,23 +412,74 @@
       "name": "t:sections.main_product.blocks.complementary.name",
       "limit": 1,
       "settings": [
-        { "type": "paragraph", "content": "t:sections.main_product.blocks.complementary.settings.paragraph.content" },
-        { "type": "text", "id": "heading", "default": "Layer it with", "label": "t:sections.main_product.blocks.complementary.settings.heading.label" },
-        { "type": "range", "id": "product_count", "min": 1, "max": 6, "step": 1, "default": 3, "label": "t:sections.main_product.blocks.complementary.settings.product_count.label" }
+        {
+          "type": "paragraph",
+          "content": "t:sections.main_product.blocks.complementary.settings.paragraph.content"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Layer it with",
+          "label": "t:sections.main_product.blocks.complementary.settings.heading.label"
+        },
+        {
+          "type": "range",
+          "id": "product_count",
+          "min": 1,
+          "max": 6,
+          "step": 1,
+          "default": 3,
+          "label": "t:sections.main_product.blocks.complementary.settings.product_count.label"
+        }
       ]
     },
     {
       "type": "custom_liquid",
       "name": "t:sections.all.custom_liquid.name",
       "settings": [
-        { "type": "liquid", "id": "custom_liquid", "label": "t:sections.all.custom_liquid.label", "info": "t:sections.all.custom_liquid.info" }
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "t:sections.all.custom_liquid.label",
+          "info": "t:sections.all.custom_liquid.info"
+        }
       ]
     }
   ],
   "settings": [
-    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" },
-    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 48 },
-    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 64 }
+    {
+      "type": "checkbox",
+      "id": "show_sticky_cart",
+      "default": true,
+      "label": "t:sections.main_product.settings.show_sticky_cart.label",
+      "info": "t:sections.main_product.settings.show_sticky_cart.info"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding_top",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding_bottom",
+      "default": 64
+    }
   ]
 }
 {% endschema %}

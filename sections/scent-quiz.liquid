@@ -1,0 +1,179 @@
+{{ 'section-scent-tools.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'scent-tools.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign quiz_collection = section.settings.collection | default: collections.all
+  assign families = 'Fresh,Floral,Woody,Amber' | split: ','
+-%}
+
+<div
+  class="sq section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <scent-quiz class="page-width sq__inner" data-result-count="{{ section.settings.results }}" data-match-template="{{ 'sections.scent_quiz.match' | t: percent: '[percent]' | escape }}">
+    <script type="application/json" data-quiz-products>
+      [
+        {%- for product in quiz_collection.products limit: 50 -%}
+          {%- liquid
+            assign mf = product.metafields.custom
+            assign family = mf.scent_family.value | default: ''
+            if family == ''
+              for f in families
+                assign f_lower = f | downcase
+                for tag in product.tags
+                  assign t_lower = tag | downcase
+                  if t_lower == f_lower
+                    assign family = f
+                  endif
+                endfor
+              endfor
+            endif
+            assign intensity = mf.intensity.value | default: 3
+          -%}
+          {
+            "id": {{ product.id | json }},
+            "title": {{ product.title | json }},
+            "url": {{ product.url | json }},
+            "family": {{ family | json }},
+            "intensity": {{ intensity | plus: 0 }},
+            "available": {{ product.available | json }},
+            "variant": {{ product.selected_or_first_available_variant.id | json }},
+            "single": {{ product.has_only_default_variant | json }},
+            "price": {{ product.price | money | json }},
+            "notes": {{ mf.notes.value | default: '' | json }},
+            "image": {% if product.featured_media %}{{ product.featured_media | image_url: width: 600 | json }}{% else %}null{% endif %},
+            "alt": {{ product.featured_media.alt | default: product.title | json }}
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ]
+    </script>
+
+    {%- comment -%} Intro {%- endcomment -%}
+    <div class="sq__step is-active" data-step="intro">
+      <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      <h2 class="h-display h-display--md sq__title" tabindex="-1">{{ section.settings.heading | escape }}</h2>
+      <p class="sq__lead">{{ section.settings.text | escape }}</p>
+      <button type="button" class="button" data-quiz-next>{{ 'sections.scent_quiz.start' | t }}</button>
+    </div>
+
+    {%- comment -%} Q1: mood → family {%- endcomment -%}
+    <fieldset class="sq__step" data-step="1" hidden>
+      <legend class="sq__question" tabindex="-1">
+        <span class="sq__count">{{ 'sections.scent_quiz.step' | t: current: 1, total: 3 }}</span>
+        {{ section.settings.q1 | escape }}
+      </legend>
+      <div class="sq__options">
+        {%- assign q1_labels = section.settings.q1_options | split: ',' -%}
+        {%- for f in families -%}
+          {%- assign label = q1_labels[forloop.index0] | strip | default: f -%}
+          {%- assign hint_key = 'sections.scent_quiz.family_hints.' | append: f | downcase -%}
+          <label class="sq__option">
+            <input type="radio" name="sq-family-{{ section.id }}" value="{{ f }}" class="visually-hidden">
+            <span class="sq__option-card sq__option-card--{{ f | handle }}">
+              <span class="sq__option-title">{{ label | escape }}</span>
+              <span class="sq__option-hint">{{ hint_key | t }}</span>
+            </span>
+          </label>
+        {%- endfor -%}
+      </div>
+      <div class="sq__nav">
+        <button type="button" class="link" data-quiz-back>{{ 'sections.scent_quiz.back' | t }}</button>
+        <button type="button" class="button" data-quiz-next disabled>{{ 'sections.scent_quiz.next' | t }}</button>
+      </div>
+    </fieldset>
+
+    {%- comment -%} Q2: occasion {%- endcomment -%}
+    <fieldset class="sq__step" data-step="2" hidden>
+      <legend class="sq__question" tabindex="-1">
+        <span class="sq__count">{{ 'sections.scent_quiz.step' | t: current: 2, total: 3 }}</span>
+        {{ section.settings.q2 | escape }}
+      </legend>
+      <div class="sq__options sq__options--three">
+        {%- assign occasions = 'day,evening,both' | split: ',' -%}
+        {%- for o in occasions -%}
+          {%- assign key = 'sections.scent_quiz.occasions.' | append: o -%}
+          <label class="sq__option">
+            <input type="radio" name="sq-occasion-{{ section.id }}" value="{{ o }}" class="visually-hidden">
+            <span class="sq__option-card"><span class="sq__option-title">{{ key | t }}</span></span>
+          </label>
+        {%- endfor -%}
+      </div>
+      <div class="sq__nav">
+        <button type="button" class="link" data-quiz-back>{{ 'sections.scent_quiz.back' | t }}</button>
+        <button type="button" class="button" data-quiz-next disabled>{{ 'sections.scent_quiz.next' | t }}</button>
+      </div>
+    </fieldset>
+
+    {%- comment -%} Q3: strength {%- endcomment -%}
+    <fieldset class="sq__step" data-step="3" hidden>
+      <legend class="sq__question" tabindex="-1">
+        <span class="sq__count">{{ 'sections.scent_quiz.step' | t: current: 3, total: 3 }}</span>
+        {{ section.settings.q3 | escape }}
+      </legend>
+      <div class="sq__options sq__options--three">
+        {%- assign strengths = 'light,balanced,bold' | split: ',' -%}
+        {%- for o in strengths -%}
+          {%- assign key = 'sections.scent_quiz.strengths.' | append: o -%}
+          <label class="sq__option">
+            <input type="radio" name="sq-strength-{{ section.id }}" value="{{ o }}" class="visually-hidden">
+            <span class="sq__option-card">
+              <span class="sq__option-title">{{ key | t }}</span>
+              <span class="sq__dots" aria-hidden="true">
+                {%- for i in (1..3) -%}<span class="sq__dot{% if i <= forloop.parentloop.index %} is-on{% endif %}"></span>{%- endfor -%}
+              </span>
+            </span>
+          </label>
+        {%- endfor -%}
+      </div>
+      <div class="sq__nav">
+        <button type="button" class="link" data-quiz-back>{{ 'sections.scent_quiz.back' | t }}</button>
+        <button type="button" class="button" data-quiz-finish disabled>{{ 'sections.scent_quiz.show_results' | t }}</button>
+      </div>
+    </fieldset>
+
+    {%- comment -%} Results {%- endcomment -%}
+    <div class="sq__step" data-step="results" hidden>
+      <p class="eyebrow">{{ 'sections.scent_quiz.results_eyebrow' | t }}</p>
+      <h2 class="h2 sq__question" tabindex="-1" aria-live="polite">{{ section.settings.results_heading | escape }}</h2>
+      <ul class="sq__results" role="list" data-quiz-results></ul>
+      <button type="button" class="button button--secondary" data-quiz-restart>{{ 'sections.scent_quiz.restart' | t }}</button>
+    </div>
+
+    <template data-result-template>
+      <li class="sq__result">
+        <a class="sq__result-media media media--portrait" data-r-link tabindex="-1" aria-hidden="true"><img data-r-img alt="" loading="lazy" width="600" height="750"></a>
+        <span class="sq__match" data-r-match></span>
+        <h3 class="sq__result-title"><a class="link-underline" data-r-link data-r-title></a></h3>
+        <p class="sq__result-notes" data-r-notes></p>
+        <p class="sq__result-price" data-r-price></p>
+        <button type="button" class="button button--small button--full" data-r-add>{{ 'products.product.add_to_cart' | t }}</button>
+        <a class="button button--secondary button--small button--full" data-r-options>{{ 'products.product.choose_options' | t }}</a>
+      </li>
+    </template>
+  </scent-quiz>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.scent_quiz.name",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "t:sections.scent_quiz.settings.collection.label", "info": "t:sections.scent_quiz.settings.collection.info" },
+    { "type": "text", "id": "eyebrow", "default": "Scent finder", "label": "t:sections.all.eyebrow" },
+    { "type": "text", "id": "heading", "default": "Find your scent", "label": "t:sections.all.heading" },
+    { "type": "text", "id": "text", "default": "Three quick questions, and we'll match you with the bottles you're most likely to love.", "label": "t:sections.all.text" },
+    { "type": "text", "id": "q1", "default": "Which mood feels most like you?", "label": "t:sections.scent_quiz.settings.q1.label" },
+    { "type": "text", "id": "q1_options", "default": "Fresh, Floral, Woody, Warm", "label": "t:sections.scent_quiz.settings.q1_options.label", "info": "t:sections.scent_quiz.settings.q1_options.info" },
+    { "type": "text", "id": "q2", "default": "When will you wear it most?", "label": "t:sections.scent_quiz.settings.q2.label" },
+    { "type": "text", "id": "q3", "default": "How strong should it be?", "label": "t:sections.scent_quiz.settings.q3.label" },
+    { "type": "text", "id": "results_heading", "default": "Your matches", "label": "t:sections.scent_quiz.settings.results_heading.label" },
+    { "type": "range", "id": "results", "min": 2, "max": 4, "step": 1, "default": 3, "label": "t:sections.scent_quiz.settings.results.label" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-5" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 96 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 96 }
+  ],
+  "presets": [{ "name": "t:sections.scent_quiz.presets.name" }]
+}
+{% endschema %}

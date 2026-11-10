@@ -1,0 +1,84 @@
+{
+  "sections": {
+    "set": {
+      "type": "discovery-set",
+      "settings": {
+        "set_size": 3,
+        "limit": 12,
+        "eyebrow": "Discovery set",
+        "heading": "Build your discovery set",
+        "text": "Choose your minis and wear each one for a few days before you commit to a full bottle.",
+        "offer": "Save 15% on every set",
+        "color_scheme": "scheme-1",
+        "padding_top": 96,
+        "padding_bottom": 120
+      }
+    },
+    "faq": {
+      "type": "collapsible-content",
+      "blocks": {
+        "r0": {
+          "type": "row",
+          "settings": {
+            "heading": "How long does each scent last?",
+            "row_content": "<p>Our eaux de parfum last six to eight hours on skin and longer on fabric. Attars and extraits last a full day. Each product page shows its intensity.</p>"
+          }
+        },
+        "r1": {
+          "type": "row",
+          "settings": {
+            "heading": "How do I choose a scent online?",
+            "row_content": "<p>Take the scent quiz for three personal matches, or order a discovery set and wear each mini for a few days before choosing a full bottle.</p>"
+          }
+        },
+        "r2": {
+          "type": "row",
+          "settings": {
+            "heading": "Do you offer samples?",
+            "row_content": "<p>Every order includes a free sample vial. You can also build a discovery set of minis from the collection.</p>"
+          }
+        },
+        "r3": {
+          "type": "row",
+          "settings": {
+            "heading": "Where should I apply perfume?",
+            "row_content": "<p>Spray on warm pulse points: wrists, neck and behind the ears. Don't rub; let it settle on its own.</p>"
+          }
+        },
+        "r4": {
+          "type": "row",
+          "settings": {
+            "heading": "How should I store my perfume?",
+            "row_content": "<p>Keep bottles away from heat, sunlight and humidity. A cool drawer keeps a scent true for years.</p>"
+          }
+        },
+        "r5": {
+          "type": "row",
+          "settings": {
+            "heading": "What is your returns policy?",
+            "row_content": "<p>Unopened bottles can be returned within 30 days. Share your full policy here.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "r0",
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5"
+      ],
+      "settings": {
+        "heading": "Questions, answered",
+        "open_first": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 48,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": [
+    "set",
+    "faq"
+  ]
+}

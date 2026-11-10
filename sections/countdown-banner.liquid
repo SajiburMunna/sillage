@@ -1,0 +1,46 @@
+{{ 'section-marketing.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'marketing.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign end_string = section.settings.end_date | append: 'T' | append: section.settings.end_time | append: ':00'
+-%}
+
+<div class="cd color-{{ section.settings.color_scheme }}" style="--pad: {{ section.settings.padding }}px;">
+  <countdown-timer class="page-width cd__inner" data-end="{{ end_string | escape }}">
+    <div class="cd__copy">
+      {%- if section.settings.heading != blank -%}<p class="cd__heading">{{ section.settings.heading | escape }}</p>{%- endif -%}
+      {%- if section.settings.text != blank -%}<p class="cd__text">{{ section.settings.text | escape }}</p>{%- endif -%}
+    </div>
+    <div class="cd__timer" role="timer" aria-live="off" data-cd-timer>
+      {%- assign units = 'days,hours,minutes,seconds' | split: ',' -%}
+      {%- for u in units -%}
+        {%- assign unit_key = 'sections.countdown.' | append: u -%}
+        <span class="cd__unit"><span class="cd__value" data-cd="{{ u }}">00</span><span class="cd__label">{{ unit_key | t }}</span></span>
+      {%- endfor -%}
+    </div>
+    <p class="cd__ended" data-cd-ended hidden>{{ section.settings.ended_text | escape }}</p>
+    {%- if section.settings.button_label != blank -%}
+      <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="button button--small cd__button">{{ section.settings.button_label | escape }}</a>
+    {%- endif -%}
+  </countdown-timer>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.countdown.name",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "default": "The holiday edit ends soon", "label": "t:sections.all.heading" },
+    { "type": "text", "id": "text", "default": "20% off gift sets until midnight.", "label": "t:sections.all.text" },
+    { "type": "text", "id": "end_date", "default": "2026-12-31", "label": "t:sections.countdown.settings.end_date.label", "info": "t:sections.countdown.settings.end_date.info" },
+    { "type": "text", "id": "end_time", "default": "23:59", "label": "t:sections.countdown.settings.end_time.label", "info": "t:sections.countdown.settings.end_time.info" },
+    { "type": "text", "id": "ended_text", "default": "This offer has ended.", "label": "t:sections.countdown.settings.ended_text.label" },
+    { "type": "text", "id": "button_label", "default": "Shop the edit", "label": "t:sections.all.button_label" },
+    { "type": "url", "id": "button_link", "label": "t:sections.all.button_link" },
+    { "type": "range", "id": "padding", "min": 8, "max": 64, "step": 4, "unit": "px", "default": 20, "label": "t:sections.countdown.settings.padding.label" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-3" }
+  ],
+  "presets": [{ "name": "t:sections.countdown.presets.name" }]
+}
+{% endschema %}

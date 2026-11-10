@@ -1,0 +1,75 @@
+{{ 'section-marketing.css' | asset_url | stylesheet_tag }}
+
+<div
+  class="sl section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <div class="section-header" data-reveal>
+        <h2 class="section-header__title h-display h-display--md">{{ section.settings.heading | escape }}</h2>
+        {%- if section.settings.text != blank -%}<p class="section-header__text">{{ section.settings.text | escape }}</p>{%- endif -%}
+      </div>
+    {%- endif -%}
+    <ul class="sl__grid" role="list">
+      {%- for block in section.blocks -%}
+        <li class="sl__card" data-reveal {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            <div class="sl__media media media--landscape">
+              {{ block.settings.image | image_url: width: 1000 | image_tag: widths: '400, 600, 800, 1000', sizes: '(min-width: 990px) 33vw, 100vw', loading: 'lazy', alt: block.settings.image.alt | default: block.settings.name }}
+            </div>
+          {%- endif -%}
+          <div class="sl__body">
+            <h3 class="sl__name">{{ block.settings.name | escape }}</h3>
+            {%- if block.settings.address != blank -%}
+              <address class="sl__address">{{ block.settings.address | escape | newline_to_br }}</address>
+            {%- endif -%}
+            {%- if block.settings.hours != blank -%}
+              <p class="sl__hours"><span class="sl__label">{{ 'sections.store_locations.hours' | t }}</span>{{ block.settings.hours | escape | newline_to_br }}</p>
+            {%- endif -%}
+            {%- if block.settings.phone != blank -%}
+              <p class="sl__line"><a href="tel:{{ block.settings.phone | remove: ' ' | escape }}" class="link-underline">{{ block.settings.phone | escape }}</a></p>
+            {%- endif -%}
+            {%- if block.settings.map_link != blank -%}
+              <a href="{{ block.settings.map_link }}" class="button button--secondary button--small" target="_blank" rel="noopener">
+                {% render 'icon', icon: 'pin' %} {{ 'sections.store_locations.directions' | t }}
+              </a>
+            {%- endif -%}
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.store_locations.name",
+  "tag": "section",
+  "class": "section",
+  "max_blocks": 12,
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "text", "id": "heading", "default": "Visit our boutiques", "label": "t:sections.all.heading" },
+    { "type": "text", "id": "text", "default": "Smell every scent in person and take home a free sample.", "label": "t:sections.all.text" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 96 }
+  ],
+  "blocks": [
+    {
+      "type": "store",
+      "name": "t:sections.store_locations.blocks.store.name",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "t:sections.all.image" },
+        { "type": "text", "id": "name", "default": "Boutique name", "label": "t:sections.store_locations.blocks.store.settings.name.label" },
+        { "type": "textarea", "id": "address", "default": "24 Rain Street\nYour City", "label": "t:sections.store_locations.blocks.store.settings.address.label" },
+        { "type": "textarea", "id": "hours", "default": "Tue to Sun · 11am to 8pm", "label": "t:sections.store_locations.blocks.store.settings.hours.label" },
+        { "type": "text", "id": "phone", "label": "t:sections.store_locations.blocks.store.settings.phone.label" },
+        { "type": "url", "id": "map_link", "label": "t:sections.store_locations.blocks.store.settings.map_link.label", "info": "t:sections.store_locations.blocks.store.settings.map_link.info" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "t:sections.store_locations.presets.name", "blocks": [{ "type": "store" }, { "type": "store" }] }]
+}
+{% endschema %}

@@ -1,0 +1,66 @@
+{%- comment -%}
+  Rendered only through the Section Rendering API:
+  /products/{handle}?section_id=quick-view
+{%- endcomment -%}
+{{ 'section-product.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign featured_media = current_variant.featured_media | default: product.featured_media
+-%}
+
+<div class="quick-view product" data-product-root data-section="{{ section.id }}">
+  <media-gallery class="quick-view__media">
+    <ul class="product__media-list" role="list" data-gallery-viewer>
+      {%- if featured_media -%}
+        <li class="product__media-item is-active" data-media-id="{{ featured_media.id }}">
+          {% render 'product-media', media: featured_media, loading: 'eager', sizes: '(min-width: 750px) 40vw, 100vw' %}
+        </li>
+      {%- endif -%}
+      {%- for media in product.media limit: 6 -%}
+        {%- unless media.id == featured_media.id -%}
+          <li class="product__media-item" data-media-id="{{ media.id }}">
+            {% render 'product-media', media: media, loading: 'lazy', sizes: '(min-width: 750px) 40vw, 100vw' %}
+          </li>
+        {%- endunless -%}
+      {%- endfor -%}
+    </ul>
+  </media-gallery>
+
+  <div class="quick-view__info">
+    {%- if product.vendor != blank -%}
+      <p class="card__vendor">{{ product.vendor | escape }}</p>
+    {%- endif -%}
+    <h2 class="h2 quick-view__title" id="QuickView-Title">{{ product.title | escape }}</h2>
+    <div data-product-update="price">
+      {% render 'price', product: product, use_variant: true, show_badges: true, class: 'price--large' %}
+    </div>
+
+    {%- assign mf = product.metafields.custom -%}
+    {%- if mf.notes.value != blank -%}
+      <p class="quick-view__notes">{{ mf.notes.value | escape }}</p>
+    {%- elsif product.description != blank -%}
+      <p class="quick-view__notes">{{ product.description | strip_html | truncatewords: 28 }}</p>
+    {%- endif -%}
+
+    {%- liquid
+      assign picker_block = nil
+      assign buy_block = nil
+    -%}
+    {% render 'variant-picker', product: product, block: picker_block, section_id: section.id, update_url: false %}
+    {% render 'buy-buttons', product: product, block: buy_block, section_id: section.id, show_quantity: true, dynamic_checkout: true %}
+
+    <a href="{{ product.url }}" class="link-underline quick-view__more">{{ 'products.product.view_full_details' | t }}</a>
+  </div>
+
+  <script type="application/json" data-selected-variant hidden>
+    {{ current_variant | json }}
+  </script>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.quick_view.name",
+  "settings": []
+}
+{% endschema %}

@@ -26,8 +26,55 @@
       <nav aria-label="{{ 'sections.header.primary_navigation' | t }}">
         <ul class="header__menu" role="list">
           {%- for link in section.settings.menu.links -%}
-            <li class="header__menu-item">
-              {%- if link.links != blank -%}
+            <li class="header__menu-item{% if section.settings.menu_type == 'mega' and link.links != blank %} header__menu-item--mega{% endif %}">
+              {%- if link.links != blank and section.settings.menu_type == 'mega' -%}
+                <details-disclosure data-hover="{{ section.settings.open_on_hover }}">
+                  <details>
+                    <summary class="link-underline{% if link.child_active %} is-active{% endif %}">
+                      {{- link.title | escape -}}
+                      {% render 'icon', icon: 'caret' %}
+                    </summary>
+                    <div class="mega-menu color-{{ section.settings.color_scheme }}">
+                      <div class="page-width mega-menu__inner">
+                        <ul class="mega-menu__columns" role="list">
+                          {%- for child in link.links -%}
+                            <li class="mega-menu__column">
+                              <a href="{{ child.url }}" class="mega-menu__heading link-underline"{% if child.current %} aria-current="page"{% endif %}>
+                                {{- child.title | escape -}}
+                              </a>
+                              {%- if child.links != blank -%}
+                                <ul class="mega-menu__list" role="list">
+                                  {%- for grandchild in child.links -%}
+                                    <li>
+                                      <a href="{{ grandchild.url }}" class="link-underline"{% if grandchild.current %} aria-current="page"{% endif %}>
+                                        {{- grandchild.title | escape -}}
+                                      </a>
+                                    </li>
+                                  {%- endfor -%}
+                                </ul>
+                              {%- endif -%}
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                        {%- if section.settings.mega_image != blank -%}
+                          <a href="{{ section.settings.mega_link | default: link.url }}" class="mega-menu__promo">
+                            <span class="mega-menu__promo-media media">
+                              {{
+                                section.settings.mega_image
+                                | image_url: width: 900
+                                | image_tag: widths: '300, 450, 600, 900', sizes: '320px', loading: 'lazy', alt: section.settings.mega_image.alt | default: section.settings.mega_heading
+                              }}
+                            </span>
+                            {%- if section.settings.mega_heading != blank -%}
+                              <span class="mega-menu__promo-title">{{ section.settings.mega_heading | escape }}</span>
+                            {%- endif -%}
+                          </a>
+                        {%- endif -%}
+                      </div>
+                    </div>
+                  </details>
+                </details-disclosure>
+              {%- elsif link.links != blank -%}
                 <details-disclosure data-hover="{{ section.settings.open_on_hover }}">
                   <details>
                     <summary class="link-underline{% if link.child_active %} is-active{% endif %}">
@@ -273,6 +320,39 @@
       "id": "menu",
       "default": "main-menu",
       "label": "t:sections.header.settings.menu.label"
+    },
+    {
+      "type": "select",
+      "id": "menu_type",
+      "default": "mega",
+      "label": "t:sections.header.settings.menu_type.label",
+      "options": [
+        {
+          "value": "mega",
+          "label": "t:sections.header.settings.menu_type.options__1.label"
+        },
+        {
+          "value": "dropdown",
+          "label": "t:sections.header.settings.menu_type.options__2.label"
+        }
+      ]
+    },
+    {
+      "type": "image_picker",
+      "id": "mega_image",
+      "label": "t:sections.header.settings.mega_image.label",
+      "info": "t:sections.header.settings.mega_image.info"
+    },
+    {
+      "type": "text",
+      "id": "mega_heading",
+      "default": "Discover the new scent",
+      "label": "t:sections.header.settings.mega_heading.label"
+    },
+    {
+      "type": "url",
+      "id": "mega_link",
+      "label": "t:sections.header.settings.mega_link.label"
     },
     {
       "type": "checkbox",

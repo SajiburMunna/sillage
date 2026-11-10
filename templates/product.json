@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
@@ -101,10 +110,21 @@
         "padding_top": 48,
         "padding_bottom": 72
       }
+    },
+    "recently_viewed": {
+      "type": "recently-viewed",
+      "settings": {
+        "heading": "Recently viewed",
+        "limit": 4,
+        "color_scheme": "scheme-1",
+        "padding_top": 24,
+        "padding_bottom": 96
+      }
     }
   },
   "order": [
     "main",
-    "recommendations"
+    "recommendations",
+    "recently_viewed"
   ]
 }

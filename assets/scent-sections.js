@@ -156,3 +156,53 @@
     customElements.define('scent-visit', ScentVisit);
   }
 })();
+
+/* ---------- <sc-tabs>: featured product tabs ---------- */
+(() => {
+  if (customElements.get('sc-tabs')) return;
+  class ScTabs extends HTMLElement {
+    connectedCallback() {
+      this.tabs = Array.from(this.querySelectorAll('[role="tab"]'));
+      this.tabs.forEach((tab, i) => {
+        tab.addEventListener('click', () => this.select(i));
+        tab.addEventListener('keydown', (e) => {
+          const last = this.tabs.length - 1;
+          let next = null;
+          if (e.key === 'ArrowRight') next = i === last ? 0 : i + 1;
+          else if (e.key === 'ArrowLeft') next = i === 0 ? last : i - 1;
+          else if (e.key === 'Home') next = 0;
+          else if (e.key === 'End') next = last;
+          if (next !== null) {
+            e.preventDefault();
+            this.select(next, true);
+          }
+        });
+      });
+      // Theme editor: selecting a tab block shows its panel
+      document.addEventListener('shopify:block:select', (e) => {
+        const i = this.tabs.indexOf(e.target);
+        if (i >= 0) this.select(i);
+      });
+    }
+
+    select(index, focus = false) {
+      this.tabs.forEach((tab, i) => {
+        const on = i === index;
+        tab.setAttribute('aria-selected', String(on));
+        tab.tabIndex = on ? 0 : -1;
+        const panel = document.getElementById(tab.getAttribute('aria-controls'));
+        if (panel) {
+          panel.hidden = !on;
+          if (on) {
+            panel.classList.remove('is-entering');
+            void panel.offsetWidth;
+            panel.classList.add('is-entering');
+            panel.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-revealed'));
+          }
+        }
+      });
+      if (focus) this.tabs[index].focus();
+    }
+  }
+  customElements.define('sc-tabs', ScTabs);
+})();

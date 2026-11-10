@@ -1,0 +1,44 @@
+{%- comment -%}
+  Gift wrap toggle and gift message (Theme settings → Cart).
+  Accepts: context {String} 'drawer' | 'page' (keeps ids unique)
+{%- endcomment -%}
+{%- liquid
+  assign wrap_product = settings.cart_gift_wrap_product
+  assign show_wrap = false
+  if wrap_product != blank
+    if wrap_product.available
+      assign show_wrap = true
+    endif
+  endif
+-%}
+{%- if show_wrap or settings.cart_show_gift_message -%}
+  <div class="cart-gift">
+    {%- if show_wrap -%}
+      {%- liquid
+        assign wrap_variant = wrap_product.selected_or_first_available_variant
+        assign wrap_line = 0
+        for item in cart.items
+          if item.variant_id == wrap_variant.id
+            assign wrap_line = forloop.index
+          endif
+        endfor
+      -%}
+      <gift-wrap class="cart-gift__wrap" data-variant="{{ wrap_variant.id }}" data-line="{{ wrap_line }}">
+        <label for="GiftWrap-{{ context }}" class="cart-gift__option">
+          <input type="checkbox" id="GiftWrap-{{ context }}" {% if wrap_line > 0 %}checked{% endif %}>
+          <span>
+            {{ 'sections.cart.gift_wrap_label' | t }}
+            <span class="text-muted">· {{ wrap_variant.price | money }}</span>
+          </span>
+        </label>
+      </gift-wrap>
+    {%- endif -%}
+
+    {%- if settings.cart_show_gift_message -%}
+      <gift-message class="cart-gift__message field">
+        <label for="GiftMessage-{{ context }}" class="field__label">{{ 'sections.cart.gift_message_label' | t }}</label>
+        <textarea id="GiftMessage-{{ context }}" class="field__input" rows="2" maxlength="250" placeholder="{{ 'sections.cart.gift_message_placeholder' | t }}">{{ cart.attributes['Gift message'] | escape }}</textarea>
+      </gift-message>
+    {%- endif -%}
+  </div>
+{%- endif -%}

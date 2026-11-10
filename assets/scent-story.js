@@ -83,7 +83,6 @@
       this.chapters = Array.from(this.querySelectorAll('.ss-chapter'));
       this.ritualSide = this.querySelector('.ss-ritual-side');
       this.toast = this.querySelector('.ss-toast');
-      this.veil = this.querySelector('.ss-veil');
       this.loader = this.querySelector('.ss-loader');
       this.water = this.querySelector('water-flow');
       this.deck = this.querySelector('.ss-deck');
@@ -644,20 +643,23 @@
         window.scrollTo({ top, behavior: 'instant' });
         this.tCur = null;
       };
-      if (instant || reduced.matches || !this.veil) {
+      if (instant || reduced.matches) {
         go();
         return;
       }
       if (this.navBusy) return;
       this.navBusy = true;
-      this.veil.classList.add('is-on');
+      // No blank screen: the stage content dips briefly while the page jumps, then fades straight back
+      this.stage.classList.add('is-jumping');
       setTimeout(() => {
         go();
-        requestAnimationFrame(() => {
-          this.veil.classList.remove('is-on');
-          setTimeout(() => (this.navBusy = false), 450);
-        });
-      }, 420);
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => {
+            this.stage.classList.remove('is-jumping');
+            setTimeout(() => (this.navBusy = false), 300);
+          })
+        );
+      }, 160);
     }
 
     /* ---------- cart ---------- */

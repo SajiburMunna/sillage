@@ -23,12 +23,15 @@
             {%- endif -%}
           </div>
         {%- else -%}
+          {% render 'cart-progress' %}
           {% render 'cart-line-items' %}
+          {% render 'cart-upsell' %}
         {%- endif -%}
       </div>
 
       {%- unless cart.empty? -%}
         <div class="drawer__footer">
+          {% render 'cart-gift', context: 'drawer' %}
           {% render 'cart-summary', context: 'drawer' %}
         </div>
       {%- endunless -%}

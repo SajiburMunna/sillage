@@ -1,0 +1,60 @@
+{%- comment -%}
+  Product card used by the Scent collection section.
+  Accepts:
+  - product {Object}
+  - index {Number} position in the grid (for stagger and illustration style)
+  - uid_prefix {String} unique prefix for illustration gradients
+{%- endcomment -%}
+{%- liquid
+  assign styles = 'flacon,round,tall,spray' | split: ','
+  assign tones = '#9ED3D6,#E7B9C2,#B89B7A,#D9A35F' | split: ','
+-%}
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign in_cart = 0
+  for item in cart.items
+    if item.variant_id == variant.id
+      assign in_cart = in_cart | plus: item.quantity
+    endif
+  endfor
+  assign style_index = index | modulo: 4
+  assign notes = product.metafields.custom.notes | default: product.metafields.custom.top_notes
+-%}
+<li class="sc-card" data-reveal style="--delay: {{ index | modulo: 4 | times: 0.08 }}s;">
+  <a href="{{ product.url }}" class="sc-card__media" tabindex="-1" aria-hidden="true">
+    {%- if in_cart > 0 -%}
+      <span class="sc-card__badge">{% render 'icon', icon: 'check' %} {{ 'sections.scent_collection.in_bag' | t: count: in_cart }}</span>
+    {%- elsif product.available == false -%}
+      <span class="sc-card__badge">{{ 'products.product.sold_out' | t }}</span>
+    {%- endif -%}
+    <span class="sc-card__bottle">
+      {%- if product.featured_media -%}
+        {%- render 'bottle-photo', image: product.featured_media, sizes: '(min-width: 990px) 25vw, 50vw' -%}
+      {%- else -%}
+        {%- capture uid -%}{{ uid_prefix }}{{ index }}{{ product.id | slice: -4, 4 }}{%- endcapture -%}
+        {%- render 'perfume-bottle', style: styles[style_index], liquid: tones[style_index], label: product.title, uid: uid -%}
+      {%- endif -%}
+    </span>
+  </a>
+  <span class="sc-card__vendor">{{ product.vendor | escape }}</span>
+  <h3 class="sc-card__title"><a href="{{ product.url }}" class="link-underline">{{ product.title | escape }}</a></h3>
+  <p class="sc-card__notes">
+    {%- if notes != blank -%}{{ notes | escape }}{%- else -%}{{ product.description | strip_html | truncatewords: 12 }}{%- endif -%}
+  </p>
+  <div class="sc-card__price">{% render 'price', product: product %}</div>
+  {%- if product.has_only_default_variant and variant.available -%}
+    <cart-stepper class="sc-card__action" data-variant="{{ variant.id }}" data-qty="{{ in_cart }}" data-name="{{ product.title | escape }}">
+      <button type="button" class="sc-add" data-stepper-add{% if in_cart > 0 %} hidden{% endif %} aria-label="{{ 'products.product.add_to_cart_named' | t: title: product.title | escape }}">
+        {% render 'icon', icon: 'plus' %}
+        {{ 'products.product.add_to_cart' | t }}
+      </button>
+      <div class="sc-stepper" role="group" aria-label="{{ 'products.product.quantity.label' | t }}"{% if in_cart == 0 %} hidden{% endif %}>
+        <button type="button" class="sc-stepper__btn" data-stepper="-1" aria-label="{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}">{% render 'icon', icon: 'minus' %}</button>
+        <span class="sc-stepper__qty" aria-live="polite" data-stepper-label="{{ 'sections.scent_collection.in_bag' | t: count: 0 | replace: '0', '[count]' }}">{{ 'sections.scent_collection.in_bag' | t: count: in_cart }}</span>
+        <button type="button" class="sc-stepper__btn" data-stepper="1" aria-label="{{ 'products.product.quantity.increase' | t: product: product.title | escape }}">{% render 'icon', icon: 'plus' %}</button>
+      </div>
+    </cart-stepper>
+  {%- elsif product.available -%}
+    <a href="{{ product.url }}" class="sc-add"{% if settings.card_show_quick_view %} data-quick-view="{{ product.url }}" aria-haspopup="dialog"{% endif %}>{{ 'products.product.choose_options' | t }}</a>
+  {%- endif -%}
+</li>

@@ -1,7 +1,7 @@
 {
-  "current": "Sillage",
+  "current": "Ambrette",
   "presets": {
-    "Sillage": {
+    "Ambrette": {
       "logo_width": 120,
       "type_header_font": "marcellus_n4",
       "type_body_font": "nunito_sans_n4",
@@ -77,7 +77,177 @@
         }
       },
       "custom_cursor": true,
-      "bottle_photo_style": "frame"
+      "bottle_photo_style": "frame",
+      "card_show_quick_view": true,
+      "cart_free_shipping_threshold": 5000,
+      "cart_upsell_heading": "Pairs well with",
+      "cart_show_gift_message": true
+    },
+    "Linger": {
+      "logo_width": 120,
+      "type_header_font": "jost_n3",
+      "type_body_font": "dm_sans_n4",
+      "heading_scale": 95,
+      "body_scale": 100,
+      "page_width": 1400,
+      "radius": 12,
+      "button_shape": "rounded",
+      "animations_reveal_on_scroll": true,
+      "card_image_ratio": "portrait",
+      "card_show_secondary_image": true,
+      "card_show_vendor": true,
+      "card_show_quick_add": true,
+      "card_show_swatches": true,
+      "cart_type": "drawer",
+      "cart_show_note": true,
+      "predictive_search_enabled": true,
+      "color_schemes": {
+        "scheme-1": {
+          "settings": {
+            "background": "#F4F7F5",
+            "text": "#1D2B2C",
+            "accent": "#2E6E72",
+            "button": "#1D2B2C",
+            "button_label": "#F4F7F5",
+            "secondary_button_label": "#1D2B2C",
+            "surface": "#E3ECE9"
+          }
+        },
+        "scheme-2": {
+          "settings": {
+            "background": "#FFFFFF",
+            "text": "#1D2B2C",
+            "accent": "#2E6E72",
+            "button": "#1D2B2C",
+            "button_label": "#FFFFFF",
+            "secondary_button_label": "#1D2B2C",
+            "surface": "#F4F7F5"
+          }
+        },
+        "scheme-3": {
+          "settings": {
+            "background": "#1D2B2C",
+            "text": "#F4F7F5",
+            "accent": "#A8DADC",
+            "button": "#F4F7F5",
+            "button_label": "#1D2B2C",
+            "secondary_button_label": "#F4F7F5",
+            "surface": "#2A3B3C"
+          }
+        },
+        "scheme-4": {
+          "settings": {
+            "background": "#DCEBE8",
+            "text": "#1D2B2C",
+            "accent": "#2E6E72",
+            "button": "#1D2B2C",
+            "button_label": "#F4F7F5",
+            "secondary_button_label": "#1D2B2C",
+            "surface": "#C9DFDB"
+          }
+        },
+        "scheme-5": {
+          "settings": {
+            "background": "#E6EFEC",
+            "text": "#1D2B2C",
+            "accent": "#2E6E72",
+            "button": "#1D2B2C",
+            "button_label": "#F4F7F5",
+            "secondary_button_label": "#1D2B2C",
+            "surface": "#F4F7F5"
+          }
+        }
+      },
+      "custom_cursor": true,
+      "bottle_photo_style": "frame",
+      "card_show_quick_view": true,
+      "cart_free_shipping_threshold": 5000,
+      "cart_upsell_heading": "Pairs well with",
+      "cart_show_gift_message": true,
+      "heading_uppercase": false
+    },
+    "Veloura": {
+      "logo_width": 120,
+      "type_header_font": "bodoni_moda_n4",
+      "type_body_font": "jost_n4",
+      "heading_scale": 100,
+      "body_scale": 100,
+      "page_width": 1360,
+      "radius": 0,
+      "button_shape": "square",
+      "animations_reveal_on_scroll": true,
+      "card_image_ratio": "portrait",
+      "card_show_secondary_image": true,
+      "card_show_vendor": true,
+      "card_show_quick_add": true,
+      "card_show_swatches": true,
+      "cart_type": "drawer",
+      "cart_show_note": true,
+      "predictive_search_enabled": true,
+      "color_schemes": {
+        "scheme-1": {
+          "settings": {
+            "background": "#14110F",
+            "text": "#EFE7DC",
+            "accent": "#C9A46A",
+            "button": "#EFE7DC",
+            "button_label": "#14110F",
+            "secondary_button_label": "#EFE7DC",
+            "surface": "#221D19"
+          }
+        },
+        "scheme-2": {
+          "settings": {
+            "background": "#1B1714",
+            "text": "#EFE7DC",
+            "accent": "#C9A46A",
+            "button": "#EFE7DC",
+            "button_label": "#1B1714",
+            "secondary_button_label": "#EFE7DC",
+            "surface": "#2A241F"
+          }
+        },
+        "scheme-3": {
+          "settings": {
+            "background": "#EFE7DC",
+            "text": "#14110F",
+            "accent": "#7A5A2E",
+            "button": "#14110F",
+            "button_label": "#EFE7DC",
+            "secondary_button_label": "#14110F",
+            "surface": "#E2D7C8"
+          }
+        },
+        "scheme-4": {
+          "settings": {
+            "background": "#0F0C0A",
+            "text": "#EFE7DC",
+            "accent": "#C9A46A",
+            "button": "#EFE7DC",
+            "button_label": "#0F0C0A",
+            "secondary_button_label": "#EFE7DC",
+            "surface": "#1E1916"
+          }
+        },
+        "scheme-5": {
+          "settings": {
+            "background": "#2A221C",
+            "text": "#EFE7DC",
+            "accent": "#C9A46A",
+            "button": "#EFE7DC",
+            "button_label": "#14110F",
+            "secondary_button_label": "#EFE7DC",
+            "surface": "#3A2F27"
+          }
+        }
+      },
+      "custom_cursor": true,
+      "bottle_photo_style": "frame",
+      "card_show_quick_view": true,
+      "cart_free_shipping_threshold": 5000,
+      "cart_upsell_heading": "Pairs well with",
+      "cart_show_gift_message": true,
+      "heading_uppercase": false
     }
   }
 }

@@ -276,6 +276,12 @@
       },
       {
         "type": "checkbox",
+        "id": "card_show_quick_view",
+        "default": true,
+        "label": "t:settings_schema.product_cards.settings.show_quick_view.label"
+      },
+      {
+        "type": "checkbox",
         "id": "card_show_swatches",
         "default": true,
         "label": "t:settings_schema.product_cards.settings.show_swatches.label"
@@ -321,6 +327,49 @@
         "id": "cart_show_note",
         "default": true,
         "label": "t:settings_schema.cart.settings.show_note.label"
+      },
+      {
+        "type": "header",
+        "content": "t:settings_schema.cart.settings.header_shipping.content"
+      },
+      {
+        "type": "number",
+        "id": "cart_free_shipping_threshold",
+        "default": 5000,
+        "label": "t:settings_schema.cart.settings.free_shipping_threshold.label",
+        "info": "t:settings_schema.cart.settings.free_shipping_threshold.info"
+      },
+      {
+        "type": "header",
+        "content": "t:settings_schema.cart.settings.header_upsell.content"
+      },
+      {
+        "type": "collection",
+        "id": "cart_upsell_collection",
+        "label": "t:settings_schema.cart.settings.upsell_collection.label",
+        "info": "t:settings_schema.cart.settings.upsell_collection.info"
+      },
+      {
+        "type": "text",
+        "id": "cart_upsell_heading",
+        "default": "Pairs well with",
+        "label": "t:settings_schema.cart.settings.upsell_heading.label"
+      },
+      {
+        "type": "header",
+        "content": "t:settings_schema.cart.settings.header_gift.content"
+      },
+      {
+        "type": "product",
+        "id": "cart_gift_wrap_product",
+        "label": "t:settings_schema.cart.settings.gift_wrap_product.label",
+        "info": "t:settings_schema.cart.settings.gift_wrap_product.info"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_show_gift_message",
+        "default": true,
+        "label": "t:settings_schema.cart.settings.show_gift_message.label"
       }
     ]
   },

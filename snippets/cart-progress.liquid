@@ -1,0 +1,34 @@
+{%- comment -%}
+  Free shipping progress bar. The threshold is set in the store's default
+  currency (Theme settings → Cart).
+{%- endcomment -%}
+{%- if settings.cart_free_shipping_threshold > 0 and cart.item_count > 0 -%}
+  {%- liquid
+    assign threshold = settings.cart_free_shipping_threshold | times: 100
+    assign remaining = threshold | minus: cart.total_price
+    assign percent = cart.total_price | times: 100 | divided_by: threshold
+    if percent > 100
+      assign percent = 100
+    endif
+    assign remaining_money = remaining | money
+  -%}
+  <div class="cart-progress{% if remaining <= 0 %} is-complete{% endif %}">
+    <p class="cart-progress__message">
+      {%- if remaining > 0 -%}
+        {{ 'sections.cart.free_shipping_remaining_html' | t: amount: remaining_money }}
+      {%- else -%}
+        {% render 'icon', icon: 'check' %} {{ 'sections.cart.free_shipping_unlocked' | t }}
+      {%- endif -%}
+    </p>
+    <div
+      class="cart-progress__track"
+      role="progressbar"
+      aria-label="{{ 'sections.cart.free_shipping_progress' | t }}"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="{{ percent }}"
+    >
+      <span class="cart-progress__bar" style="--progress: {{ percent }}%;"></span>
+    </div>
+  </div>
+{%- endif -%}

@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "type": "header",
   "name": "t:sections.header.group_name",
@@ -28,12 +37,12 @@
         "tagline": "Maison de parfum",
         "cta_label": "Shop scents",
         "cta_link": "",
+        "sticky_mode": "always",
         "transparent_on_home": true,
         "transparent_text": "#F3F0EB",
         "color_scheme": "scheme-1",
         "show_country": true,
-        "show_language": true,
-        "sticky_mode": "always"
+        "show_language": true
       }
     }
   },

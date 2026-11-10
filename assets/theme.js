@@ -453,7 +453,7 @@ class ProductForm extends HTMLElement {
       CartAPI.applySections(state.sections);
       Theme.announce(window.themeStrings.addedToCart);
       document.dispatchEvent(new CustomEvent('cart:updated', { detail: state }));
-      const quickAdd = this.closest('drawer-component');
+      const quickAdd = this.closest('drawer-component, quick-view');
       if (quickAdd && quickAdd.tagName !== 'CART-DRAWER') quickAdd.close();
       document.querySelector('cart-drawer')?.open(this.submitButton);
     } catch (error) {
@@ -774,7 +774,7 @@ document.addEventListener('shopify:section:deselect', (event) => {
   const update = () => {
     const probe = 40;
     let tone = null;
-    document.querySelectorAll('[data-header-tone]').forEach((el) => {
+    document.querySelectorAll('body [data-header-tone]').forEach((el) => {
       const r = el.getBoundingClientRect();
       if (r.top <= probe && r.bottom > probe) tone = el.dataset.headerTone;
     });
@@ -858,4 +858,155 @@ document.addEventListener('shopify:section:deselect', (event) => {
       })
     );
   }).observe(document.body, { childList: true, subtree: true });
+})();
+
+/* ---------- Quick view ---------- */
+
+class QuickView extends DrawerComponent {
+  connectedCallback() {
+    super.connectedCallback();
+    this.body = this.querySelector('[data-quick-view-body]');
+    this.cache = new Map();
+  }
+
+  async show(url, opener) {
+    const key = url.split('?')[0];
+    this.body.innerHTML = '<div class="quick-view__loading" aria-hidden="true"><span class="loading-spinner"></span></div>';
+    this.open(opener);
+    try {
+      let html = this.cache.get(key);
+      if (!html) {
+        const response = await fetch(`${key}?section_id=quick-view`);
+        if (!response.ok) throw new Error(response.status);
+        const doc = Theme.parseHTML(await response.text());
+        html = doc.querySelector('.quick-view')?.outerHTML || '';
+        this.cache.set(key, html);
+      }
+      // Ids inside the quick view are unique per section; replace the rendered section wrapper only
+      this.body.innerHTML = html;
+      this.body.querySelectorAll('img[loading="lazy"]').forEach((img) => img.classList.add('is-loaded'));
+      Theme.trapFocus(this.querySelector('.drawer__panel'), this.querySelector('[data-drawer-focus]'));
+    } catch (error) {
+      window.location.href = url;
+    }
+  }
+}
+customElements.define('quick-view', QuickView);
+
+document.addEventListener('click', (event) => {
+  const trigger = event.target.closest('[data-quick-view]');
+  if (!trigger || event.metaKey || event.ctrlKey || event.shiftKey) return;
+  const modal = document.getElementById('QuickView');
+  if (!modal) return;
+  event.preventDefault();
+  modal.show(trigger.dataset.quickView, trigger);
+});
+
+/* ---------- Sticky add to cart ---------- */
+
+class StickyAtc extends HTMLElement {
+  connectedCallback() {
+    this.form = document.getElementById(this.dataset.form);
+    const mainButton = this.form?.querySelector('[type="submit"][name="add"]');
+    if (!mainButton) return;
+    this.hidden = false;
+    this.observer = new IntersectionObserver(([entry]) => {
+      // Show once the main button has scrolled above the viewport
+      const past = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+      this.classList.toggle('is-visible', past);
+      this.setAttribute('aria-hidden', String(!past));
+      const button = this.querySelector('button');
+      if (button) button.tabIndex = past ? 0 : -1;
+    });
+    this.observer.observe(mainButton);
+    this.onVariant = () => this.sync(mainButton);
+    document.addEventListener('variant:change', this.onVariant);
+    this.sync(mainButton);
+  }
+
+  disconnectedCallback() {
+    this.observer?.disconnect();
+    document.removeEventListener('variant:change', this.onVariant);
+  }
+
+  sync(mainButton) {
+    const button = this.querySelector('button');
+    const root = this.closest('[data-product-root]');
+    const price = root?.querySelector('[data-product-update="price"] .price');
+    const target = this.querySelector('[data-product-update="sticky-price"]');
+    if (price && target) target.innerHTML = price.outerHTML;
+    const live = this.form.querySelector('[type="submit"][name="add"]') || mainButton;
+    button.textContent = live.querySelector('.button__label')?.textContent.trim() || button.textContent;
+    const disabled = live.getAttribute('aria-disabled') === 'true';
+    button.toggleAttribute('disabled', disabled);
+  }
+}
+customElements.define('sticky-atc', StickyAtc);
+
+/* ---------- Cart gift options ---------- */
+
+class GiftWrap extends HTMLElement {
+  connectedCallback() {
+    this.input = this.querySelector('input[type="checkbox"]');
+    this.input?.addEventListener('change', () => this.toggle());
+  }
+
+  async toggle() {
+    this.setAttribute('aria-busy', 'true');
+    this.input.disabled = true;
+    const sections = CartAPI.sectionsToRender();
+    const line = parseInt(this.dataset.line, 10) || 0;
+    try {
+      const response = this.input.checked
+        ? await fetch(`${window.routes.cart_add_url}.js`, {
+            ...Theme.fetchConfig(),
+            body: JSON.stringify({ items: [{ id: Number(this.dataset.variant), quantity: 1 }], sections, sections_url: window.location.pathname })
+          })
+        : await fetch(`${window.routes.cart_change_url}.js`, {
+            ...Theme.fetchConfig(),
+            body: JSON.stringify({ line, quantity: 0, sections, sections_url: window.location.pathname })
+          });
+      const state = await response.json();
+      if (state.status) throw new Error(state.description);
+      CartAPI.applySections(state.sections);
+      document.dispatchEvent(new CustomEvent('cart:updated', { detail: state }));
+    } catch (error) {
+      this.input.checked = !this.input.checked;
+      Theme.announce(window.themeStrings.cartError);
+    } finally {
+      this.removeAttribute('aria-busy');
+      if (this.input) this.input.disabled = false;
+    }
+  }
+}
+customElements.define('gift-wrap', GiftWrap);
+
+class GiftMessage extends HTMLElement {
+  connectedCallback() {
+    this.querySelector('textarea')?.addEventListener(
+      'input',
+      Theme.debounce((event) => {
+        fetch(`${window.routes.cart_update_url}.js`, {
+          ...Theme.fetchConfig(),
+          body: JSON.stringify({ attributes: { 'Gift message': event.target.value } })
+        });
+      }, 500)
+    );
+  }
+}
+customElements.define('gift-message', GiftMessage);
+
+/* ---------- Remember viewed products (for the Recently viewed section) ---------- */
+
+(() => {
+  const el = document.querySelector('[data-viewed-handle]');
+  if (!el) return;
+  try {
+    const key = 'recently-viewed';
+    const list = (JSON.parse(localStorage.getItem(key)) || []).filter((h) => h !== el.dataset.viewedHandle);
+    list.unshift(el.dataset.viewedHandle);
+    localStorage.setItem(key, JSON.stringify(list.slice(0, 12)));
+  } catch (e) {
+    /* storage unavailable */
+  }
 })();

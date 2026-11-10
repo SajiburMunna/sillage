@@ -275,6 +275,25 @@
         },
         "transparent_text": {
           "label": "Transparent header text color"
+        },
+        "menu_type": {
+          "label": "Menu style",
+          "options__1": {
+            "label": "Mega menu"
+          },
+          "options__2": {
+            "label": "Dropdown"
+          }
+        },
+        "mega_image": {
+          "label": "Mega menu promo image",
+          "info": "Shown beside the links in every mega menu. Leave empty to hide."
+        },
+        "mega_heading": {
+          "label": "Promo caption"
+        },
+        "mega_link": {
+          "label": "Promo link"
         }
       }
     },
@@ -480,7 +499,13 @@
           "name": "Vendor"
         }
       },
-      "name": "Product information"
+      "name": "Product information",
+      "settings": {
+        "show_sticky_cart": {
+          "label": "Show sticky add to cart bar",
+          "info": "Slides up once the main Add to bag button scrolls out of view."
+        }
+      }
     },
     "main_search": {
       "name": "Search results",
@@ -529,6 +554,39 @@
         },
         "paragraph": {
           "content": "Transparent PNG product images look best. Notes come from the custom.notes product metafield when set."
+        },
+        "collection": {
+          "info": "Used when no tabs are added. Add Tab blocks to show several groups of products."
+        }
+      },
+      "blocks": {
+        "tab": {
+          "name": "Tab",
+          "settings": {
+            "title": {
+              "label": "Tab title"
+            },
+            "source": {
+              "label": "Show products by",
+              "options__1": {
+                "label": "Collection"
+              },
+              "options__2": {
+                "label": "Product type"
+              },
+              "options__3": {
+                "label": "Product tag"
+              }
+            },
+            "collection": {
+              "label": "Collection",
+              "info": "Defaults to all products. With product type or tag, products are taken from this collection."
+            },
+            "value": {
+              "label": "Product type or tag",
+              "info": "Exact product type or tag, for example Eau de parfum. Not case sensitive."
+            }
+          }
         }
       }
     },
@@ -945,6 +1003,234 @@
           "label": "Video"
         }
       }
+    },
+    "quick_view": {
+      "name": "Quick view"
+    },
+    "scent_quiz": {
+      "name": "Scent quiz",
+      "presets": {
+        "name": "Scent quiz"
+      },
+      "settings": {
+        "collection": {
+          "label": "Products to match",
+          "info": "Matches use each product's scent family and intensity (custom.scent_family and custom.intensity metafields), or a Fresh, Floral, Woody or Amber tag. Defaults to all products."
+        },
+        "q1": {
+          "label": "Question 1 (mood)"
+        },
+        "q1_options": {
+          "label": "Question 1 answer labels",
+          "info": "Four labels separated by commas, in this order: Fresh, Floral, Woody, Amber."
+        },
+        "q2": {
+          "label": "Question 2 (occasion)"
+        },
+        "q3": {
+          "label": "Question 3 (strength)"
+        },
+        "results_heading": {
+          "label": "Results heading"
+        },
+        "results": {
+          "label": "Number of matches"
+        }
+      }
+    },
+    "discovery_set": {
+      "name": "Discovery set builder",
+      "presets": {
+        "name": "Discovery set builder"
+      },
+      "settings": {
+        "collection": {
+          "label": "Minis collection",
+          "info": "Use single-variant mini or sample products. Defaults to all products."
+        },
+        "set_size": {
+          "label": "Scents per set"
+        },
+        "offer": {
+          "label": "Offer label",
+          "info": "Shown as a badge. Create the matching automatic discount in Shopify admin; set items are tagged with a Discovery set line property."
+        }
+      }
+    },
+    "testimonials": {
+      "name": "Testimonials",
+      "presets": {
+        "name": "Testimonials"
+      },
+      "blocks": {
+        "testimonial": {
+          "name": "Testimonial",
+          "settings": {
+            "quote": {
+              "label": "Quote"
+            },
+            "author": {
+              "label": "Name"
+            },
+            "detail": {
+              "label": "Detail"
+            },
+            "rating": {
+              "label": "Star rating",
+              "info": "Set to 0 to hide the stars."
+            },
+            "product": {
+              "label": "Product reviewed"
+            }
+          }
+        }
+      }
+    },
+    "logo_list": {
+      "name": "Press logos",
+      "presets": {
+        "name": "Press logos"
+      },
+      "blocks": {
+        "logo": {
+          "name": "Logo",
+          "settings": {
+            "image": {
+              "info": "Use a transparent PNG or SVG logo. Without an image, the name is shown as text."
+            },
+            "name": {
+              "label": "Name"
+            },
+            "quote": {
+              "label": "Short quote"
+            }
+          }
+        }
+      }
+    },
+    "video": {
+      "name": "Video",
+      "presets": {
+        "name": "Video"
+      },
+      "settings": {
+        "video": {
+          "label": "Shopify-hosted video"
+        },
+        "video_url": {
+          "label": "Or YouTube / Vimeo link",
+          "info": "Used when no Shopify-hosted video is chosen."
+        },
+        "cover": {
+          "label": "Cover image"
+        },
+        "ratio": {
+          "label": "Shape",
+          "options__1": {
+            "label": "Widescreen (16:9)"
+          },
+          "options__2": {
+            "label": "Cinematic (21:9)"
+          },
+          "options__3": {
+            "label": "Portrait (4:5)"
+          }
+        },
+        "full_width": {
+          "label": "Full width"
+        }
+      }
+    },
+    "promo_popup": {
+      "name": "Promo popup",
+      "presets": {
+        "name": "Promo popup"
+      },
+      "settings": {
+        "delay": {
+          "label": "Show after"
+        },
+        "days": {
+          "label": "Show again after (days)",
+          "info": "Once closed, the popup stays hidden for this many days. It always shows while the section is selected in the editor."
+        },
+        "action": {
+          "label": "Content",
+          "options__1": {
+            "label": "Email signup"
+          },
+          "options__2": {
+            "label": "Discount code"
+          },
+          "options__3": {
+            "label": "Text and button only"
+          }
+        },
+        "code": {
+          "label": "Discount code",
+          "info": "Create this code in Shopify admin under Discounts."
+        }
+      }
+    },
+    "countdown": {
+      "name": "Countdown banner",
+      "presets": {
+        "name": "Countdown banner"
+      },
+      "settings": {
+        "end_date": {
+          "label": "End date",
+          "info": "Format: YYYY-MM-DD, for example 2026-12-31."
+        },
+        "end_time": {
+          "label": "End time",
+          "info": "24-hour format in the visitor's time zone, for example 23:59."
+        },
+        "ended_text": {
+          "label": "Message after it ends"
+        },
+        "padding": {
+          "label": "Vertical padding"
+        }
+      }
+    },
+    "recently_viewed": {
+      "name": "Recently viewed",
+      "presets": {
+        "name": "Recently viewed"
+      }
+    },
+    "product_card_render": {
+      "name": "Product card"
+    },
+    "store_locations": {
+      "name": "Store locations",
+      "presets": {
+        "name": "Store locations"
+      },
+      "blocks": {
+        "store": {
+          "name": "Store",
+          "settings": {
+            "name": {
+              "label": "Store name"
+            },
+            "address": {
+              "label": "Address"
+            },
+            "hours": {
+              "label": "Opening hours"
+            },
+            "phone": {
+              "label": "Phone"
+            },
+            "map_link": {
+              "label": "Map link",
+              "info": "Paste a Google Maps or Apple Maps link for directions."
+            }
+          }
+        }
+      }
     }
   },
   "settings_schema": {
@@ -974,6 +1260,33 @@
         },
         "show_note": {
           "label": "Enable cart note"
+        },
+        "header_shipping": {
+          "content": "Free shipping progress"
+        },
+        "free_shipping_threshold": {
+          "label": "Free shipping threshold",
+          "info": "Order value in your store's default currency. Set to 0 to hide the progress bar. It does not change your shipping rates; set those in Shopify admin."
+        },
+        "header_upsell": {
+          "content": "Cart upsell"
+        },
+        "upsell_collection": {
+          "label": "Upsell collection",
+          "info": "Up to 3 products from this collection are suggested in the cart, skipping products already in it."
+        },
+        "upsell_heading": {
+          "label": "Upsell heading"
+        },
+        "header_gift": {
+          "content": "Gift options"
+        },
+        "gift_wrap_product": {
+          "label": "Gift wrap product",
+          "info": "Create a product for gift wrapping (for example, priced at the wrap cost) and choose it here. Leave empty to hide the option."
+        },
+        "show_gift_message": {
+          "label": "Show gift message field"
         }
       }
     },
@@ -1091,6 +1404,9 @@
         },
         "show_vendor": {
           "label": "Show vendor"
+        },
+        "show_quick_view": {
+          "label": "Enable quick view"
         }
       }
     },

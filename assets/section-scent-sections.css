@@ -25,18 +25,10 @@
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: flex-end;
-  gap: 24px;
-  margin-bottom: 48px;
-}
-
-@media screen and (min-width: 990px) {
-  .sc__head {
-    position: sticky;
-    top: 80px;
-    z-index: 2;
-    padding-block: 12px;
-    background: rgb(var(--color-background));
-  }
+  gap: 24px 48px;
+  margin-bottom: clamp(40px, 5vw, 72px);
+  padding-bottom: clamp(24px, 3vw, 40px);
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.12);
 }
 
 .sc__title {
@@ -48,7 +40,13 @@
 
 .sc__text {
   max-width: 380px;
+  margin: 0;
   font-size: 16px;
+  line-height: 1.65;
+}
+
+.sc__text > * {
+  margin: 0;
 }
 
 .sc__grid {
@@ -677,4 +675,82 @@ cart-stepper[aria-busy='true'] {
 .photo-frame .sv__fly .bottle-photo {
   height: 82%;
   bottom: 4%;
+}
+
+/* ---------- Featured product tabs ---------- */
+
+sc-tabs {
+  display: block;
+}
+
+.sc-tabs__nav {
+  display: flex;
+  gap: 0.8rem;
+  margin: -1.6rem 0 3.2rem;
+  padding-bottom: 0.4rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.sc-tabs__nav::-webkit-scrollbar {
+  display: none;
+}
+
+.sc-tabs__tab {
+  flex-shrink: 0;
+  min-height: 4.4rem;
+  padding: 0 2.2rem;
+  border: 1px solid rgba(var(--color-foreground), 0.25);
+  border-radius: 999px;
+  background: transparent;
+  color: rgb(var(--color-foreground));
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.sc-tabs__tab:hover {
+  border-color: rgb(var(--color-foreground));
+}
+
+.sc-tabs__tab[aria-selected='true'] {
+  background: rgb(var(--color-foreground));
+  border-color: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+}
+
+.sc-tabs__panel:focus-visible {
+  outline: 2px solid rgb(var(--color-foreground));
+  outline-offset: 8px;
+}
+
+.sc-tabs__panel.is-entering {
+  animation: sc-panel-in 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes sc-panel-in {
+  from { opacity: 0; transform: translateY(14px); }
+}
+
+.sc-tabs__more {
+  display: flex;
+  justify-content: center;
+  margin-top: 4.8rem;
+}
+
+.sc-tabs__more .icon {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.sc-tabs__empty {
+  text-align: center;
+  padding: 4rem 0;
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-tabs__panel.is-entering {
+    animation: none;
+  }
 }

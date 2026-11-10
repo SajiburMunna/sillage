@@ -739,21 +739,6 @@
   transform: translate(-50%, 0);
 }
 
-.ss-veil {
-  position: fixed;
-  inset: 0;
-  z-index: 95;
-  background: var(--cream);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.42s var(--ease);
-}
-
-.ss-veil.is-on {
-  opacity: 1;
-  pointer-events: auto;
-}
-
 .ss-loader {
   position: fixed;
   inset: 0;
@@ -1246,4 +1231,21 @@
   .ss-wearing {
     top: calc(36% + var(--vh) * 0.27 - var(--ss-inset, 0px) / 2);
   }
+}
+
+/* Picker jumps: a brief dip in the stage's own colour (never a blank screen) */
+.ss-stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  background-color: inherit;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.ss-stage.is-jumping::after {
+  opacity: 0.7;
+  transition-duration: 0.15s;
 }

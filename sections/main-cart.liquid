@@ -21,7 +21,9 @@
     {%- else -%}
       <div class="cart-page">
         <div class="cart-page__items">
+          {% render 'cart-progress' %}
           {% render 'cart-line-items' %}
+          {% render 'cart-upsell' %}
           <noscript>
             <form action="{{ routes.cart_url }}" method="post">
               {%- for item in cart.items -%}
@@ -32,6 +34,7 @@
           </noscript>
         </div>
         <aside class="cart-page__summary" aria-label="{{ 'sections.cart.summary' | t }}">
+          {% render 'cart-gift', context: 'page' %}
           {% render 'cart-summary', context: 'page' %}
         </aside>
       </div>

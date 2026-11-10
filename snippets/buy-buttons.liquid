@@ -5,6 +5,7 @@
   - block {Object}
   - section_id {String}
   - show_quantity {Boolean}
+  - dynamic_checkout {Boolean} show express checkout when there is no block (quick view)
 {%- endcomment -%}
 {%- assign current_variant = product.selected_or_first_available_variant -%}
 <div class="buy-buttons" {{ block.shopify_attributes }}>
@@ -116,7 +117,7 @@
         </div>
       </div>
 
-      {%- if block.settings.show_dynamic_checkout -%}
+      {%- if block.settings.show_dynamic_checkout or dynamic_checkout -%}
         <div class="buy-buttons__dynamic">
           {{ form | payment_button }}
         </div>

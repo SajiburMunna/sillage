@@ -60,6 +60,21 @@
       {%- render 'cart-drawer' -%}
     {%- endif -%}
 
+    {%- if settings.card_show_quick_view -%}
+      <quick-view id="QuickView" class="drawer drawer--quick-view" role="dialog" aria-modal="true" aria-labelledby="QuickView-Title">
+        <button type="button" class="drawer__overlay" data-drawer-close tabindex="-1" aria-label="{{ 'accessibility.close' | t }}"></button>
+        <div class="drawer__panel" tabindex="-1">
+          <div class="drawer__header">
+            <span class="eyebrow" style="margin: 0;">{{ 'products.product.quick_view' | t }}</span>
+            <button type="button" class="icon-button" data-drawer-close data-drawer-focus aria-label="{{ 'accessibility.close' | t }}">
+              {% render 'icon', icon: 'close' %}
+            </button>
+          </div>
+          <div class="drawer__body" data-quick-view-body></div>
+        </div>
+      </quick-view>
+    {%- endif -%}
+
     {% sections 'header-group' %}
 
     <main id="MainContent" class="content-for-layout" role="main" tabindex="-1">

@@ -5,20 +5,22 @@
   - block {Object}
   - section_id {String}
   - update_url {Boolean}
+  - picker_type {String} 'buttons' or 'dropdown' when there is no block (quick view)
 {%- endcomment -%}
 {%- unless product.has_only_default_variant -%}
   <variant-picker
     class="variant-picker"
     data-section="{{ section_id }}"
     data-url="{{ product.url }}"
-    data-update-url="{{ update_url | default: true }}"
+    data-update-url="{% if update_url == false %}false{% else %}true{% endif %}"
     {{ block.shopify_attributes }}
   >
     <div data-product-update="picker">
       {%- for option in product.options_with_values -%}
         {%- liquid
           assign use_buttons = false
-          if block.settings.picker_type == 'buttons' or option.values.first.swatch
+          assign picker = block.settings.picker_type | default: picker_type | default: 'buttons'
+          if picker == 'buttons' or option.values.first.swatch
             assign use_buttons = true
           endif
         -%}

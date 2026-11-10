@@ -1,0 +1,70 @@
+{{ 'section-marketing.css' | asset_url | stylesheet_tag }}
+
+<div
+  class="vd section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="{% if section.settings.full_width %}vd--full{% else %}page-width{% endif %}">
+    {%- if section.settings.heading != blank -%}
+      <div class="section-header page-width" data-reveal>
+        <h2 class="section-header__title h-display h-display--md">{{ section.settings.heading | escape }}</h2>
+        {%- if section.settings.text != blank -%}<div class="section-header__text rte">{{ section.settings.text }}</div>{%- endif -%}
+      </div>
+    {%- endif -%}
+    <deferred-media class="vd__media media" style="aspect-ratio: {{ section.settings.ratio }};">
+      <button type="button" class="deferred-media__poster vd__poster" data-deferred-poster>
+        <span class="visually-hidden">{{ 'products.product.media.play_video' | t }}</span>
+        <span class="vd__play" aria-hidden="true">{% render 'icon', icon: 'play' %}</span>
+        {%- assign cover = section.settings.cover | default: section.settings.video.preview_image -%}
+        {%- if cover != blank -%}
+          {{ cover | image_url: width: 2000 | image_tag: widths: '750, 1100, 1500, 2000', sizes: '100vw', loading: 'lazy', alt: section.settings.cover.alt | default: section.settings.heading }}
+        {%- else -%}
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- endif -%}
+      </button>
+      <template>
+        {%- if section.settings.video != blank -%}
+          {{ section.settings.video | video_tag: image_size: '2000x', controls: true, playsinline: true, autoplay: true }}
+        {%- elsif section.settings.video_url != blank -%}
+          {%- if section.settings.video_url.type == 'youtube' -%}
+            <iframe src="https://www.youtube-nocookie.com/embed/{{ section.settings.video_url.id }}?autoplay=1&rel=0" title="{{ section.settings.heading | escape }}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+          {%- else -%}
+            <iframe src="https://player.vimeo.com/video/{{ section.settings.video_url.id }}?autoplay=1" title="{{ section.settings.heading | escape }}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+          {%- endif -%}
+        {%- endif -%}
+      </template>
+    </deferred-media>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.video.name",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "text", "id": "heading", "default": "Made by hand, one batch at a time", "label": "t:sections.all.heading" },
+    { "type": "richtext", "id": "text", "label": "t:sections.all.text" },
+    { "type": "video", "id": "video", "label": "t:sections.video.settings.video.label" },
+    { "type": "video_url", "id": "video_url", "accept": ["youtube", "vimeo"], "label": "t:sections.video.settings.video_url.label", "info": "t:sections.video.settings.video_url.info" },
+    { "type": "image_picker", "id": "cover", "label": "t:sections.video.settings.cover.label" },
+    {
+      "type": "select",
+      "id": "ratio",
+      "default": "16 / 9",
+      "label": "t:sections.video.settings.ratio.label",
+      "options": [
+        { "value": "16 / 9", "label": "t:sections.video.settings.ratio.options__1.label" },
+        { "value": "21 / 9", "label": "t:sections.video.settings.ratio.options__2.label" },
+        { "value": "4 / 5", "label": "t:sections.video.settings.ratio.options__3.label" }
+      ]
+    },
+    { "type": "checkbox", "id": "full_width", "default": false, "label": "t:sections.video.settings.full_width.label" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 96 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 96 }
+  ],
+  "presets": [{ "name": "t:sections.video.presets.name" }]
+}
+{% endschema %}

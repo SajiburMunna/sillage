@@ -26,7 +26,11 @@
           }
         }
       },
-      "block_order": ["link-list-1", "text-1", "newsletter-1"],
+      "block_order": [
+        "link-list-1",
+        "text-1",
+        "newsletter-1"
+      ],
       "settings": {
         "show_wordmark": true,
         "legal_text": "For external use only.",
@@ -37,7 +41,24 @@
         "show_language": true,
         "color_scheme": "scheme-1"
       }
+    },
+    "promo_popup": {
+      "type": "promo-popup",
+      "settings": {
+        "delay": 10,
+        "days": 7,
+        "eyebrow": "Welcome",
+        "heading": "10% off your first bottle",
+        "text": "<p>Join the list for new scents, restocks and a welcome gift.</p>",
+        "action": "newsletter",
+        "code": "WELCOME10",
+        "button_label": "",
+        "color_scheme": "scheme-1"
+      }
     }
   },
-  "order": ["footer"]
+  "order": [
+    "footer",
+    "promo_popup"
+  ]
 }

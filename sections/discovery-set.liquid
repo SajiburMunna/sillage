@@ -1,0 +1,95 @@
+{{ 'section-scent-tools.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'scent-tools.js' | asset_url }}" defer="defer"></script>
+
+{%- assign set_collection = section.settings.collection | default: collections.all -%}
+
+<div
+  class="ds section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <discovery-set class="page-width" data-size="{{ section.settings.set_size }}" data-property="{{ 'sections.discovery_set.property' | t | escape }}">
+    <header class="ds__head">
+      <div>
+        <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        <h2 class="h-display h-display--md ds__title">{{ section.settings.heading | escape }}</h2>
+      </div>
+      <div class="ds__intro">
+        <p>{{ section.settings.text | escape }}</p>
+        {%- if section.settings.offer != blank -%}
+          <p class="ds__offer">{{ section.settings.offer | escape }}</p>
+        {%- endif -%}
+      </div>
+    </header>
+
+    <ul class="ds__grid" role="list">
+      {%- for product in set_collection.products limit: section.settings.limit -%}
+        {%- assign variant = product.selected_or_first_available_variant -%}
+        <li class="ds__item">
+          <label class="ds__card{% unless variant.available %} is-disabled{% endunless %}">
+            <input
+              type="checkbox"
+              class="visually-hidden"
+              value="{{ variant.id }}"
+              data-title="{{ product.title | escape }}"
+              data-price="{{ variant.price }}"
+              data-image="{% if product.featured_media %}{{ product.featured_media | image_url: width: 160 }}{% endif %}"
+              {% unless variant.available %}
+                disabled
+              {% endunless %}
+            >
+            <span class="ds__media media media--portrait">
+              {%- if product.featured_media -%}
+                {{ product.featured_media | image_url: width: 600 | image_tag: widths: '240, 360, 480, 600', sizes: '(min-width: 990px) 20vw, 45vw', loading: 'lazy', alt: product.featured_media.alt | default: product.title }}
+              {%- endif -%}
+              <span class="ds__check" aria-hidden="true">{% render 'icon', icon: 'check' %}</span>
+            </span>
+            <span class="ds__name">{{ product.title | escape }}</span>
+            <span class="ds__price">
+              {%- if variant.available -%}{{ variant.price | money }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
+            </span>
+          </label>
+        </li>
+      {%- endfor -%}
+    </ul>
+
+    <div class="ds__bar" data-ds-bar>
+      <div class="ds__slots" aria-hidden="true">
+        {%- for i in (1..section.settings.set_size) -%}
+          <span class="ds__slot"></span>
+        {%- endfor -%}
+      </div>
+      <p class="ds__status" aria-live="polite" data-ds-status
+        data-template="{{ 'sections.discovery_set.chosen' | t: chosen: '[chosen]', size: section.settings.set_size }}">
+        {{- 'sections.discovery_set.chosen' | t: chosen: 0, size: section.settings.set_size -}}
+      </p>
+      <p class="ds__total" data-ds-total></p>
+      <button type="button" class="button" data-ds-add disabled>
+        <span class="button__label">{{ 'sections.discovery_set.add' | t }}</span>
+        <span class="loading-spinner" aria-hidden="true"></span>
+      </button>
+      <p class="form__message form__message--error" data-ds-error role="alert" hidden></p>
+    </div>
+  </discovery-set>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.discovery_set.name",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "t:sections.discovery_set.settings.collection.label", "info": "t:sections.discovery_set.settings.collection.info" },
+    { "type": "range", "id": "set_size", "min": 2, "max": 6, "step": 1, "default": 3, "label": "t:sections.discovery_set.settings.set_size.label" },
+    { "type": "range", "id": "limit", "min": 4, "max": 24, "step": 1, "default": 12, "label": "t:sections.all.products_to_show" },
+    { "type": "text", "id": "eyebrow", "default": "Discovery set", "label": "t:sections.all.eyebrow" },
+    { "type": "text", "id": "heading", "default": "Build your discovery set", "label": "t:sections.all.heading" },
+    { "type": "text", "id": "text", "default": "Choose your minis and wear each one for a few days before you commit to a full bottle.", "label": "t:sections.all.text" },
+    { "type": "text", "id": "offer", "default": "Save 15% on every set", "label": "t:sections.discovery_set.settings.offer.label", "info": "t:sections.discovery_set.settings.offer.info" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 96 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 120 }
+  ],
+  "presets": [{ "name": "t:sections.discovery_set.presets.name" }]
+}
+{% endschema %}

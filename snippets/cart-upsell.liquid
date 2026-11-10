@@ -1,0 +1,64 @@
+{%- comment -%}
+  "You may also like" products in the cart, from the collection chosen in
+  Theme settings → Cart. Products already in the cart and the gift wrap
+  product are skipped.
+{%- endcomment -%}
+{%- assign upsell_collection = settings.cart_upsell_collection -%}
+{%- if upsell_collection != blank and cart.item_count > 0 -%}
+  {%- liquid
+    assign in_cart_ids = cart.items | map: 'product_id' | join: ','
+    assign in_cart_list = in_cart_ids | split: ','
+    assign wrap_id = settings.cart_gift_wrap_product.id | append: ''
+    assign shown = 0
+  -%}
+  {%- capture upsell_items -%}
+    {%- for product in upsell_collection.products -%}
+      {%- assign pid = product.id | append: '' -%}
+      {%- if shown < 3 and product.available and pid != wrap_id -%}
+        {%- unless in_cart_list contains pid -%}
+          {%- assign shown = shown | plus: 1 -%}
+          <li class="cart-upsell__item">
+            <a href="{{ product.url }}" class="cart-upsell__media media media--square" tabindex="-1" aria-hidden="true">
+              {%- if product.featured_media -%}
+                {{ product.featured_media | image_url: width: 160 | image_tag: loading: 'lazy', widths: '80, 160', sizes: '64px', alt: '' }}
+              {%- endif -%}
+            </a>
+            <div class="cart-upsell__info">
+              <a href="{{ product.url }}" class="cart-upsell__title link-underline">{{ product.title | escape }}</a>
+              {% render 'price', product: product %}
+            </div>
+            {%- if product.has_only_default_variant -%}
+              <product-form class="cart-upsell__action">
+                {%- form 'product', product, id: nil -%}
+                  <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                  <button type="submit" name="add" class="icon-button cart-upsell__add" aria-label="{{ 'products.product.add_to_cart_named' | t: title: product.title | escape }}">
+                    {% render 'icon', icon: 'plus' %}
+                    <span class="loading-spinner" aria-hidden="true"></span>
+                  </button>
+                  <p class="form__message form__message--error" data-product-form-error role="alert" hidden></p>
+                {%- endform -%}
+              </product-form>
+            {%- else -%}
+              <a
+                href="{{ product.url }}"
+                class="icon-button cart-upsell__add"
+                aria-label="{{ 'products.product.choose_options_named' | t: title: product.title | escape }}"
+                {% if settings.card_show_quick_view %}
+                  data-quick-view="{{ product.url }}" aria-haspopup="dialog"
+                {% endif %}
+              >
+                {% render 'icon', icon: 'plus' %}
+              </a>
+            {%- endif -%}
+          </li>
+        {%- endunless -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- if shown > 0 -%}
+    <div class="cart-upsell">
+      <h3 class="cart-upsell__heading">{{ settings.cart_upsell_heading | escape }}</h3>
+      <ul class="cart-upsell__list" role="list">{{ upsell_items }}</ul>
+    </div>
+  {%- endif -%}
+{%- endif -%}

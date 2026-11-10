@@ -107,7 +107,7 @@
       "type": "scent-collection",
       "settings": {
         "eyebrow": "Shop",
-        "heading": "The collection",
+        "heading": "Featured scents",
         "text": "<p>Every scent on the shelf right now. Members save on every bottle.</p>",
         "collection": "",
         "limit": 8,
@@ -115,7 +115,55 @@
         "color_scheme": "scheme-1",
         "padding_top": 96,
         "padding_bottom": 120
-      }
+      },
+      "blocks": {
+        "tab_featured": {
+          "type": "tab",
+          "settings": {
+            "title": "Featured",
+            "source": "collection",
+            "collection": "",
+            "value": "",
+            "show_view_all": true
+          }
+        },
+        "tab_edp": {
+          "type": "tab",
+          "settings": {
+            "title": "Eaux de parfum",
+            "source": "type",
+            "collection": "",
+            "value": "Eau de parfum",
+            "show_view_all": true
+          }
+        },
+        "tab_attars": {
+          "type": "tab",
+          "settings": {
+            "title": "Attars",
+            "source": "type",
+            "collection": "",
+            "value": "Oil-based attar",
+            "show_view_all": true
+          }
+        },
+        "tab_essence": {
+          "type": "tab",
+          "settings": {
+            "title": "Pure essence",
+            "source": "tag",
+            "collection": "",
+            "value": "Pure Essence",
+            "show_view_all": true
+          }
+        }
+      },
+      "block_order": [
+        "tab_featured",
+        "tab_edp",
+        "tab_attars",
+        "tab_essence"
+      ]
     },
     "scent_house": {
       "type": "scent-house",
@@ -210,12 +258,117 @@
         "liquid": "#B89B7A",
         "anchor": "visit"
       }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "blocks": {
+        "t1": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "I get asked what I'm wearing every single time. It lasts all day and never feels too much.",
+            "author": "Amira K.",
+            "detail": "Verified buyer",
+            "rating": 5
+          }
+        },
+        "t2": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The discovery set was the best way to find my scent. Now I own two full bottles.",
+            "author": "Daniel R.",
+            "detail": "Verified buyer",
+            "rating": 5
+          }
+        },
+        "t3": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Beautiful bottles, warm and honest scents, and the gift wrapping made it feel special.",
+            "author": "Sofia M.",
+            "detail": "Verified buyer",
+            "rating": 5
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "settings": {
+        "eyebrow": "Kind words",
+        "heading": "Worn and loved",
+        "color_scheme": "scheme-1",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    },
+    "logos": {
+      "type": "logo-list",
+      "blocks": {
+        "l0": {
+          "type": "logo",
+          "settings": {
+            "name": "Vogue"
+          }
+        },
+        "l1": {
+          "type": "logo",
+          "settings": {
+            "name": "Elle"
+          }
+        },
+        "l2": {
+          "type": "logo",
+          "settings": {
+            "name": "Monocle"
+          }
+        },
+        "l3": {
+          "type": "logo",
+          "settings": {
+            "name": "Kinfolk"
+          }
+        }
+      },
+      "block_order": [
+        "l0",
+        "l1",
+        "l2",
+        "l3"
+      ],
+      "settings": {
+        "heading": "As seen in",
+        "color_scheme": "scheme-1",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "quiz": {
+      "type": "scent-quiz",
+      "settings": {
+        "eyebrow": "Not sure where to start?",
+        "heading": "Find your scent in three questions",
+        "text": "Tell us your mood, your moments and how bold you like it. We'll do the rest.",
+        "q1": "Which mood feels most like you?",
+        "q1_options": "Fresh, Floral, Woody, Warm",
+        "q2": "When will you wear it most?",
+        "q3": "How strong should it be?",
+        "results_heading": "Your matches",
+        "results": 3,
+        "color_scheme": "scheme-5",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
     }
   },
   "order": [
     "scent_story",
     "scent_collection",
+    "quiz",
+    "testimonials",
     "scent_house",
+    "logos",
     "scent_visit"
   ]
 }
