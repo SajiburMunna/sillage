@@ -1,0 +1,168 @@
+{{ 'section-home.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'section-home.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign press_label = section.settings.eyebrow
+  if press_label == blank
+    assign press_label = 'sections.home.press_label' | t
+  endif
+-%}
+
+<press-quotes
+  class="press section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  {%- if section.settings.show_trail -%}{% render 'trail' %}{%- endif -%}
+  <div class="page-width press__inner" data-reveal>
+    {%- if section.settings.eyebrow != blank -%}<p class="eyebrow press__eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+
+    <div class="press__quotes">
+      {%- for block in section.blocks -%}
+        <figure
+          class="press__quote{% if forloop.first %} is-active{% endif %}"
+          id="Quote-{{ section.id }}-{{ forloop.index }}"
+          role="tabpanel"
+          aria-labelledby="QuoteTab-{{ section.id }}-{{ forloop.index }}"
+          {% unless forloop.first %}
+            hidden
+          {% endunless %}
+          data-panel
+        >
+          <blockquote class="press__text">{{ block.settings.quote | escape }}</blockquote>
+        </figure>
+      {%- endfor -%}
+    </div>
+
+    <div class="press__sources" role="tablist" aria-label="{{ press_label | escape }}">
+      {%- for block in section.blocks -%}
+        <button
+          type="button"
+          class="press__source"
+          role="tab"
+          id="QuoteTab-{{ section.id }}-{{ forloop.index }}"
+          aria-controls="Quote-{{ section.id }}-{{ forloop.index }}"
+          aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+          tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
+          data-tab
+          {{ block.shopify_attributes }}
+        >
+          {%- if block.settings.logo != blank -%}
+            {{ block.settings.logo | image_url: height: 56 | image_tag: height: 28, loading: 'lazy', alt: block.settings.publication, class: 'press__logo' }}
+          {%- else -%}
+            <span class="press__name">{{ block.settings.publication | escape }}</span>
+          {%- endif -%}
+        </button>
+      {%- endfor -%}
+    </div>
+  </div>
+</press-quotes>
+
+{% schema %}
+{
+  "name": "t:sections.press_quotes.name",
+  "tag": "div",
+  "class": "section",
+  "max_blocks": 6,
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "default": "As seen in",
+      "label": "t:sections.all.eyebrow"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trail",
+      "default": true,
+      "label": "t:sections.press_quotes.settings.show_trail.label",
+      "info": "t:sections.press_quotes.settings.show_trail.info"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "t:sections.all.padding_top",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "t:sections.all.padding_bottom",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "quote",
+      "name": "t:sections.press_quotes.blocks.quote.name",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "quote",
+          "default": "A scent that lingers in the best possible way.",
+          "label": "t:sections.press_quotes.blocks.quote.settings.quote.label"
+        },
+        {
+          "type": "text",
+          "id": "publication",
+          "default": "Publication",
+          "label": "t:sections.press_quotes.blocks.quote.settings.publication.label"
+        },
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "t:sections.press_quotes.blocks.quote.settings.logo.label",
+          "info": "t:sections.press_quotes.blocks.quote.settings.logo.info"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.press_quotes.presets.name",
+      "blocks": [
+        {
+          "type": "quote",
+          "settings": {
+            "quote": "A scent that lingers in the best possible way.",
+            "publication": "Magazine one"
+          }
+        },
+        {
+          "type": "quote",
+          "settings": {
+            "quote": "Quietly luxurious, and impossible to forget.",
+            "publication": "Magazine two"
+          }
+        },
+        {
+          "type": "quote",
+          "settings": {
+            "quote": "The discovery set is the smartest way to find a signature scent.",
+            "publication": "Journal three"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

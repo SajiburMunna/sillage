@@ -2,7 +2,7 @@
   {
     "name": "theme_info",
     "theme_name": "Sillage",
-    "theme_version": "1.0.0",
+    "theme_version": "2.0.0",
     "theme_author": "Sillage Themes",
     "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
     "theme_support_url": "https://support.shopify.com/"
@@ -44,43 +44,43 @@
             "type": "color",
             "id": "background",
             "label": "t:settings_schema.colors.settings.background.label",
-            "default": "#F3F0EB"
+            "default": "#F6F2EC"
           },
           {
             "type": "color",
             "id": "text",
             "label": "t:settings_schema.colors.settings.text.label",
-            "default": "#191714"
+            "default": "#1E1A17"
           },
           {
             "type": "color",
             "id": "accent",
             "label": "t:settings_schema.colors.settings.accent.label",
-            "default": "#8A4A5B"
+            "default": "#8A5235"
           },
           {
             "type": "color",
             "id": "button",
             "label": "t:settings_schema.colors.settings.button.label",
-            "default": "#191714"
+            "default": "#1E1A17"
           },
           {
             "type": "color",
             "id": "button_label",
             "label": "t:settings_schema.colors.settings.button_label.label",
-            "default": "#F3F0EB"
+            "default": "#F6F2EC"
           },
           {
             "type": "color",
             "id": "secondary_button_label",
             "label": "t:settings_schema.colors.settings.secondary_button_label.label",
-            "default": "#191714"
+            "default": "#1E1A17"
           },
           {
             "type": "color",
             "id": "surface",
             "label": "t:settings_schema.colors.settings.surface.label",
-            "default": "#E9E6E2"
+            "default": "#EDE6DC"
           }
         ],
         "role": {
@@ -108,7 +108,7 @@
       {
         "type": "font_picker",
         "id": "type_header_font",
-        "default": "marcellus_n4",
+        "default": "cormorant_n5",
         "label": "t:settings_schema.typography.settings.type_header_font.label"
       },
       {
@@ -134,7 +134,7 @@
       {
         "type": "font_picker",
         "id": "type_body_font",
-        "default": "nunito_sans_n4",
+        "default": "jost_n4",
         "label": "t:settings_schema.typography.settings.type_body_font.label"
       },
       {
@@ -257,6 +257,23 @@
         ]
       },
       {
+        "type": "select",
+        "id": "card_image_fit",
+        "default": "cover",
+        "label": "t:settings_schema.product_cards.settings.image_fit.label",
+        "info": "t:settings_schema.product_cards.settings.image_fit.info",
+        "options": [
+          {
+            "value": "cover",
+            "label": "t:settings_schema.product_cards.settings.image_fit.options.cover"
+          },
+          {
+            "value": "contain",
+            "label": "t:settings_schema.product_cards.settings.image_fit.options.contain"
+          }
+        ]
+      },
+      {
         "type": "checkbox",
         "id": "card_show_secondary_image",
         "default": true,
@@ -267,6 +284,13 @@
         "id": "card_show_vendor",
         "default": true,
         "label": "t:settings_schema.product_cards.settings.show_vendor.label"
+      },
+      {
+        "type": "checkbox",
+        "id": "card_show_notes",
+        "default": true,
+        "label": "t:settings_schema.product_cards.settings.show_notes.label",
+        "info": "t:settings_schema.product_cards.settings.show_notes.info"
       },
       {
         "type": "checkbox",
@@ -285,6 +309,13 @@
         "id": "card_show_swatches",
         "default": true,
         "label": "t:settings_schema.product_cards.settings.show_swatches.label"
+      },
+      {
+        "type": "checkbox",
+        "id": "card_show_rating",
+        "default": true,
+        "label": "t:settings_schema.product_cards.settings.show_rating.label",
+        "info": "t:settings_schema.product_cards.settings.show_rating.info"
       }
     ]
   },
@@ -327,6 +358,19 @@
         "id": "cart_show_note",
         "default": true,
         "label": "t:settings_schema.cart.settings.show_note.label"
+      },
+      {
+        "type": "text",
+        "id": "cart_samples_text",
+        "default": "Two free samples, chosen for you",
+        "label": "t:settings_schema.cart.settings.samples_text.label",
+        "info": "t:settings_schema.cart.settings.samples_text.info"
+      },
+      {
+        "type": "text",
+        "id": "cart_samples_note",
+        "default": "Matched to the scents in your bag",
+        "label": "t:settings_schema.cart.settings.samples_note.label"
       },
       {
         "type": "header",

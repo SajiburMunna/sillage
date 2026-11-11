@@ -1,29 +1,55 @@
 {%- comment -%}
-  Accepts: article, show_image, show_date, show_author
+  Article card for blogs, search and featured posts.
+  Accepts:
+  - article {Object}
+  - show_image {Boolean}
+  - show_date {Boolean}
+  - show_author {Boolean}
+  - featured {Boolean} large horizontal layout for the lead story
+  - index {Number} picks a placeholder tint when the article has no image
 {%- endcomment -%}
-<article class="card" data-reveal>
-  {%- if show_image and article.image -%}
-    <div class="card__media media media--landscape">
-      {{
-        article.image
-        | image_url: width: 1100
-        | image_tag: widths: '375, 550, 750, 1100', sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw', loading: 'lazy', alt: article.image.alt | default: article.title
-      }}
+{%- liquid
+  assign word_count = article.content | strip_html | split: ' ' | size
+  assign minutes = word_count | divided_by: 220 | at_least: 1
+  assign tints = '#c97b63,#8a5235,#d9a441,#6f8f7a,#b98bb5,#3b4f6b' | split: ','
+  assign tint_index = index | default: 1 | modulo: 6
+-%}
+<article class="article-card{% if featured %} article-card--featured{% endif %}" data-reveal>
+  {%- if show_image -%}
+    <div class="article-card__media">
+      {%- if article.image -%}
+        {{
+          article.image
+          | image_url: width: 1600
+          | image_tag:
+            widths: '375, 550, 750, 1100, 1600',
+            sizes: '(min-width: 990px) 50vw, 100vw',
+            loading: 'lazy',
+            alt: article.image.alt | default: article.title
+        }}
+      {%- else -%}
+        {% render 'placeholder-bottle', tint: tints[tint_index], variant: index %}
+      {%- endif -%}
     </div>
   {%- endif -%}
-  <div class="card__info">
-    {%- if show_date or show_author -%}
-      <p class="card__vendor" style="margin: 0;">
-        {%- if show_date -%}{{ article.published_at | time_tag: format: 'date' }}{%- endif -%}
-        {%- if show_date and show_author %} · {% endif -%}
-        {%- if show_author -%}{{ article.author }}{%- endif -%}
-      </p>
-    {%- endif -%}
-    <h3 class="card__title">
-      <a href="{{ article.url }}" class="card__link link-underline">{{ article.title | escape }}</a>
+  <div class="article-card__body">
+    <p class="article-card__meta">
+      {%- if show_date -%}{{ article.published_at | time_tag: format: 'date' }}<span aria-hidden="true"> · </span>{%- endif -%}
+      <span>{{ 'blogs.article.reading_time' | t: count: minutes }}</span>
+      {%- if show_author -%}<span aria-hidden="true"> · </span>{{ article.author }}{%- endif -%}
+    </p>
+    <h3 class="article-card__title">
+      <a href="{{ article.url }}" class="article-card__link">{{ article.title | escape }}</a>
     </h3>
     {%- if article.excerpt.size > 0 or article.content.size > 0 -%}
-      <p class="text-muted" style="margin: 0;">{{ article.excerpt | default: article.content | strip_html | truncatewords: 24 }}</p>
+      <p class="article-card__excerpt">
+        {%- if featured -%}
+          {{ article.excerpt | default: article.content | strip_html | truncatewords: 40 }}
+        {%- else -%}
+          {{ article.excerpt | default: article.content | strip_html | truncatewords: 22 }}
+        {%- endif -%}
+      </p>
     {%- endif -%}
+    <span class="article-card__more" aria-hidden="true">{{ 'blogs.article.read_more' | t }} {% render 'icon', icon: 'arrow' %}</span>
   </div>
 </article>

@@ -8,7 +8,8 @@
     "play_animation": "Riproduci l'animazione di sfondo",
     "skip_to_text": "Vai al contenuto",
     "unit_price_separator": "per",
-    "vendor": "Fornitore:"
+    "vendor": "Fornitore:",
+    "star_reviews_info": "{{ rating_value }} su {{ rating_max }} stelle"
   },
   "blogs": {
     "article": {
@@ -25,7 +26,16 @@
       "name": "Nome",
       "post": "Pubblica commento",
       "success": "Il tuo commento è stato pubblicato. Grazie!",
-      "success_moderated": "Il tuo commento è stato inviato. Lo pubblicheremo a breve, perché il nostro blog è moderato."
+      "success_moderated": "Il tuo commento è stato inviato. Lo pubblicheremo a breve, perché il nostro blog è moderato.",
+      "tags_label": "Filtra gli articoli per argomento",
+      "all_topics": "Tutti",
+      "no_articles": "Non ci sono ancora articoli su questo argomento.",
+      "reading_time": {
+        "one": "{{ count }} min di lettura",
+        "other": "{{ count }} min di lettura"
+      },
+      "read_more": "Leggi la storia",
+      "share": "Condividi questa storia"
     }
   },
   "customer": {
@@ -169,6 +179,10 @@
         "x": "X (Twitter)",
         "youtube": "YouTube"
       }
+    },
+    "breadcrumbs": {
+      "label": "Percorso di navigazione",
+      "home": "Home"
     }
   },
   "gift_cards": {
@@ -209,7 +223,12 @@
       },
       "sort_by_label": "Ordina per",
       "to": "A",
-      "view_results": "Visualizza risultati"
+      "view_results": "Visualizza risultati",
+      "layout_label": "Layout della griglia",
+      "layout_columns": {
+        "one": "Mostra {{ count }} colonna",
+        "other": "Mostra {{ count }} colonne"
+      }
     },
     "product": {
       "add_to_cart": "Aggiungi al carrello",
@@ -231,7 +250,12 @@
         "load_image": "Carica l'immagine {{ index }} nella galleria",
         "play_video": "Riproduci video",
         "view_in_3d": "Visualizza in 3D",
-        "view_in_space": "Visualizza nel tuo spazio"
+        "view_in_space": "Visualizza nel tuo spazio",
+        "open_zoom": "Apri l'immagine in vista ingrandita",
+        "zoom_viewer": "Immagini ingrandite di {{ title }}",
+        "toggle_zoom": "Ingrandisci o riduci",
+        "previous": "Immagine precedente",
+        "next": "Immagine successiva"
       },
       "on_sale": "In offerta",
       "one_time_purchase": "Acquisto singolo",
@@ -262,7 +286,17 @@
       "variant_sold_out_or_unavailable": "Variante esaurita o non disponibile",
       "view_full_details": "Visualizza tutti i dettagli",
       "quick_view": "Anteprima",
-      "quick_view_named": "Anteprima di {{ title }}"
+      "quick_view_named": "Anteprima di {{ title }}",
+      "notes_label": "Note olfattive",
+      "delivery_estimate": "Ordina oggi, arriva {{ start }} – {{ end }}",
+      "delivery_estimate_single": "Ordina oggi, arriva {{ start }}",
+      "notify": {
+        "heading": "Esaurito per ora. Ti avvisiamo via email quando torna disponibile.",
+        "label": "Email",
+        "button": "Avvisami",
+        "success": "Grazie. Ti scriveremo appena torna disponibile.",
+        "body_label": "Richiesta di riassortimento"
+      }
     }
   },
   "recipient": {
@@ -300,7 +334,10 @@
       "free_shipping_progress": "Avanzamento verso la spedizione gratuita",
       "gift_wrap_label": "Aggiungi la confezione regalo",
       "gift_message_label": "Messaggio regalo",
-      "gift_message_placeholder": "Scrivi un biglietto per il destinatario (facoltativo)"
+      "gift_message_placeholder": "Scrivi un biglietto per il destinatario (facoltativo)",
+      "empty_text": "Scopri una fragranza da indossare ogni giorno. Ogni ordine include campioni omaggio.",
+      "secure_checkout": "Pagamento sicuro e crittografato",
+      "free": "Omaggio"
     },
     "collection": {
       "clear_all": "Cancella tutto",
@@ -387,6 +424,20 @@
     "store_locations": {
       "hours": "Orari di apertura",
       "directions": "Indicazioni"
+    },
+    "slideshow": {
+      "slide_label": "Diapositiva {{ index }} di {{ count }}",
+      "choose_slide": "Scegli una diapositiva",
+      "go_to_slide": "Vai alla diapositiva {{ index }}",
+      "pause": "Metti in pausa la presentazione",
+      "play": "Avvia la presentazione",
+      "previous": "Diapositiva precedente",
+      "next": "Diapositiva successiva"
+    },
+    "home": {
+      "ribbon_pause": "Metti in pausa il testo scorrevole",
+      "ribbon_play": "Riproduci il testo scorrevole",
+      "press_label": "Stampa"
     }
   },
   "templates": {
@@ -416,7 +467,12 @@
       },
       "search_for": "Cerca \"{{ terms }}\"",
       "suggestions": "Suggerimenti",
-      "title": "Risultati della ricerca"
+      "title": "Risultati della ricerca",
+      "types_label": "Tipi di risultati",
+      "tab_all": "Tutto",
+      "tab_products": "Prodotti",
+      "tab_other": "Articoli e pagine",
+      "no_results_hint": "Controlla l’ortografia, prova una sola nota come “iris” o sfoglia tutta la collezione."
     }
   }
 }

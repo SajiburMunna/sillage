@@ -5,6 +5,19 @@
 /* ---------- Utilities ---------- */
 
 const Theme = {
+  loadStylesheet(href) {
+    const url = new URL(href, window.location.href);
+    const existing = [...document.querySelectorAll('link[rel="stylesheet"]')].find((l) => new URL(l.href, window.location.href).pathname === url.pathname);
+    if (existing) return Promise.resolve();
+    return new Promise((resolve) => {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = url.href;
+      link.onload = link.onerror = () => resolve();
+      document.head.appendChild(link);
+    });
+  },
+
   debounce(fn, wait = 300) {
     let t;
     return (...args) => {
@@ -99,7 +112,15 @@ class StickyHeader extends HTMLElement {
     const setBar = () => document.documentElement.style.setProperty('--ann-h', (bar ? bar.offsetHeight : 0) + 'px');
     setBar();
     if (bar) new ResizeObserver(setBar).observe(bar);
+    // Lets other sticky UI (like the collection toolbar) sit right under the header
+    this.sticky = this.classList.contains('header-wrapper--sticky');
+    new ResizeObserver(() => this.publishOffset()).observe(this);
     this.update();
+  }
+
+  publishOffset() {
+    const visible = this.sticky && !this.classList.contains('is-hidden');
+    document.documentElement.style.setProperty('--header-offset', visible ? `${this.offsetHeight}px` : '0px');
   }
 
   disconnectedCallback() {
@@ -132,10 +153,12 @@ class StickyHeader extends HTMLElement {
 
   hide() {
     if (!this.classList.contains('is-hidden')) this.classList.add('is-hidden');
+    this.publishOffset();
   }
 
   show() {
     if (this.classList.contains('is-hidden')) this.classList.remove('is-hidden');
+    this.publishOffset();
   }
 }
 customElements.define('sticky-header', StickyHeader);
@@ -553,6 +576,19 @@ class MediaGallery extends HTMLElement {
         this.setActive(thumb.dataset.mediaId, true);
       })
     );
+    // Keep the thumbnail highlight in step with swipes on the main carousel
+    this.viewer?.addEventListener(
+      'scroll',
+      Theme.debounce(() => {
+        if (this.viewer.scrollWidth <= this.viewer.clientWidth) return;
+        const items = [...this.viewer.querySelectorAll('[data-media-id]')];
+        const left = this.viewer.scrollLeft;
+        const current = items.reduce((best, el) => (Math.abs(el.offsetLeft - this.viewer.offsetLeft - left) < Math.abs(best.offsetLeft - this.viewer.offsetLeft - left) ? el : best), items[0]);
+        if (!current) return;
+        this.thumbs.forEach((thumb) => thumb.setAttribute('aria-current', String(thumb.dataset.mediaId === current.dataset.mediaId)));
+      }, 80),
+      { passive: true }
+    );
   }
 
   setActive(mediaId, fromThumb = false) {
@@ -678,6 +714,40 @@ class FacetForm extends HTMLElement {
       }
     });
     window.addEventListener('popstate', () => this.render(window.location.search.slice(1), false));
+
+    // Inline sort on the toolbar drives the drawer form
+    this.querySelector('[data-sort-proxy]')?.addEventListener('change', (event) => {
+      const sort = this.form.elements.sort_by;
+      if (sort) sort.value = event.target.value;
+      this.submit();
+    });
+
+    // Grid density, remembered per device type
+    this.layoutKey = window.matchMedia('(min-width: 750px)').matches ? 'grid-cols-desktop' : 'grid-cols-mobile';
+    this.layoutButtons = [...this.querySelectorAll('[data-grid-cols]')];
+    let saved = null;
+    try {
+      saved = localStorage.getItem(this.layoutKey);
+    } catch (e) {
+      /* storage unavailable */
+    }
+    this.setLayout(saved, false);
+    this.layoutButtons.forEach((button) => button.addEventListener('click', () => this.setLayout(button.dataset.gridCols, true)));
+  }
+
+  setLayout(cols, save) {
+    const root = document.documentElement;
+    const desktop = this.layoutKey === 'grid-cols-desktop';
+    if (cols) root.style.setProperty(desktop ? '--user-cols' : '--user-cols-mobile', cols);
+    const current = cols || getComputedStyle(document.querySelector('#ProductGridContainer .grid') || root).getPropertyValue(desktop ? '--cols' : '--cols-mobile').trim();
+    this.layoutButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.gridCols === current)));
+    if (save) {
+      try {
+        localStorage.setItem(this.layoutKey, cols);
+      } catch (e) {
+        /* storage unavailable */
+      }
+    }
   }
 
   submit() {
@@ -703,6 +773,10 @@ class FacetForm extends HTMLElement {
         Theme.swap(html, selector);
       });
       if (push) window.history.pushState({}, '', `${window.location.pathname}${query ? `?${query}` : ''}`);
+      const proxy = this.querySelector('[data-sort-proxy]');
+      const sort = this.form.elements.sort_by;
+      if (proxy && sort) proxy.value = sort.value;
+      this.updateFilterCount(html);
       const count = document.getElementById('ProductCount');
       if (count) Theme.announce(count.textContent.trim());
     } finally {
@@ -711,6 +785,11 @@ class FacetForm extends HTMLElement {
     }
   }
 }
+FacetForm.prototype.updateFilterCount = function (html) {
+  const fresh = html.querySelector('.facets__button');
+  const current = this.querySelector('.facets__button');
+  if (fresh && current) current.innerHTML = fresh.innerHTML;
+};
 customElements.define('facet-form', FacetForm);
 
 /* ---------- Localization (country / language) ---------- */
@@ -879,6 +958,9 @@ class QuickView extends DrawerComponent {
         const response = await fetch(`${key}?section_id=quick-view`);
         if (!response.ok) throw new Error(response.status);
         const doc = Theme.parseHTML(await response.text());
+        // The section ships its own stylesheet; pages like collections don't load it.
+        // Add it to <head> and wait, so the product never flashes unstyled.
+        await Promise.all([...doc.querySelectorAll('link[rel="stylesheet"]')].map((link) => Theme.loadStylesheet(link.href)));
         html = doc.querySelector('.quick-view')?.outerHTML || '';
         this.cache.set(key, html);
       }
@@ -910,6 +992,11 @@ class StickyAtc extends HTMLElement {
     const mainButton = this.form?.querySelector('[type="submit"][name="add"]');
     if (!mainButton) return;
     this.hidden = false;
+    // Lets the page reserve room at the bottom so the bar never covers the footer
+    this.resizeObserver = new ResizeObserver(() => {
+      document.documentElement.style.setProperty('--sticky-atc-height', `${this.offsetHeight}px`);
+    });
+    this.resizeObserver.observe(this);
     this.observer = new IntersectionObserver(([entry]) => {
       // Show once the main button has scrolled above the viewport
       const past = !entry.isIntersecting && entry.boundingClientRect.top < 0;
@@ -926,6 +1013,7 @@ class StickyAtc extends HTMLElement {
 
   disconnectedCallback() {
     this.observer?.disconnect();
+    this.resizeObserver?.disconnect();
     document.removeEventListener('variant:change', this.onVariant);
   }
 
@@ -1010,3 +1098,311 @@ customElements.define('gift-message', GiftMessage);
     /* storage unavailable */
   }
 })();
+
+/* ---------- Product media lightbox (full-screen zoom) ---------- */
+
+class MediaLightbox extends HTMLElement {
+  connectedCallback() {
+    this.dialog = this.querySelector('dialog');
+    this.track = this.querySelector('[data-lightbox-track]');
+    this.slides = [...this.querySelectorAll('.lightbox__slide')];
+    this.counter = this.querySelector('[data-lightbox-counter]');
+    this.prev = this.querySelector('[data-lightbox-prev]');
+    this.next = this.querySelector('[data-lightbox-next]');
+    this.index = 0;
+    this.reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    this.root = this.closest('[data-product-root]') || document;
+    this.onRootClick = (event) => {
+      const trigger = event.target.closest('[data-lightbox-open]');
+      const image = !trigger && event.target.closest('.product__media-item .media > img');
+      const id = trigger?.dataset.lightboxOpen || image?.closest('[data-media-id]')?.dataset.mediaId;
+      if (!id || !this.slides.some((s) => s.dataset.mediaId === id)) return;
+      event.preventDefault();
+      this.open(id);
+    };
+    this.root.addEventListener('click', this.onRootClick);
+
+    this.querySelector('[data-lightbox-close]')?.addEventListener('click', () => this.dialog.close());
+    this.prev?.addEventListener('click', () => this.go(this.index - 1));
+    this.next?.addEventListener('click', () => this.go(this.index + 1));
+    this.dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') this.go(this.index - 1);
+      if (event.key === 'ArrowRight') this.go(this.index + 1);
+    });
+    // Clicking the dimmed backdrop closes the viewer
+    this.dialog.addEventListener('click', (event) => {
+      if (event.target === this.dialog) this.dialog.close();
+    });
+    this.dialog.addEventListener('close', () => this.onClose());
+
+    this.track.addEventListener(
+      'scroll',
+      Theme.debounce(() => {
+        const i = Math.round(this.track.scrollLeft / this.track.clientWidth);
+        if (i !== this.index) {
+          this.resetZoom();
+          this.setIndex(i);
+        }
+      }, 80),
+      { passive: true }
+    );
+
+    this.querySelectorAll('[data-lightbox-zoom]').forEach((button) => {
+      button.addEventListener('click', (event) => this.toggleZoom(button, event));
+      button.addEventListener('pointermove', (event) => this.pan(button, event));
+    });
+  }
+
+  disconnectedCallback() {
+    this.root?.removeEventListener('click', this.onRootClick);
+  }
+
+  open(mediaId) {
+    this.opener = document.activeElement;
+    this.dialog.showModal();
+    document.body.classList.add('overflow-hidden');
+    const i = Math.max(0, this.slides.findIndex((s) => s.dataset.mediaId === mediaId));
+    this.go(i, true);
+    this.dialog.querySelector('[data-lightbox-close]')?.focus();
+  }
+
+  onClose() {
+    this.resetZoom();
+    document.body.classList.remove('overflow-hidden');
+    this.opener?.focus?.({ preventScroll: true });
+  }
+
+  go(i, instant = false) {
+    const index = Math.min(Math.max(i, 0), this.slides.length - 1);
+    this.resetZoom();
+    const behavior = instant || this.reduced.matches ? 'instant' : 'smooth';
+    this.track.scrollTo({ left: this.slides[index].offsetLeft, behavior });
+    this.setIndex(index);
+  }
+
+  setIndex(index) {
+    this.index = index;
+    if (this.counter) this.counter.textContent = `${index + 1} / ${this.slides.length}`;
+    if (this.prev) this.prev.disabled = index === 0;
+    if (this.next) this.next.disabled = index === this.slides.length - 1;
+  }
+
+  toggleZoom(button, event) {
+    const zoomed = !button.classList.contains('is-zoomed');
+    this.resetZoom();
+    if (!zoomed) return;
+    this.pan(button, event, true);
+    button.classList.add('is-zoomed');
+    button.setAttribute('aria-pressed', 'true');
+  }
+
+  pan(button, event, force = false) {
+    if (!force && !button.classList.contains('is-zoomed')) return;
+    const img = button.querySelector('img');
+    if (!img) return;
+    const rect = button.getBoundingClientRect();
+    // Keyboard activation has no pointer position: zoom into the centre
+    const x = event.clientX ? ((event.clientX - rect.left) / rect.width) * 100 : 50;
+    const y = event.clientY ? ((event.clientY - rect.top) / rect.height) * 100 : 50;
+    img.style.transformOrigin = `${x}% ${y}%`;
+  }
+
+  resetZoom() {
+    this.querySelectorAll('.is-zoomed').forEach((button) => {
+      button.classList.remove('is-zoomed');
+      button.setAttribute('aria-pressed', 'false');
+    });
+  }
+}
+customElements.define('media-lightbox', MediaLightbox);
+
+/* ---------- Share button: native share sheet, falls back to copying the link ---------- */
+
+class ShareButton extends HTMLElement {
+  connectedCallback() {
+    this.button = this.querySelector('button');
+    this.label = this.querySelector('[data-share-label]');
+    this.status = this.querySelector('[data-share-status]');
+    this.originalLabel = this.label?.textContent;
+    this.button?.addEventListener('click', () => this.share());
+  }
+
+  async share() {
+    const { url, title } = this.dataset;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, url });
+        return;
+      } catch (error) {
+        if (error.name === 'AbortError') return;
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      const message = this.status?.dataset.success || '';
+      if (this.label) this.label.textContent = message;
+      if (this.status) this.status.textContent = message;
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
+        if (this.label) this.label.textContent = this.originalLabel;
+        if (this.status) this.status.textContent = '';
+      }, 2500);
+    } catch (error) {
+      window.prompt('', url);
+    }
+  }
+}
+customElements.define('share-button', ShareButton);
+
+/* ---------- Slideshow (WAI-ARIA carousel pattern) ---------- */
+
+class SlideShow extends HTMLElement {
+  connectedCallback() {
+    this.slides = [...this.querySelectorAll('[data-slide]')];
+    this.dots = [...this.querySelectorAll('[data-slide-to]')];
+    this.toggle = this.querySelector('[data-slideshow-toggle]');
+    this.index = 0;
+    this.speed = Number(this.dataset.speed) || 7000;
+    this.style.setProperty('--slideshow-speed', `${this.speed}ms`);
+    if (this.slides.length < 2) return;
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Autoplay never starts for people who asked for less motion
+    this.userPaused = this.dataset.autoplay !== 'true' || reduced;
+
+    this.querySelector('[data-slide-prev]')?.addEventListener('click', () => this.go(this.index - 1));
+    this.querySelector('[data-slide-next]')?.addEventListener('click', () => this.go(this.index + 1));
+    this.dots.forEach((dot) => dot.addEventListener('click', () => this.go(Number(dot.dataset.slideTo))));
+    this.toggle?.addEventListener('click', () => {
+      this.userPaused = !this.userPaused;
+      this.sync();
+    });
+
+    // Pause while the shopper is reading or using the controls
+    this.hovering = false;
+    this.focused = false;
+    this.addEventListener('mouseenter', () => ((this.hovering = true), this.sync()));
+    this.addEventListener('mouseleave', () => ((this.hovering = false), this.sync()));
+    this.addEventListener('focusin', () => ((this.focused = true), this.sync()));
+    this.addEventListener('focusout', (e) => {
+      if (!this.contains(e.relatedTarget)) {
+        this.focused = false;
+        this.sync();
+      }
+    });
+
+    this.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') this.go(this.index - 1);
+      if (event.key === 'ArrowRight') this.go(this.index + 1);
+    });
+
+    // Swipe
+    let startX = null;
+    const track = this.querySelector('[data-slideshow-track]');
+    track.addEventListener('pointerdown', (e) => (startX = e.clientX), { passive: true });
+    track.addEventListener(
+      'pointerup',
+      (e) => {
+        if (startX === null) return;
+        const dx = e.clientX - startX;
+        startX = null;
+        if (Math.abs(dx) > 50) this.go(this.index + (dx < 0 ? 1 : -1));
+      },
+      { passive: true }
+    );
+
+    this.visible = true;
+    this.observer = new IntersectionObserver(([entry]) => {
+      this.visible = entry.isIntersecting;
+      this.sync();
+    });
+    this.observer.observe(this);
+    this.onVisibility = () => this.sync();
+    document.addEventListener('visibilitychange', this.onVisibility);
+
+    // Theme editor: show the selected slide
+    this.addEventListener('shopify:block:select', (e) => {
+      this.userPaused = true;
+      this.go(this.slides.indexOf(e.target));
+    });
+
+    this.sync();
+  }
+
+  disconnectedCallback() {
+    clearTimeout(this.timer);
+    this.observer?.disconnect();
+    document.removeEventListener('visibilitychange', this.onVisibility);
+  }
+
+  get playing() {
+    return !this.userPaused && !this.hovering && !this.focused && this.visible && !document.hidden;
+  }
+
+  sync() {
+    clearTimeout(this.timer);
+    this.classList.toggle('is-playing', this.playing);
+    if (this.toggle) {
+      this.toggle.setAttribute('aria-label', this.userPaused ? this.toggle.dataset.labelPlay : this.toggle.dataset.labelPause);
+    }
+    if (this.playing) this.timer = setTimeout(() => this.go(this.index + 1), this.speed);
+  }
+
+  go(i) {
+    const count = this.slides.length;
+    const index = ((i % count) + count) % count;
+    this.slides.forEach((slide, n) => {
+      const active = n === index;
+      slide.classList.toggle('is-active', active);
+      slide.toggleAttribute('inert', !active);
+    });
+    this.dots.forEach((dot, n) => {
+      if (n === index) dot.setAttribute('aria-current', 'true');
+      else dot.removeAttribute('aria-current');
+    });
+    this.index = index;
+    // Restart the progress bar animation on the new dot
+    this.classList.remove('is-playing');
+    void this.offsetWidth;
+    this.sync();
+  }
+}
+customElements.define('slide-show', SlideShow);
+
+/* ---------- Delivery estimate: dates in the shopper's own calendar and language ---------- */
+
+class DeliveryEstimate extends HTMLElement {
+  connectedCallback() {
+    const { min, max, weekends, cutoff, locale, template, templateSingle } = this.dataset;
+    const skipWeekends = weekends === 'true';
+    const start = new Date();
+    if (start.getHours() >= Number(cutoff || 24)) start.setDate(start.getDate() + 1);
+    const addDays = (from, days) => {
+      const date = new Date(from);
+      let left = Number(days) || 0;
+      while (left > 0) {
+        date.setDate(date.getDate() + 1);
+        const day = date.getDay();
+        if (!skipWeekends || (day !== 0 && day !== 6)) left -= 1;
+      }
+      // Never land on a weekend when only business days count
+      while (skipWeekends && (date.getDay() === 0 || date.getDay() === 6)) date.setDate(date.getDate() + 1);
+      return date;
+    };
+    let format;
+    try {
+      format = new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric', month: 'short' });
+    } catch (error) {
+      format = new Intl.DateTimeFormat(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
+    }
+    const first = format.format(addDays(start, min));
+    const last = format.format(addDays(start, max));
+    const text = first === last ? templateSingle : template;
+    const target = this.querySelector('[data-delivery-text]');
+    if (!target || !text) return;
+    target.textContent = text.replace('{{ start }}', first).replace('{{ end }}', last);
+    this.hidden = false;
+  }
+}
+customElements.define('delivery-estimate', DeliveryEstimate);

@@ -122,7 +122,8 @@
 }
 
 .ll__text {
-  font-family: var(--font-heading-family);
+  font-family: var(--font-label-family);
+  font-weight: 500;
   font-size: 2.2rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -207,7 +208,7 @@
 .pp__overlay {
   position: absolute;
   inset: 0;
-  background: rgba(25, 23, 20, 0.45);
+  background: rgba(30, 26, 23, 0.45);
   opacity: 0;
   transition: opacity 0.4s ease;
 }
@@ -344,7 +345,7 @@
 }
 
 .cd__label {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   opacity: 0.75;
@@ -408,8 +409,9 @@
 
 .sl__label {
   display: block;
-  font-family: var(--font-heading-family);
-  font-size: 1.1rem;
+  font-family: var(--font-label-family);
+  font-weight: 500;
+  font-size: 1.2rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: rgba(var(--color-foreground), 0.7);

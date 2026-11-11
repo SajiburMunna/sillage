@@ -8,7 +8,8 @@
     "play_animation": "Lire l'animation d'arrière-plan",
     "skip_to_text": "Passer au contenu",
     "unit_price_separator": "par",
-    "vendor": "Fournisseur :"
+    "vendor": "Fournisseur :",
+    "star_reviews_info": "{{ rating_value }} sur {{ rating_max }} étoiles"
   },
   "blogs": {
     "article": {
@@ -25,7 +26,16 @@
       "name": "Nom",
       "post": "Publier le commentaire",
       "success": "Votre commentaire a été publié. Merci !",
-      "success_moderated": "Votre commentaire a bien été envoyé. Il sera publié sous peu, car notre blog est modéré."
+      "success_moderated": "Votre commentaire a bien été envoyé. Il sera publié sous peu, car notre blog est modéré.",
+      "tags_label": "Filtrer les articles par thème",
+      "all_topics": "Tous",
+      "no_articles": "Aucun article sur ce thème pour l'instant.",
+      "reading_time": {
+        "one": "{{ count }} min de lecture",
+        "other": "{{ count }} min de lecture"
+      },
+      "read_more": "Lire l’histoire",
+      "share": "Partager cette histoire"
     }
   },
   "customer": {
@@ -169,6 +179,10 @@
         "x": "X (Twitter)",
         "youtube": "YouTube"
       }
+    },
+    "breadcrumbs": {
+      "label": "Fil d'Ariane",
+      "home": "Accueil"
     }
   },
   "gift_cards": {
@@ -209,7 +223,12 @@
       },
       "sort_by_label": "Trier par",
       "to": "À",
-      "view_results": "Voir les résultats"
+      "view_results": "Voir les résultats",
+      "layout_label": "Mise en page de la grille",
+      "layout_columns": {
+        "one": "Afficher {{ count }} colonne",
+        "other": "Afficher {{ count }} colonnes"
+      }
     },
     "product": {
       "add_to_cart": "Ajouter au panier",
@@ -231,7 +250,12 @@
         "load_image": "Afficher l'image {{ index }} dans la galerie",
         "play_video": "Lire la vidéo",
         "view_in_3d": "Voir en 3D",
-        "view_in_space": "Voir dans votre espace"
+        "view_in_space": "Voir dans votre espace",
+        "open_zoom": "Ouvrir l'image en vue agrandie",
+        "zoom_viewer": "Images agrandies de {{ title }}",
+        "toggle_zoom": "Zoomer ou dézoomer",
+        "previous": "Image précédente",
+        "next": "Image suivante"
       },
       "on_sale": "Promo",
       "one_time_purchase": "Achat unique",
@@ -262,7 +286,17 @@
       "variant_sold_out_or_unavailable": "Variante épuisée ou indisponible",
       "view_full_details": "Voir tous les détails",
       "quick_view": "Aperçu rapide",
-      "quick_view_named": "Aperçu rapide de {{ title }}"
+      "quick_view_named": "Aperçu rapide de {{ title }}",
+      "notes_label": "Notes olfactives",
+      "delivery_estimate": "Commandez aujourd’hui, livraison {{ start }} – {{ end }}",
+      "delivery_estimate_single": "Commandez aujourd’hui, livraison {{ start }}",
+      "notify": {
+        "heading": "Épuisé pour le moment. Nous pouvons vous prévenir par e-mail à son retour.",
+        "label": "E-mail",
+        "button": "Me prévenir",
+        "success": "Merci. Nous vous écrirons dès son retour.",
+        "body_label": "Demande de réassort"
+      }
     }
   },
   "recipient": {
@@ -300,7 +334,10 @@
       "free_shipping_progress": "Progression vers la livraison offerte",
       "gift_wrap_label": "Ajouter un emballage cadeau",
       "gift_message_label": "Message cadeau",
-      "gift_message_placeholder": "Écrivez un mot pour le destinataire (facultatif)"
+      "gift_message_placeholder": "Écrivez un mot pour le destinataire (facultatif)",
+      "empty_text": "Découvrez un parfum que vous aurez envie de porter chaque jour. Des échantillons offerts accompagnent chaque commande.",
+      "secure_checkout": "Paiement sécurisé et chiffré",
+      "free": "Offert"
     },
     "collection": {
       "clear_all": "Tout effacer",
@@ -387,6 +424,20 @@
     "store_locations": {
       "hours": "Horaires d'ouverture",
       "directions": "Itinéraire"
+    },
+    "slideshow": {
+      "slide_label": "Diapositive {{ index }} sur {{ count }}",
+      "choose_slide": "Choisir une diapositive",
+      "go_to_slide": "Aller à la diapositive {{ index }}",
+      "pause": "Mettre le diaporama en pause",
+      "play": "Lancer le diaporama",
+      "previous": "Diapositive précédente",
+      "next": "Diapositive suivante"
+    },
+    "home": {
+      "ribbon_pause": "Mettre en pause le texte défilant",
+      "ribbon_play": "Lire le texte défilant",
+      "press_label": "Presse"
     }
   },
   "templates": {
@@ -416,7 +467,12 @@
       },
       "search_for": "Rechercher « {{ terms }} »",
       "suggestions": "Suggestions",
-      "title": "Résultats de recherche"
+      "title": "Résultats de recherche",
+      "types_label": "Types de résultats",
+      "tab_all": "Tout",
+      "tab_products": "Produits",
+      "tab_other": "Articles et pages",
+      "no_results_hint": "Vérifiez l’orthographe, essayez une seule note comme « iris » ou parcourez toute la collection."
     }
   }
 }

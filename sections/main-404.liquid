@@ -1,9 +1,27 @@
-<section class="section-padding template-404 color-{{ section.settings.color_scheme }}" style="--pad-top: 120px; --pad-bottom: 120px;">
-  <div class="page-width page-width--narrow">
-    <p class="eyebrow">404</p>
-    <h1 class="h-display h-display--lg">{{ 'templates.404.title' | t }}</h1>
-    <p class="text-muted">{{ 'templates.404.subtext' | t }}</p>
-    <a href="{{ routes.all_products_collection_url }}" class="button">{{ 'general.continue_shopping' | t }}</a>
+{{ 'section-pages.css' | asset_url | stylesheet_tag }}
+
+<section class="not-found section-padding color-{{ section.settings.color_scheme }}" style="--pad-top: 96px; --pad-bottom: 120px;">
+  <div class="page-width not-found__grid">
+    <div class="not-found__content">
+      <p class="eyebrow">404</p>
+      <h1 class="h-display h-display--lg not-found__title">{{ 'templates.404.title' | t }}</h1>
+      <p class="not-found__text">{{ 'templates.404.subtext' | t }}</p>
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search-page__form not-found__search">
+        <label class="visually-hidden" for="NotFound-Search">{{ 'general.search.search' | t }}</label>
+        <span class="search-page__icon" aria-hidden="true">{% render 'icon', icon: 'search' %}</span>
+        <input id="NotFound-Search" class="search-page__input" type="search" name="q" placeholder="{{ 'general.search.placeholder' | t }}">
+        <button type="submit" class="button">{{ 'general.search.submit' | t }}</button>
+      </form>
+      <div class="not-found__links">
+        <a href="{{ routes.all_products_collection_url }}" class="button button--tertiary">{{ 'general.continue_shopping' | t }} {% render 'icon', icon: 'arrow' %}</a>
+        <a href="{{ routes.root_url }}" class="button button--tertiary">{{ 'general.breadcrumbs.home' | t }} {% render 'icon', icon: 'arrow' %}</a>
+      </div>
+    </div>
+    <div class="not-found__visual" aria-hidden="true">
+      <div class="vessel not-found__vessel">
+        {% render 'placeholder-bottle', tint: 'rgb(var(--color-accent))', variant: 4, class: 'not-found__bottle' %}
+      </div>
+    </div>
   </div>
 </section>
 

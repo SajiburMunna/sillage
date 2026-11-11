@@ -1,0 +1,52 @@
+{%- comment -%}
+  Vector perfume bottle shown when a section has no image yet, so empty
+  sections still look finished in the theme editor.
+  Accepts:
+  - tint {String} CSS colour for the liquid (optional)
+  - variant {Number} 1-4, changes the bottle silhouette (optional)
+  - class {String} extra classes (optional)
+{%- endcomment -%}
+{%- liquid
+  assign tint = tint | default: '#b98d6a'
+  assign shape = variant | default: 1 | modulo: 4
+-%}
+<svg class="placeholder-bottle{% if class %} {{ class }}{% endif %}" viewBox="0 0 400 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" style="--tint: {{ tint }};">
+  <defs>
+    <linearGradient id="pb-bg-{{ shape }}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="var(--tint)" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="var(--tint)" stop-opacity="0.32"/>
+    </linearGradient>
+    <linearGradient id="pb-glass-{{ shape }}" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.5"/>
+      <stop offset="0.35" stop-color="#fff" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0.3"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="520" fill="url(#pb-bg-{{ shape }})"/>
+  <ellipse cx="200" cy="452" rx="118" ry="12" fill="#1e1a17" fill-opacity="0.12"/>
+  {%- case shape -%}
+    {%- when 1 -%}
+      <rect x="140" y="230" width="120" height="222" rx="22" fill="var(--tint)" fill-opacity="0.78"/>
+      <rect x="140" y="230" width="120" height="222" rx="22" fill="url(#pb-glass-{{ shape }})"/>
+      <rect x="176" y="192" width="48" height="42" rx="4" fill="#1e1a17" fill-opacity="0.85"/>
+      <rect x="168" y="150" width="64" height="46" rx="8" fill="#c9a46c"/>
+    {%- when 2 -%}
+      <path d="M200 214c56 0 92 46 92 104v88c0 26-20 46-46 46h-92c-26 0-46-20-46-46v-88c0-58 36-104 92-104z" fill="var(--tint)" fill-opacity="0.78"/>
+      <path d="M200 214c56 0 92 46 92 104v88c0 26-20 46-46 46h-92c-26 0-46-20-46-46v-88c0-58 36-104 92-104z" fill="url(#pb-glass-{{ shape }})"/>
+      <rect x="182" y="176" width="36" height="42" rx="4" fill="#1e1a17" fill-opacity="0.85"/>
+      <circle cx="200" cy="150" r="30" fill="#c9a46c"/>
+    {%- when 3 -%}
+      <rect x="124" y="262" width="152" height="190" rx="10" fill="var(--tint)" fill-opacity="0.78"/>
+      <rect x="124" y="262" width="152" height="190" rx="10" fill="url(#pb-glass-{{ shape }})"/>
+      <rect x="180" y="226" width="40" height="40" rx="3" fill="#1e1a17" fill-opacity="0.85"/>
+      <rect x="160" y="168" width="80" height="62" rx="4" fill="#1e1a17" fill-opacity="0.9"/>
+    {%- else -%}
+      <path d="M150 248h100l24 40v148c0 9-7 16-16 16H142c-9 0-16-7-16-16V288z" fill="var(--tint)" fill-opacity="0.78"/>
+      <path d="M150 248h100l24 40v148c0 9-7 16-16 16H142c-9 0-16-7-16-16V288z" fill="url(#pb-glass-{{ shape }})"/>
+      <rect x="184" y="210" width="32" height="40" rx="3" fill="#1e1a17" fill-opacity="0.85"/>
+      <path d="M178 150h44l8 62h-60z" fill="#c9a46c"/>
+  {%- endcase -%}
+  <rect x="166" y="330" width="68" height="44" rx="2" fill="#fff" fill-opacity="0.82"/>
+  <rect x="178" y="345" width="44" height="3" rx="1.5" fill="#1e1a17" fill-opacity="0.6"/>
+  <rect x="186" y="355" width="28" height="2" rx="1" fill="#1e1a17" fill-opacity="0.35"/>
+</svg>

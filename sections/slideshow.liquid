@@ -1,0 +1,235 @@
+{{ 'section-banner.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign is_first = false
+  if section.index == 1
+    assign is_first = true
+  endif
+  assign slide_count = section.blocks.size
+-%}
+
+<slide-show
+  class="slideshow banner--{{ section.settings.height }}"
+  style="--overlay: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"
+  role="region"
+  aria-roledescription="carousel"
+  aria-label="{{ section.settings.accessibility_label | escape }}"
+  data-autoplay="{{ section.settings.autoplay }}"
+  data-speed="{{ section.settings.speed | times: 1000 }}"
+  data-header-tone="{% if section.settings.text_tone == 'dark' %}light{% else %}dark{% endif %}"
+>
+  <div class="slideshow__track" aria-live="{% if section.settings.autoplay %}off{% else %}polite{% endif %}" data-slideshow-track>
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign loading = 'lazy'
+        assign priority = 'auto'
+        if forloop.first and section.index <= 2
+          assign loading = 'eager'
+          if is_first
+            assign priority = 'high'
+          endif
+        endif
+      -%}
+      <div
+        class="slideshow__slide banner--text-{{ section.settings.text_tone }}{% if forloop.first %} is-active{% endif %}"
+        role="group"
+        aria-roledescription="slide"
+        aria-label="{{ 'sections.slideshow.slide_label' | t: index: forloop.index, count: slide_count }}"
+        data-slide
+        {% unless forloop.first %}
+          inert
+        {% endunless %}
+        {{ block.shopify_attributes }}
+      >
+        <div class="banner__media">
+          {%- if block.settings.image != blank -%}
+            <picture>
+              {%- if block.settings.image_mobile != blank -%}
+                {%- assign m = block.settings.image_mobile -%}
+                <source
+                  media="(max-width: 749px)"
+                  srcset="{{ m | image_url: width: 375 }} 375w, {{ m | image_url: width: 750 }} 750w, {{ m | image_url: width: 1100 }} 1100w, {{ m | image_url: width: 1500 }} 1500w"
+                  sizes="100vw"
+                  width="{{ m.width }}"
+                  height="{{ m.height }}"
+                >
+              {%- endif -%}
+              {%- capture focal -%}object-position: {{ block.settings.image.presentation.focal_point | default: 'center' }};{%- endcapture -%}
+              {{
+                block.settings.image
+                | image_url: width: 3000
+                | image_tag:
+                  widths: '750, 1100, 1500, 1800, 2200, 3000',
+                  sizes: '100vw',
+                  loading: loading,
+                  fetchpriority: priority,
+                  alt: block.settings.image.alt,
+                  class: 'banner__image',
+                  style: focal
+              }}
+            </picture>
+          {%- else -%}
+            {{ 'lifestyle-' | append: forloop.index | placeholder_svg_tag: 'placeholder-svg banner__image' }}
+          {%- endif -%}
+        </div>
+
+        <div class="banner__inner page-width banner__inner--{{ section.settings.position_vertical }} banner__inner--{{ section.settings.position_horizontal }}">
+          <div class="banner__content">
+            {%- if block.settings.eyebrow != blank -%}
+              <p class="eyebrow banner__eyebrow">{{ block.settings.eyebrow | escape }}</p>
+            {%- endif -%}
+            {%- if block.settings.heading != blank -%}
+              {%- if is_first and forloop.first -%}
+                <h1 class="h-display h-display--lg banner__heading">{{ block.settings.heading }}</h1>
+              {%- else -%}
+                <h2 class="h-display h-display--lg banner__heading">{{ block.settings.heading }}</h2>
+              {%- endif -%}
+            {%- endif -%}
+            {%- if block.settings.text != blank -%}
+              <div class="rte banner__text">{{ block.settings.text }}</div>
+            {%- endif -%}
+            {%- if block.settings.button_label != blank -%}
+              <div class="banner__buttons">
+                <a
+                  {% if block.settings.button_link != blank %}
+                    href="{{ block.settings.button_link }}"
+                  {% else %}
+                    role="link" aria-disabled="true"
+                  {% endif %}
+                  class="button banner__button"
+                >
+                  {{- block.settings.button_label | escape -}}
+                </a>
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+
+  {%- if slide_count > 1 -%}
+    <div class="slideshow__controls page-width">
+      <div class="slideshow__dots" role="group" aria-label="{{ 'sections.slideshow.choose_slide' | t }}">
+        {%- for block in section.blocks -%}
+          <button
+            type="button"
+            class="slideshow__dot"
+            data-slide-to="{{ forloop.index0 }}"
+            aria-label="{{ 'sections.slideshow.go_to_slide' | t: index: forloop.index }}"
+            {% if forloop.first %}
+              aria-current="true"
+            {% endif %}
+          >
+            <span class="slideshow__dot-bar"><span class="slideshow__dot-fill"></span></span>
+          </button>
+        {%- endfor -%}
+      </div>
+      <div class="slideshow__arrows">
+        {%- if section.settings.autoplay -%}
+          <button type="button" class="icon-button slideshow__button" data-slideshow-toggle aria-label="{{ 'sections.slideshow.pause' | t }}" data-label-pause="{{ 'sections.slideshow.pause' | t }}" data-label-play="{{ 'sections.slideshow.play' | t }}">
+            <span class="slideshow__icon-pause">{% render 'icon', icon: 'pause' %}</span>
+            <span class="slideshow__icon-play">{% render 'icon', icon: 'play' %}</span>
+          </button>
+        {%- endif -%}
+        <button type="button" class="icon-button slideshow__button" data-slide-prev aria-label="{{ 'sections.slideshow.previous' | t }}">
+          {% render 'icon', icon: 'arrow-left' %}
+        </button>
+        <button type="button" class="icon-button slideshow__button" data-slide-next aria-label="{{ 'sections.slideshow.next' | t }}">
+          {% render 'icon', icon: 'arrow' %}
+        </button>
+      </div>
+    </div>
+  {%- endif -%}
+</slide-show>
+
+
+{% schema %}
+{
+  "name": "t:sections.slideshow.name",
+  "tag": "section",
+  "class": "section",
+  "max_blocks": 6,
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    {
+      "type": "select",
+      "id": "height",
+      "default": "large",
+      "label": "t:sections.image_banner.settings.height.label",
+      "options": [
+        { "value": "small", "label": "t:sections.image_banner.settings.height.options.small" },
+        { "value": "medium", "label": "t:sections.image_banner.settings.height.options.medium" },
+        { "value": "large", "label": "t:sections.image_banner.settings.height.options.large" },
+        { "value": "full", "label": "t:sections.image_banner.settings.height.options.full" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 30,
+      "label": "t:sections.image_banner.settings.overlay_opacity.label"
+    },
+    {
+      "type": "select",
+      "id": "text_tone",
+      "default": "light",
+      "label": "t:sections.image_banner.settings.text_tone.label",
+      "options": [
+        { "value": "light", "label": "t:sections.image_banner.settings.text_tone.options.light" },
+        { "value": "dark", "label": "t:sections.image_banner.settings.text_tone.options.dark" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "position_horizontal",
+      "default": "left",
+      "label": "t:sections.image_banner.settings.position_horizontal.label",
+      "options": [
+        { "value": "left", "label": "t:sections.image_banner.settings.position_horizontal.options.left" },
+        { "value": "center", "label": "t:sections.image_banner.settings.position_horizontal.options.center" },
+        { "value": "right", "label": "t:sections.image_banner.settings.position_horizontal.options.right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "position_vertical",
+      "default": "bottom",
+      "label": "t:sections.image_banner.settings.position_vertical.label",
+      "options": [
+        { "value": "top", "label": "t:sections.image_banner.settings.position_vertical.options.top" },
+        { "value": "middle", "label": "t:sections.image_banner.settings.position_vertical.options.middle" },
+        { "value": "bottom", "label": "t:sections.image_banner.settings.position_vertical.options.bottom" }
+      ]
+    },
+    { "type": "checkbox", "id": "autoplay", "default": true, "label": "t:sections.slideshow.settings.autoplay.label", "info": "t:sections.slideshow.settings.autoplay.info" },
+    { "type": "range", "id": "speed", "min": 4, "max": 12, "step": 1, "unit": "s", "default": 7, "label": "t:sections.slideshow.settings.speed.label" },
+    { "type": "text", "id": "accessibility_label", "default": "Featured scents", "label": "t:sections.slideshow.settings.accessibility_label.label", "info": "t:sections.slideshow.settings.accessibility_label.info" }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "t:sections.slideshow.blocks.slide.name",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "t:sections.all.image" },
+        { "type": "image_picker", "id": "image_mobile", "label": "t:sections.image_banner.settings.image_mobile.label" },
+        { "type": "text", "id": "eyebrow", "default": "New arrival", "label": "t:sections.all.eyebrow" },
+        { "type": "inline_richtext", "id": "heading", "default": "A scent for every hour", "label": "t:sections.all.heading" },
+        { "type": "richtext", "id": "text", "default": "<p>Tell your story in a sentence or two.</p>", "label": "t:sections.all.text" },
+        { "type": "text", "id": "button_label", "default": "Discover", "label": "t:sections.all.button_label" },
+        { "type": "url", "id": "button_link", "label": "t:sections.all.button_link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.slideshow.presets.name",
+      "blocks": [{ "type": "slide" }, { "type": "slide" }, { "type": "slide" }]
+    }
+  ]
+}
+{% endschema %}

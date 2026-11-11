@@ -5,22 +5,40 @@
   style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
 >
   <div class="page-width">
-    <header class="collection-hero">
-      <p class="eyebrow">{{ 'sections.collection.label' | t }}</p>
-      <h1 class="h-display h-display--md collection-hero__title">{{ collection.title | escape }}</h1>
-      {%- if section.settings.show_description and collection.description != blank -%}
-        <div class="collection-hero__description rte">{{ collection.description }}</div>
-      {%- endif -%}
+    {%- if section.settings.show_breadcrumbs -%}{% render 'breadcrumbs' %}{%- endif -%}
+    <header class="collection-hero{% if section.settings.show_image and collection.image %} collection-hero--image{% endif %}">
+      <div class="collection-hero__text">
+        <p class="eyebrow">{{ 'sections.collection.label' | t }}</p>
+        <h1 class="h-display h-display--md collection-hero__title">{{ collection.title | escape }}</h1>
+        {%- if section.settings.show_description and collection.description != blank -%}
+          <div class="collection-hero__description rte">{{ collection.description }}</div>
+        {%- endif -%}
+      </div>
       {%- if section.settings.show_image and collection.image -%}
-        <div class="collection-hero__media media media--wide">
+        <div class="collection-hero__media media">
           {{
             collection.image
             | image_url: width: 2000
-            | image_tag: widths: '750, 1100, 1500, 2000', sizes: '100vw', loading: 'eager', fetchpriority: 'high', alt: collection.image.alt | default: collection.title
+            | image_tag: widths: '750, 1100, 1500, 2000', sizes: '(min-width: 990px) 50vw, 100vw', loading: 'eager', fetchpriority: 'high', alt: collection.image.alt | default: collection.title
           }}
         </div>
       {%- endif -%}
     </header>
+
+    {%- assign family_menu = section.settings.family_menu -%}
+    {%- if family_menu != blank and linklists[family_menu].links.size > 0 -%}
+      <nav class="collection-families" aria-label="{{ linklists[family_menu].title | escape }}">
+        <ul class="collection-families__list" role="list">
+          {%- for link in linklists[family_menu].links -%}
+            <li>
+              <a href="{{ link.url }}" class="collection-families__chip"{% if link.current or link.url == collection.url %} aria-current="page"{% endif %}>
+                {{- link.title | escape -}}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
 
     {%- paginate collection.products by section.settings.products_per_page -%}
       {%- if section.settings.enable_filtering or section.settings.enable_sorting -%}
@@ -30,12 +48,45 @@
       <div id="ProductGridContainer" class="product-grid-container">
         {%- if collection.products.size == 0 -%}
           <div class="collection-empty">
+            <span class="collection-empty__icon">{% render 'icon', icon: 'search' %}</span>
             <p class="h3">{{ 'sections.collection.empty' | t }}</p>
-            <a href="{{ collection.url }}" class="link" data-facet-remove>{{ 'sections.collection.use_fewer_filters_html' | t: link: collection.url }}</a>
+            <a href="{{ collection.url }}" class="button button--secondary" data-facet-remove>{{ 'sections.collection.clear_all' | t }}</a>
           </div>
         {%- else -%}
-          <ul class="grid" role="list" style="--cols: {{ section.settings.columns_desktop }}; --cols-tablet: 3; --cols-mobile: {{ section.settings.columns_mobile }};">
+          <ul class="grid" role="list" style="--cols: var(--user-cols, {{ section.settings.columns_desktop }}); --cols-tablet: var(--user-cols, 3); --cols-mobile: var(--user-cols-mobile, {{ section.settings.columns_mobile }}); --grid-gap: clamp(1.6rem, 2vw, 3.2rem) clamp(1.2rem, 1.6vw, 2.4rem);">
+            {%- assign promos = section.blocks | where: 'type', 'promo' -%}
             {%- for product in collection.products -%}
+              {%- if paginate.current_page == 1 -%}
+                {%- for promo in promos -%}
+                  {%- if promo.settings.position == forloop.parentloop.index -%}
+                    <li class="collection-promo-cell" {{ promo.shopify_attributes }}>
+                      <a
+                        class="collection-promo color-{{ promo.settings.color_scheme }}"
+                        {% if promo.settings.link != blank %}
+                          href="{{ promo.settings.link }}"
+                        {% else %}
+                          role="link" aria-disabled="true"
+                        {% endif %}
+                      >
+                        <div class="collection-promo__media">
+                          {%- if promo.settings.image != blank -%}
+                            {{ promo.settings.image | image_url: width: 1400 | image_tag: widths: '500, 800, 1100, 1400', sizes: '(min-width: 990px) 50vw, 100vw', loading: 'lazy', alt: promo.settings.image.alt }}
+                          {%- else -%}
+                            {% render 'placeholder-bottle', tint: 'rgb(var(--color-accent))', variant: 3 %}
+                          {%- endif -%}
+                        </div>
+                        <div class="collection-promo__content">
+                          {%- if promo.settings.eyebrow != blank -%}<p class="eyebrow">{{ promo.settings.eyebrow | escape }}</p>{%- endif -%}
+                          {%- if promo.settings.heading != blank -%}<p class="h2 collection-promo__title">{{ promo.settings.heading }}</p>{%- endif -%}
+                          {%- if promo.settings.link_label != blank -%}
+                            <span class="button button--tertiary">{{ promo.settings.link_label | escape }} {% render 'icon', icon: 'arrow' %}</span>
+                          {%- endif -%}
+                        </div>
+                      </a>
+                    </li>
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
               {%- liquid
                 assign lazy = true
                 if forloop.index <= section.settings.columns_desktop
@@ -58,25 +109,159 @@
   "tag": "div",
   "class": "section",
   "settings": [
-    { "type": "range", "id": "products_per_page", "min": 8, "max": 36, "step": 4, "default": 16, "label": "t:sections.main_collection.settings.products_per_page.label" },
-    { "type": "range", "id": "columns_desktop", "min": 2, "max": 5, "step": 1, "default": 4, "label": "t:sections.all.columns_desktop" },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "default": true,
+      "label": "t:sections.all.show_breadcrumbs"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 36,
+      "step": 4,
+      "default": 16,
+      "label": "t:sections.main_collection.settings.products_per_page.label"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4,
+      "label": "t:sections.all.columns_desktop"
+    },
     {
       "type": "select",
       "id": "columns_mobile",
       "default": "2",
       "label": "t:sections.all.columns_mobile",
       "options": [
-        { "value": "1", "label": "t:sections.all.columns_mobile_options.one" },
-        { "value": "2", "label": "t:sections.all.columns_mobile_options.two" }
+        {
+          "value": "1",
+          "label": "t:sections.all.columns_mobile_options.one"
+        },
+        {
+          "value": "2",
+          "label": "t:sections.all.columns_mobile_options.two"
+        }
       ]
     },
-    { "type": "checkbox", "id": "show_description", "default": true, "label": "t:sections.main_collection.settings.show_description.label" },
-    { "type": "checkbox", "id": "show_image", "default": false, "label": "t:sections.main_collection.settings.show_image.label" },
-    { "type": "checkbox", "id": "enable_filtering", "default": true, "label": "t:sections.main_collection.settings.enable_filtering.label", "info": "t:sections.main_collection.settings.enable_filtering.info" },
-    { "type": "checkbox", "id": "enable_sorting", "default": true, "label": "t:sections.main_collection.settings.enable_sorting.label" },
-    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" },
-    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 48 },
-    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 72 }
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "default": true,
+      "label": "t:sections.main_collection.settings.show_description.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "default": false,
+      "label": "t:sections.main_collection.settings.show_image.label"
+    },
+    {
+      "type": "link_list",
+      "id": "family_menu",
+      "label": "t:sections.main_collection.settings.family_menu.label",
+      "info": "t:sections.main_collection.settings.family_menu.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "default": true,
+      "label": "t:sections.main_collection.settings.enable_filtering.label",
+      "info": "t:sections.main_collection.settings.enable_filtering.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "default": true,
+      "label": "t:sections.main_collection.settings.enable_sorting.label"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding_top",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding_bottom",
+      "default": 72
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "promo",
+      "name": "t:sections.main_collection.blocks.promo.name",
+      "limit": 2,
+      "settings": [
+        {
+          "type": "range",
+          "id": "position",
+          "min": 1,
+          "max": 24,
+          "step": 1,
+          "default": 5,
+          "label": "t:sections.main_collection.blocks.promo.settings.position.label",
+          "info": "t:sections.main_collection.blocks.promo.settings.position.info"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.all.image"
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "default": "The discovery set",
+          "label": "t:sections.all.eyebrow"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "default": "Not sure yet? Try six scents at home",
+          "label": "t:sections.all.heading"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "default": "Discover the set",
+          "label": "t:sections.all.button_label"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:sections.all.link"
+        },
+        {
+          "type": "color_scheme",
+          "id": "color_scheme",
+          "label": "t:sections.all.color_scheme.label",
+          "default": "scheme-4"
+        }
+      ]
+    }
   ]
 }
 {% endschema %}

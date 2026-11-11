@@ -1,374 +1,341 @@
 {
   "sections": {
-    "scent_story": {
-      "type": "scent-story",
+    "hero": {
+      "type": "hero-editorial",
+      "settings": {},
       "blocks": {
-        "scent_1": {
-          "type": "scent",
+        "eyebrow_1": {
+          "type": "eyebrow",
+          "settings": {}
+        },
+        "heading_2": {
+          "type": "heading",
+          "settings": {}
+        },
+        "text_3": {
+          "type": "text",
+          "settings": {}
+        },
+        "buttons_4": {
+          "type": "buttons",
+          "settings": {}
+        },
+        "rating_5": {
+          "type": "rating",
+          "settings": {}
+        },
+        "note_6": {
+          "type": "note",
           "settings": {
-            "product": "",
-            "description": "",
-            "title": "",
-            "family": "",
-            "notes": "",
-            "meta": "",
-            "bottle_style": "flacon",
-            "label": "Aqua",
-            "liquid": "#9ED3D6",
-            "cap": "#191714",
-            "bg": "#BFCFCD",
-            "dot": "#2F6B73"
+            "text": "Bergamot",
+            "tint": "#D9A441"
           }
         },
-        "scent_2": {
-          "type": "scent",
+        "note_7": {
+          "type": "note",
           "settings": {
-            "product": "",
-            "description": "",
-            "title": "",
-            "family": "",
-            "notes": "",
-            "meta": "",
-            "bottle_style": "round",
-            "label": "Peony",
-            "liquid": "#E7B9C2",
-            "cap": "#E9D8B4",
-            "bg": "#DCC6C3",
-            "dot": "#8A4A5B"
+            "text": "Iris",
+            "tint": "#B98BB5"
           }
         },
-        "scent_3": {
-          "type": "scent",
+        "note_8": {
+          "type": "note",
           "settings": {
-            "product": "",
-            "description": "",
-            "title": "",
-            "family": "",
-            "notes": "",
-            "meta": "",
-            "bottle_style": "tall",
-            "label": "Cedar",
-            "liquid": "#B89B7A",
-            "cap": "#3A2E26",
-            "bg": "#CDBFB2",
-            "dot": "#5A4234"
-          }
-        },
-        "scent_4": {
-          "type": "scent",
-          "settings": {
-            "product": "",
-            "description": "",
-            "title": "",
-            "family": "",
-            "notes": "",
-            "meta": "",
-            "bottle_style": "spray",
-            "label": "Amber",
-            "liquid": "#D9A35F",
-            "cap": "#F3F0EB",
-            "bg": "#D6C3A6",
-            "dot": "#9A6A2C"
+            "text": "Oud",
+            "tint": "#6B4A2F"
           }
         }
       },
       "block_order": [
-        "scent_1",
-        "scent_2",
-        "scent_3",
-        "scent_4"
-      ],
-      "settings": {
-        "hero_line_1": "Scent that",
-        "hero_line_2": "lingers",
-        "tagline": "A small house of honest scents. Every bottle worn, sprayed and argued over before it reaches the shelf.",
-        "ring_text": "Small batch \u00b7 Skin first \u00b7 Worn before stocked",
-        "hero_bg": "#17120F",
-        "water_shallow": "#6B4632",
-        "water_speed": 40,
-        "water_light": 45,
-        "show_loader": true,
-        "manifesto": "We wear every scent before it reaches the shelf. Small batches, honest prices, and perfume worth spraying on an ordinary Tuesday.",
-        "manifesto_bg": "#CFC6BD",
-        "ritual_label": "The ritual",
-        "ritual_word_1": "Uncap.",
-        "ritual_word_2": "Spray.",
-        "ritual_word_3": "Breathe.",
-        "ritual_text": "Spray on warm skin, then leave it alone. Give it ten minutes. The top notes lift, the heart opens, and it starts to smell like you.",
-        "ritual_scent": 1,
-        "ritual_bg": "#1A1E1D",
-        "pill_all": "Our scents",
-        "collection": "",
-        "hero_style": "silk",
-        "hero_light": "#E8C39A"
-      }
-    },
-    "scent_collection": {
-      "type": "scent-collection",
-      "settings": {
-        "eyebrow": "Shop",
-        "heading": "Featured scents",
-        "text": "<p>Every scent on the shelf right now. Members save on every bottle.</p>",
-        "collection": "",
-        "limit": 8,
-        "anchor": "collection",
-        "color_scheme": "scheme-1",
-        "padding_top": 96,
-        "padding_bottom": 120
-      },
-      "blocks": {
-        "tab_featured": {
-          "type": "tab",
-          "settings": {
-            "title": "Featured",
-            "source": "collection",
-            "collection": "",
-            "value": "",
-            "show_view_all": true
-          }
-        },
-        "tab_edp": {
-          "type": "tab",
-          "settings": {
-            "title": "Eaux de parfum",
-            "source": "type",
-            "collection": "",
-            "value": "Eau de parfum",
-            "show_view_all": true
-          }
-        },
-        "tab_attars": {
-          "type": "tab",
-          "settings": {
-            "title": "Attars",
-            "source": "type",
-            "collection": "",
-            "value": "Oil-based attar",
-            "show_view_all": true
-          }
-        },
-        "tab_essence": {
-          "type": "tab",
-          "settings": {
-            "title": "Pure essence",
-            "source": "tag",
-            "collection": "",
-            "value": "Pure Essence",
-            "show_view_all": true
-          }
-        }
-      },
-      "block_order": [
-        "tab_featured",
-        "tab_edp",
-        "tab_attars",
-        "tab_essence"
+        "eyebrow_1",
+        "heading_2",
+        "text_3",
+        "buttons_4",
+        "rating_5",
+        "note_6",
+        "note_7",
+        "note_8"
       ]
     },
-    "scent_house": {
-      "type": "scent-house",
+    "promises": {
+      "type": "promise-ribbon",
+      "settings": {},
       "blocks": {
-        "b1": {
-          "type": "bottle",
+        "item_1": {
+          "type": "item",
           "settings": {
-            "bottle_style": "round",
-            "label": "Peony",
-            "liquid": "#E7B9C2"
+            "text": "Two free samples with every order",
+            "icon": "vial"
           }
         },
-        "b2": {
-          "type": "bottle",
+        "item_2": {
+          "type": "item",
           "settings": {
-            "bottle_style": "flacon",
-            "label": "Aqua",
-            "liquid": "#9ED3D6"
+            "text": "Hand blended in small batches",
+            "icon": "droplet"
           }
         },
-        "b3": {
-          "type": "bottle",
+        "item_3": {
+          "type": "item",
           "settings": {
-            "bottle_style": "spray",
-            "label": "Amber",
-            "liquid": "#D9A35F"
+            "text": "Complimentary gift wrapping",
+            "icon": "gift"
+          }
+        },
+        "item_4": {
+          "type": "item",
+          "settings": {
+            "text": "Vegan and cruelty-free",
+            "icon": "leaf"
           }
         }
       },
       "block_order": [
-        "b1",
-        "b2",
-        "b3"
-      ],
-      "settings": {
-        "eyebrow": "Our story",
-        "heading": "Every scent here was worn by our team first.",
-        "text": "<p>We started with one shelf and a handful of oils. Today we make a short list of scents we wear ourselves: small batches, clean ingredients and bottles that earn their place.</p>",
-        "button_label": "Come and smell with us",
-        "button_link": "",
-        "ring_text": "Blended \u00b7 Worn \u00b7 Bottled by hand",
-        "caption": "Worn by the team",
-        "est": "Est. 2024",
-        "bg": "#CFC6BD",
-        "circle": "#1D1A17",
-        "anchor": "story",
-        "padding_top": 120,
-        "padding_bottom": 120
-      }
+        "item_1",
+        "item_2",
+        "item_3",
+        "item_4"
+      ]
     },
-    "scent_visit": {
-      "type": "scent-visit",
+    "families": {
+      "type": "family-tiles",
+      "settings": {},
       "blocks": {
-        "i1": {
-          "type": "info",
+        "family_1": {
+          "type": "family",
           "settings": {
-            "heading": "Find us",
-            "text": "24 Rain Street, Your City"
+            "title": "Floral",
+            "notes": "Rose, jasmine, iris",
+            "tint": "#C97B63"
           }
         },
-        "i2": {
-          "type": "info",
+        "family_2": {
+          "type": "family",
           "settings": {
-            "heading": "Open",
-            "text": "Tue to Sun \u00b7 11am to 8pm"
+            "title": "Woody",
+            "notes": "Cedar, vetiver, sandalwood",
+            "tint": "#8A5235"
           }
         },
-        "i3": {
-          "type": "info",
+        "family_3": {
+          "type": "family",
           "settings": {
-            "heading": "Say hello",
-            "text": "hello@yourstore.com"
+            "title": "Amber",
+            "notes": "Vanilla, labdanum, benzoin",
+            "tint": "#D9A441"
+          }
+        },
+        "family_4": {
+          "type": "family",
+          "settings": {
+            "title": "Fresh",
+            "notes": "Bergamot, neroli, sea salt",
+            "tint": "#6F8F7A"
           }
         }
       },
       "block_order": [
-        "i1",
-        "i2",
-        "i3"
-      ],
-      "settings": {
-        "heading": "Smell\nsomething\nnew.",
-        "button_label_1": "Shop online",
-        "button_link_1": "",
-        "button_label_2": "Book a scent consultation",
-        "button_link_2": "",
-        "bg": "#191714",
-        "text_color": "#F3F0EB",
-        "show_bottle": true,
-        "bottle_style": "tall",
-        "label": "Cedar",
-        "liquid": "#B89B7A",
-        "anchor": "visit"
-      }
+        "family_1",
+        "family_2",
+        "family_3",
+        "family_4"
+      ]
     },
-    "testimonials": {
-      "type": "testimonials",
+    "bestsellers": {
+      "type": "collection-tabs",
+      "settings": {},
       "blocks": {
-        "t1": {
-          "type": "testimonial",
+        "tab_1": {
+          "type": "tab",
           "settings": {
-            "quote": "I get asked what I'm wearing every single time. It lasts all day and never feels too much.",
-            "author": "Amira K.",
-            "detail": "Verified buyer",
-            "rating": 5
+            "label": "Bestsellers"
           }
         },
-        "t2": {
-          "type": "testimonial",
+        "tab_2": {
+          "type": "tab",
           "settings": {
-            "quote": "The discovery set was the best way to find my scent. Now I own two full bottles.",
-            "author": "Daniel R.",
-            "detail": "Verified buyer",
-            "rating": 5
-          }
-        },
-        "t3": {
-          "type": "testimonial",
-          "settings": {
-            "quote": "Beautiful bottles, warm and honest scents, and the gift wrapping made it feel special.",
-            "author": "Sofia M.",
-            "detail": "Verified buyer",
-            "rating": 5
+            "label": "New in"
           }
         }
       },
       "block_order": [
-        "t1",
-        "t2",
-        "t3"
-      ],
-      "settings": {
-        "eyebrow": "Kind words",
-        "heading": "Worn and loved",
-        "color_scheme": "scheme-1",
-        "padding_top": 96,
-        "padding_bottom": 96
-      }
+        "tab_1",
+        "tab_2"
+      ]
     },
-    "logos": {
-      "type": "logo-list",
+    "spotlight": {
+      "type": "product-spotlight",
+      "settings": {}
+    },
+    "ritual": {
+      "type": "ritual-steps",
+      "settings": {},
       "blocks": {
-        "l0": {
-          "type": "logo",
+        "step_1": {
+          "type": "step",
           "settings": {
-            "name": "Vogue"
+            "title": "Warm the skin",
+            "text": "<p>Scent holds best on warm, moisturised skin. Apply after a shower.</p>"
           }
         },
-        "l1": {
-          "type": "logo",
+        "step_2": {
+          "type": "step",
           "settings": {
-            "name": "Elle"
+            "title": "Find the pulse points",
+            "text": "<p>Spray once on each wrist and once at the base of the neck, from 15 cm away.</p>"
           }
         },
-        "l2": {
-          "type": "logo",
+        "step_3": {
+          "type": "step",
           "settings": {
-            "name": "Monocle"
-          }
-        },
-        "l3": {
-          "type": "logo",
-          "settings": {
-            "name": "Kinfolk"
+            "title": "Let it settle",
+            "text": "<p>Don’t rub. Give the heart notes ten minutes to open before you judge it.</p>"
           }
         }
       },
       "block_order": [
-        "l0",
-        "l1",
-        "l2",
-        "l3"
-      ],
-      "settings": {
-        "heading": "As seen in",
-        "color_scheme": "scheme-1",
-        "padding_top": 48,
-        "padding_bottom": 48
-      }
+        "step_1",
+        "step_2",
+        "step_3"
+      ]
     },
-    "quiz": {
-      "type": "scent-quiz",
-      "settings": {
-        "eyebrow": "Not sure where to start?",
-        "heading": "Find your scent in three questions",
-        "text": "Tell us your mood, your moments and how bold you like it. We'll do the rest.",
-        "q1": "Which mood feels most like you?",
-        "q1_options": "Fresh, Floral, Woody, Warm",
-        "q2": "When will you wear it most?",
-        "q3": "How strong should it be?",
-        "results_heading": "Your matches",
-        "results": 3,
-        "color_scheme": "scheme-5",
-        "padding_top": 96,
-        "padding_bottom": 96
-      }
+    "discovery": {
+      "type": "discovery-offer",
+      "settings": {},
+      "blocks": {
+        "item_1": {
+          "type": "item",
+          "settings": {
+            "text": "Six 2 ml vials"
+          }
+        },
+        "item_2": {
+          "type": "item",
+          "settings": {
+            "text": "A scent guide card for each"
+          }
+        },
+        "item_3": {
+          "type": "item",
+          "settings": {
+            "text": "Free delivery"
+          }
+        }
+      },
+      "block_order": [
+        "item_1",
+        "item_2",
+        "item_3"
+      ]
+    },
+    "press": {
+      "type": "press-quotes",
+      "settings": {},
+      "blocks": {
+        "quote_1": {
+          "type": "quote",
+          "settings": {
+            "quote": "A scent that lingers in the best possible way.",
+            "publication": "Magazine one"
+          }
+        },
+        "quote_2": {
+          "type": "quote",
+          "settings": {
+            "quote": "Quietly luxurious, and impossible to forget.",
+            "publication": "Magazine two"
+          }
+        },
+        "quote_3": {
+          "type": "quote",
+          "settings": {
+            "quote": "The discovery set is the smartest way to find a signature scent.",
+            "publication": "Journal three"
+          }
+        }
+      },
+      "block_order": [
+        "quote_1",
+        "quote_2",
+        "quote_3"
+      ]
+    },
+    "worn_by_you": {
+      "type": "ugc-gallery",
+      "settings": {},
+      "blocks": {
+        "photo_1": {
+          "type": "photo",
+          "settings": {}
+        },
+        "photo_2": {
+          "type": "photo",
+          "settings": {}
+        },
+        "photo_3": {
+          "type": "photo",
+          "settings": {}
+        },
+        "photo_4": {
+          "type": "photo",
+          "settings": {}
+        },
+        "photo_5": {
+          "type": "photo",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "photo_1",
+        "photo_2",
+        "photo_3",
+        "photo_4",
+        "photo_5"
+      ]
+    },
+    "closing": {
+      "type": "closing-banner",
+      "settings": {},
+      "blocks": {
+        "perk_1": {
+          "type": "perk",
+          "settings": {
+            "icon": "vial",
+            "text": "Early access to new scents"
+          }
+        },
+        "perk_2": {
+          "type": "perk",
+          "settings": {
+            "icon": "gift",
+            "text": "A birthday gift every year"
+          }
+        },
+        "perk_3": {
+          "type": "perk",
+          "settings": {
+            "icon": "heart",
+            "text": "Private events and refills"
+          }
+        }
+      },
+      "block_order": [
+        "perk_1",
+        "perk_2",
+        "perk_3"
+      ]
     }
   },
   "order": [
-    "scent_story",
-    "scent_collection",
-    "quiz",
-    "testimonials",
-    "scent_house",
-    "logos",
-    "scent_visit"
+    "hero",
+    "promises",
+    "families",
+    "bestsellers",
+    "spotlight",
+    "ritual",
+    "discovery",
+    "press",
+    "worn_by_you",
+    "closing"
   ]
 }

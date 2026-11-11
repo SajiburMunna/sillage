@@ -1,0 +1,16 @@
+{%- comment -%}
+  "Free samples included" line under the cart items. Text comes from
+  Theme settings → Cart; leave it empty to hide the line.
+{%- endcomment -%}
+{%- if settings.cart_samples_text != blank and cart.item_count > 0 -%}
+  <div class="cart-samples">
+    <span class="cart-samples__icon">{% render 'icon', icon: 'vial' %}</span>
+    <div class="cart-samples__body">
+      <p class="cart-samples__title">{{ settings.cart_samples_text | escape }}</p>
+      {%- if settings.cart_samples_note != blank -%}
+        <p class="cart-samples__note">{{ settings.cart_samples_note | escape }}</p>
+      {%- endif -%}
+    </div>
+    <span class="cart-samples__price">{{ 'sections.cart.free' | t }}</span>
+  </div>
+{%- endif -%}

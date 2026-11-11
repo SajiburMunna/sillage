@@ -1,0 +1,172 @@
+{{ 'section-home.css' | asset_url | stylesheet_tag }}
+
+{%- assign tints = '#d9a441,#b98bb5,#8a5235,#6f8f7a,#c97b63,#3b4f6b,#a8836a,#7e4a30' | split: ',' -%}
+
+<section
+  class="ugc section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  {%- if section.settings.show_trail -%}{% render 'trail' %}{%- endif -%}
+  <div class="page-width">
+    <div class="section-header home-header" data-reveal>
+      <div>
+        {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        {%- if section.settings.heading != blank -%}<h2 class="section-header__title h-display h-display--md">{{ section.settings.heading }}</h2>{%- endif -%}
+      </div>
+      {%- if section.settings.link_label != blank and section.settings.link != blank -%}
+        <a href="{{ section.settings.link }}" class="button button--tertiary">
+          {{- section.settings.link_label | escape }}
+          {% render 'icon', icon: 'arrow' %}
+        </a>
+      {%- endif -%}
+    </div>
+
+    <ul class="ugc__grid" role="list">
+      {%- for block in section.blocks -%}
+        {%- assign p = block.settings.product -%}
+        <li class="ugc__item" data-reveal style="--delay: {{ forloop.index0 | modulo: 4 | times: 0.08 }}s;" {{ block.shopify_attributes }}>
+          <figure class="ugc__figure">
+            <div class="ugc__media">
+              {%- if block.settings.image != blank -%}
+                {{ block.settings.image | image_url: width: 900 | image_tag: widths: '300, 450, 600, 900', sizes: '(min-width: 990px) 25vw, 50vw', loading: 'lazy', alt: block.settings.image.alt | default: block.settings.caption }}
+              {%- else -%}
+                {% render 'placeholder-bottle', tint: tints[forloop.index0], variant: forloop.index %}
+              {%- endif -%}
+            </div>
+            {%- if block.settings.caption != blank -%}
+              <figcaption class="ugc__caption">{{ block.settings.caption | escape }}</figcaption>
+            {%- endif -%}
+            {%- if p != blank -%}
+              <a href="{{ p.url }}" class="ugc__product">
+                <span class="ugc__product-title">{{ p.title | escape }}</span>
+                <span class="ugc__product-price">{{ p.price | money }}</span>
+                {% render 'icon', icon: 'arrow' %}
+              </a>
+            {%- endif -%}
+          </figure>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.ugc_gallery.name",
+  "tag": "div",
+  "class": "section",
+  "max_blocks": 8,
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "default": "Worn by you",
+      "label": "t:sections.all.eyebrow"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:sections.all.heading",
+      "info": "t:sections.ugc_gallery.settings.heading.info",
+      "default": "Seen on our <em>community</em>"
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "default": "Follow along",
+      "label": "t:sections.ugc_gallery.settings.link_label.label"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "t:sections.all.link",
+      "info": "t:sections.ugc_gallery.settings.link.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trail",
+      "default": true,
+      "label": "t:sections.ugc_gallery.settings.show_trail.label",
+      "info": "t:sections.ugc_gallery.settings.show_trail.info"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "t:sections.all.padding_top",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "t:sections.all.padding_bottom",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "photo",
+      "name": "t:sections.ugc_gallery.blocks.photo.name",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.all.image"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "t:sections.ugc_gallery.blocks.photo.settings.product.label"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "t:sections.ugc_gallery.blocks.photo.settings.caption.label",
+          "info": "t:sections.ugc_gallery.blocks.photo.settings.caption.info"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.ugc_gallery.presets.name",
+      "blocks": [
+        {
+          "type": "photo"
+        },
+        {
+          "type": "photo"
+        },
+        {
+          "type": "photo"
+        },
+        {
+          "type": "photo"
+        },
+        {
+          "type": "photo"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

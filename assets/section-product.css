@@ -142,6 +142,62 @@ deferred-media > model-viewer {
 
 .product__title {
   margin: 0;
+  font-size: calc(var(--font-heading-scale) * clamp(3.2rem, 3.6vw, 5.2rem));
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+.product__info-sticky > .card__vendor {
+  margin-bottom: -0.8rem;
+}
+
+.product__price .price--large {
+  font-size: 2.2rem;
+  gap: 0.4rem 1.2rem;
+}
+
+.product__description {
+  font-size: 1.6rem;
+  color: rgba(var(--color-foreground), 0.82);
+}
+
+.product__info-sticky .accordion summary {
+  font-size: 1.7rem;
+}
+
+.product__info-sticky .accordion + .accordion {
+  border-top: 0;
+}
+
+/* Stock status with a colour dot plus words, never colour alone */
+.product__inventory:empty {
+  display: none;
+}
+
+.product__stock {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 1.4rem;
+}
+
+.product__stock::before {
+  content: '';
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: #2f7a4a;
+  box-shadow: 0 0 0 0.4rem rgba(47, 122, 74, 0.16);
+}
+
+.product__stock--low::before {
+  background: #b26a00;
+  box-shadow: 0 0 0 0.4rem rgba(178, 106, 0, 0.18);
+  animation: stock-pulse 2s ease-in-out 3;
+}
+
+@keyframes stock-pulse {
+  50% { box-shadow: 0 0 0 0.7rem rgba(178, 106, 0, 0); }
 }
 
 .product__tax {
@@ -209,7 +265,9 @@ input:focus-visible + .variant-picker__pill {
 
 .variant-picker__pill.is-unavailable {
   text-decoration: line-through;
-  color: rgba(var(--color-foreground), 0.55);
+  text-decoration-thickness: 1px;
+  color: rgba(var(--color-foreground), 0.68);
+  border-style: dashed;
 }
 
 .variant-picker__pill--swatch {
@@ -239,16 +297,72 @@ input:checked + .variant-picker__pill--swatch {
 .selling-plans__option {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1.2rem 1.6rem;
+  gap: var(--space-3);
+  min-height: 5.6rem;
+  padding: var(--space-3) var(--space-4);
   border: 1px solid rgba(var(--color-foreground), 0.2);
   border-radius: var(--radius);
   cursor: pointer;
+  transition: border-color var(--duration-fast) ease, background-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
+}
+
+.selling-plans__option:hover {
+  border-color: rgba(var(--color-foreground), 0.5);
+}
+
+.selling-plans__option:has(input:checked) {
+  border-color: rgb(var(--color-foreground));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-foreground));
+  background: rgba(var(--color-foreground), 0.03);
+}
+
+.selling-plans__option:has(input:focus-visible) {
+  outline: 2px solid rgb(var(--color-foreground));
+  outline-offset: 2px;
+}
+
+.selling-plans__option input {
+  flex-shrink: 0;
+  width: 1.8rem;
+  height: 1.8rem;
+  margin: 0;
+  accent-color: rgb(var(--color-foreground));
+}
+
+.selling-plans__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.selling-plans__name {
+  font-size: 1.5rem;
+  font-weight: var(--font-body-weight-bold);
+  line-height: 1.3;
+}
+
+.selling-plans__group {
+  font-size: 1.3rem;
+  color: rgba(var(--color-foreground), 0.72);
+  line-height: 1.4;
+}
+
+.selling-plans__price {
+  flex-shrink: 0;
+  font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .buy-buttons__row {
   display: flex;
+  align-items: stretch;
   gap: 1rem;
+}
+
+.buy-buttons__row .quantity {
+  flex-shrink: 0;
 }
 
 .buy-buttons__dynamic {
@@ -302,7 +416,8 @@ input:checked + .variant-picker__pill--swatch {
 }
 
 .fragrance-notes__tier dt {
-  font-family: var(--font-heading-family);
+  font-family: var(--font-label-family);
+  font-weight: 500;
   font-size: 1.2rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -428,4 +543,354 @@ input:checked + .variant-picker__pill--swatch {
   .sticky-atc {
     transition: none;
   }
+}
+
+/* Keep the end of the page reachable while the sticky bar is showing */
+body:has(.sticky-atc.is-visible) {
+  padding-bottom: var(--sticky-atc-height, 7.6rem);
+}
+
+/* ---------- Media: zoom affordance ---------- */
+
+.product__media-item {
+  position: relative;
+}
+
+.product__zoom {
+  position: absolute;
+  z-index: 2;
+  right: 1.2rem;
+  bottom: 1.2rem;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(var(--color-background), 0.9);
+  color: rgb(var(--color-foreground));
+  box-shadow: var(--shadow-sm);
+  cursor: zoom-in;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity var(--duration-base) ease, transform var(--duration-base) var(--ease-out);
+}
+
+.product__media-item:hover .product__zoom,
+.product__zoom:focus-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (hover: none) {
+  .product__zoom {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.product__media-item:has(.product__zoom) .media > img {
+  cursor: zoom-in;
+}
+
+/* Desktop carousel layout (section setting) */
+@media screen and (min-width: 990px) {
+  .product__grid--carousel .product__media-list {
+    display: flex;
+    overflow-x: auto;
+  }
+  .product__grid--carousel .product__thumbs {
+    display: flex;
+  }
+  .product__grid--carousel .product__thumb {
+    width: 8rem;
+    height: 8rem;
+  }
+}
+
+.product__thumb {
+  border-radius: var(--radius);
+  opacity: 0.7;
+  transition: opacity var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+
+.product__thumb:hover,
+.product__thumb[aria-current='true'] {
+  opacity: 1;
+}
+
+/* ---------- Lightbox ---------- */
+
+media-lightbox {
+  display: contents;
+}
+
+.lightbox__dialog {
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: rgb(var(--color-background));
+  color: rgb(var(--color-foreground));
+  overflow: hidden;
+}
+
+.lightbox__dialog[open] {
+  animation: lightbox-in var(--duration-slow) var(--ease-out);
+}
+
+.lightbox__dialog::backdrop {
+  background: rgba(30, 26, 23, 0.6);
+}
+
+@keyframes lightbox-in {
+  from { opacity: 0; }
+}
+
+.lightbox__toolbar {
+  position: absolute;
+  z-index: 3;
+  inset: 0 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  pointer-events: none;
+}
+
+.lightbox__toolbar > * {
+  pointer-events: auto;
+}
+
+.lightbox__counter {
+  margin: 0;
+  padding: 0.6rem 1.4rem;
+  border-radius: 999px;
+  background: rgba(var(--color-background), 0.9);
+  box-shadow: var(--shadow-sm);
+  font-size: 1.4rem;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+}
+
+.lightbox__close,
+.lightbox__nav {
+  background: rgba(var(--color-background), 0.9);
+  box-shadow: var(--shadow-sm);
+}
+
+.lightbox__track {
+  display: flex;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.lightbox__track::-webkit-scrollbar {
+  display: none;
+}
+
+.lightbox__slide {
+  flex: 0 0 100%;
+  height: 100%;
+  scroll-snap-align: center;
+  overflow: hidden;
+}
+
+.lightbox__zoom {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  touch-action: pan-x pinch-zoom;
+}
+
+.lightbox__image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.45s var(--ease-out);
+  will-change: transform;
+}
+
+.lightbox__zoom.is-zoomed {
+  cursor: zoom-out;
+}
+
+.lightbox__zoom.is-zoomed .lightbox__image {
+  transform: scale(2.2);
+  transition-duration: 0.3s;
+}
+
+.lightbox__nav {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  translate: 0 -50%;
+}
+
+.lightbox__nav--prev { left: var(--space-4); }
+.lightbox__nav--next { right: var(--space-4); }
+
+.lightbox__nav:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+@media screen and (max-width: 749px) {
+  .lightbox__nav {
+    top: auto;
+    bottom: var(--space-4);
+    translate: none;
+  }
+}
+
+/* ---------- Trust row ---------- */
+
+.product__trust {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-4) 0;
+  list-style: none;
+  border-block: 1px solid rgba(var(--color-foreground), 0.12);
+}
+
+.product__trust-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 1.4rem;
+  line-height: 1.4;
+}
+
+.product__trust-item .icon {
+  width: 2.2rem;
+  height: 2.2rem;
+  color: rgb(var(--color-accent));
+}
+
+.product__trust-item p {
+  margin: 0;
+}
+
+/* ---------- Share ---------- */
+
+share-button {
+  display: block;
+}
+
+.product__share-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap-target);
+  color: rgb(var(--color-foreground));
+  text-decoration: none;
+}
+
+.product__share-button .icon {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+/* Slides keep their own height so the zoom button sits on the image, not below it */
+.product__media-list {
+  align-items: flex-start;
+}
+
+/* ---------- Scent tint: a soft ambient glow in the product's own colour ---------- */
+
+.product--tinted {
+  isolation: isolate;
+}
+
+.product--tinted::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 70vw;
+  height: 80vh;
+  background: radial-gradient(ellipse at 20% 20%, color-mix(in srgb, var(--tint) 26%, transparent), transparent 65%);
+  pointer-events: none;
+}
+
+.product--tinted .product__media-item .media {
+  background: color-mix(in srgb, var(--tint) 14%, rgb(var(--color-surface)));
+}
+
+/* ---------- Note chips and delivery estimate ---------- */
+
+.product__notes {
+  margin-top: calc(-1 * var(--space-2));
+}
+
+.product__delivery:empty {
+  display: none;
+}
+
+.product__delivery-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 1.4rem;
+}
+
+.product__delivery-inner[hidden] {
+  display: none;
+}
+
+.product__delivery-inner .icon {
+  width: 2rem;
+  height: 2rem;
+  color: rgb(var(--color-accent));
+}
+
+/* ---------- Back in stock request ---------- */
+
+.buy-buttons__notify:empty {
+  display: none;
+}
+
+.notify-form {
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius);
+  background: rgb(var(--color-surface));
+}
+
+.notify-form__heading {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-3);
+  font-size: 1.4rem;
+}
+
+.notify-form__heading .icon {
+  width: 1.8rem;
+  height: 1.8rem;
+  margin-top: 0.1rem;
+}
+
+.notify-form__row {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.notify-form__row .field {
+  flex: 1;
+  margin: 0;
 }

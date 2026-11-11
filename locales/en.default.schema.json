@@ -52,7 +52,26 @@
         "large": "Large",
         "medium": "Medium"
       },
-      "text": "Text"
+      "text": "Text",
+      "show_breadcrumbs": "Show breadcrumbs",
+      "icon": {
+        "label": "Icon",
+        "options": {
+          "none": "None",
+          "truck": "Delivery truck",
+          "gift": "Gift",
+          "leaf": "Leaf",
+          "return": "Return arrow",
+          "lock": "Lock",
+          "droplet": "Droplet",
+          "heart": "Heart",
+          "clock": "Clock",
+          "chat": "Speech bubble",
+          "bottle": "Perfume bottle",
+          "vial": "Sample vial"
+        }
+      },
+      "show_trail": "Show trail line"
     },
     "announcement_bar": {
       "blocks": {
@@ -232,6 +251,10 @@
         },
         "show_wordmark": {
           "label": "Show large store name"
+        },
+        "enable_follow_on_shop": {
+          "label": "Show Follow on Shop",
+          "info": "Lets customers follow your store on the Shop app. Shop Pay must be enabled."
         }
       }
     },
@@ -294,6 +317,9 @@
         },
         "mega_link": {
           "label": "Promo link"
+        },
+        "customer_account_menu": {
+          "label": "Customer account menu"
         }
       }
     },
@@ -318,7 +344,16 @@
       "name": "404 page"
     },
     "main_article": {
-      "name": "Blog post"
+      "name": "Blog post",
+      "settings": {
+        "related_products": {
+          "label": "Products in this story",
+          "info": "Shown below the article."
+        },
+        "related_heading": {
+          "label": "Products heading"
+        }
+      }
     },
     "main_blog": {
       "name": "Blog posts",
@@ -331,6 +366,12 @@
         },
         "show_image": {
           "label": "Show image"
+        },
+        "show_tags": {
+          "label": "Show topic filter"
+        },
+        "feature_first": {
+          "label": "Feature the latest story"
         }
       }
     },
@@ -355,6 +396,21 @@
         },
         "show_image": {
           "label": "Show collection image"
+        },
+        "family_menu": {
+          "label": "Scent family menu",
+          "info": "Shown as chips under the title. Add one link per family collection in Content > Menus."
+        }
+      },
+      "blocks": {
+        "promo": {
+          "name": "Promotion tile",
+          "settings": {
+            "position": {
+              "label": "Show before product number",
+              "info": "Shown on the first page only, across two columns."
+            }
+          }
         }
       }
     },
@@ -497,6 +553,35 @@
         },
         "vendor": {
           "name": "Vendor"
+        },
+        "trust": {
+          "name": "Trust badges"
+        },
+        "notes": {
+          "name": "Note chips",
+          "settings": {
+            "paragraph": {
+              "content": "Shows the custom.notes product metafield as links to matching products. Without it, the first top, heart and base note are used."
+            }
+          }
+        },
+        "delivery": {
+          "name": "Delivery estimate",
+          "settings": {
+            "min_days": {
+              "label": "Earliest delivery, in days"
+            },
+            "max_days": {
+              "label": "Latest delivery, in days"
+            },
+            "skip_weekends": {
+              "label": "Count business days only"
+            },
+            "cutoff_hour": {
+              "label": "Same-day dispatch cutoff",
+              "info": "Orders after this hour, in the shopper’s local time, count from the next day."
+            }
+          }
         }
       },
       "name": "Product information",
@@ -504,6 +589,17 @@
         "show_sticky_cart": {
           "label": "Show sticky add to cart bar",
           "info": "Slides up once the main Add to bag button scrolls out of view."
+        },
+        "enable_zoom": {
+          "label": "Enable image zoom",
+          "info": "Opens product images full screen so shoppers can inspect the bottle and label."
+        },
+        "media_layout": {
+          "label": "Desktop media layout",
+          "options": {
+            "stacked": "Stacked grid",
+            "carousel": "Carousel with thumbnails"
+          }
         }
       }
     },
@@ -556,7 +652,7 @@
           "content": "Transparent PNG product images look best. Notes come from the custom.notes product metafield when set."
         },
         "collection": {
-          "info": "Used when no tabs are added. Add Tab blocks to show several groups of products."
+          "info": "Used when no tabs are added. Add tab blocks to show several groups of products."
         }
       },
       "blocks": {
@@ -1231,6 +1327,492 @@
           }
         }
       }
+    },
+    "image_banner": {
+      "name": "Image banner",
+      "settings": {
+        "image_mobile": {
+          "label": "Mobile image",
+          "info": "Optional. Shown on screens narrower than 750px."
+        },
+        "height": {
+          "label": "Height",
+          "options": {
+            "small": "Small",
+            "medium": "Medium",
+            "large": "Large",
+            "full": "Full screen"
+          }
+        },
+        "overlay_opacity": {
+          "label": "Image overlay opacity"
+        },
+        "text_tone": {
+          "label": "Text color",
+          "options": {
+            "light": "Light",
+            "dark": "Dark"
+          }
+        },
+        "position_horizontal": {
+          "label": "Horizontal content position",
+          "options": {
+            "left": "Left",
+            "center": "Center",
+            "right": "Right"
+          }
+        },
+        "position_vertical": {
+          "label": "Vertical content position",
+          "options": {
+            "top": "Top",
+            "middle": "Middle",
+            "bottom": "Bottom"
+          }
+        },
+        "show_box": {
+          "label": "Show content inside a box"
+        },
+        "color_scheme": {
+          "label": "Box color scheme"
+        }
+      },
+      "blocks": {
+        "buttons": {
+          "name": "Buttons",
+          "settings": {
+            "label_1": "First button label",
+            "link_1": "First button link",
+            "label_2": "Second button label",
+            "link_2": "Second button link"
+          }
+        }
+      },
+      "presets": {
+        "name": "Image banner"
+      }
+    },
+    "slideshow": {
+      "name": "Slideshow",
+      "settings": {
+        "autoplay": {
+          "label": "Auto-rotate slides",
+          "info": "Pauses on hover, on keyboard focus and for visitors who prefer reduced motion. A pause button is always shown."
+        },
+        "speed": {
+          "label": "Change slides every"
+        },
+        "accessibility_label": {
+          "label": "Slideshow description",
+          "info": "Read aloud by screen readers."
+        }
+      },
+      "blocks": {
+        "slide": {
+          "name": "Slide"
+        }
+      },
+      "presets": {
+        "name": "Slideshow"
+      }
+    },
+    "multicolumn": {
+      "name": "Multicolumn",
+      "settings": {
+        "style": {
+          "label": "Column style",
+          "options": {
+            "plain": "Plain",
+            "card": "Card",
+            "divided": "Divided"
+          }
+        }
+      },
+      "blocks": {
+        "column": {
+          "name": "Column",
+          "settings": {
+            "icon": {
+              "info": "Hidden when an image is selected."
+            },
+            "link_label": "Link label"
+          }
+        }
+      },
+      "presets": {
+        "name": "Multicolumn"
+      }
+    },
+    "hero_editorial": {
+      "name": "Editorial hero",
+      "settings": {
+        "image": {
+          "label": "Main image",
+          "info": "Shown in the arch frame. A tall image works best."
+        },
+        "image_2": {
+          "label": "Small overlapping image"
+        },
+        "badge_text": {
+          "label": "Badge text",
+          "info": "Runs around a round badge that turns as you scroll. Leave empty to hide it."
+        },
+        "full_height": {
+          "label": "Fill the screen height"
+        },
+        "show_trail": {
+          "label": "Show trail line",
+          "info": "A fine line in the left margin numbers each chapter of the page. Shown on screens 1200px and wider."
+        }
+      },
+      "blocks": {
+        "heading": {
+          "settings": {
+            "heading": {
+              "info": "Italic words show in the accent colour."
+            }
+          }
+        },
+        "buttons": {
+          "name": "Buttons",
+          "settings": {
+            "label_1": {
+              "label": "First button label"
+            },
+            "link_1": {
+              "label": "First button link"
+            },
+            "label_2": {
+              "label": "Second button label"
+            },
+            "link_2": {
+              "label": "Second button link"
+            }
+          }
+        },
+        "rating": {
+          "name": "Rating",
+          "settings": {
+            "rating": {
+              "label": "Stars",
+              "info": "Set to 0 to hide the stars."
+            },
+            "text": {
+              "info": "Only state ratings you can show proof of."
+            }
+          }
+        },
+        "note": {
+          "name": "Note chip",
+          "settings": {
+            "text": {
+              "label": "Note"
+            },
+            "tint": {
+              "label": "Dot colour"
+            }
+          }
+        }
+      },
+      "presets": {
+        "name": "Editorial hero"
+      }
+    },
+    "promise_ribbon": {
+      "name": "Scrolling promises",
+      "settings": {
+        "size": {
+          "options": {
+            "small": "Small text",
+            "display": "Large display text"
+          }
+        },
+        "speed": {
+          "label": "Time for one full loop"
+        },
+        "direction": {
+          "label": "Direction",
+          "options": {
+            "left": "Right to left",
+            "right": "Left to right"
+          }
+        },
+        "show_trail": {
+          "label": "Show trail line",
+          "info": "A fine line in the left margin numbers each chapter of the page. Shown on screens 1200px and wider."
+        }
+      },
+      "blocks": {
+        "item": {
+          "name": "Promise"
+        }
+      },
+      "presets": {
+        "name": "Scrolling promises"
+      }
+    },
+    "family_tiles": {
+      "name": "Scent family tiles",
+      "settings": {
+        "heading": {
+          "info": "Italic words show in the accent colour."
+        },
+        "show_trail": {
+          "label": "Show trail line",
+          "info": "A fine line in the left margin numbers each chapter of the page. Shown on screens 1200px and wider."
+        }
+      },
+      "blocks": {
+        "family": {
+          "name": "Family",
+          "settings": {
+            "collection": {
+              "label": "Collection"
+            },
+            "title": {
+              "label": "Title",
+              "info": "Leave empty to use the collection title."
+            },
+            "notes": {
+              "label": "Notes"
+            },
+            "image": {
+              "info": "Leave empty to use the collection image."
+            },
+            "tint": {
+              "label": "Tint colour"
+            }
+          }
+        }
+      },
+      "presets": {
+        "name": "Scent family tiles"
+      }
+    },
+    "collection_tabs": {
+      "name": "Collection tabs",
+      "settings": {
+        "heading": {
+          "info": "Italic words show in the accent colour."
+        },
+        "show_trail": {
+          "label": "Show trail line",
+          "info": "A fine line in the left margin numbers each chapter of the page. Shown on screens 1200px and wider."
+        }
+      },
+      "blocks": {
+        "tab": {
+          "name": "Tab",
+          "settings": {
+            "collection": {
+              "label": "Collection"
+            },
+            "label": {
+              "label": "Tab label",
+              "info": "Leave empty to use the collection title."
+            }
+          }
+        }
+      },
+      "presets": {
+        "name": "Collection tabs"
+      }
+    },
+    "product_spotlight": {
+      "name": "Product spotlight",
+      "settings": {
+        "product": {
+          "label": "Product"
+        },
+        "image": {
+          "info": "Leave empty to use the product image."
+        },
+        "heading": {
+          "info": "Leave empty to use the product title."
+        },
+        "text": {
+          "info": "Leave empty to use the start of the product description."
+        },
+        "top_notes": {
+          "label": "Top notes",
+          "info": "Connect to a product metafield to fill this automatically."
+        },
+        "heart_notes": {
+          "label": "Heart notes"
+        },
+        "base_notes": {
+          "label": "Base notes"
+        },
+        "tint": {
+          "label": "Tint colour"
+        },
+        "layout": {
+          "label": "Layout",
+          "options": {
+            "image_left": "Image left",
+            "image_right": "Image right"
+          }
+        },
+        "show_trail": {
+          "label": "Show trail line",
+          "info": "A fine line in the left margin numbers each chapter of the page. Shown on screens 1200px and wider."
+        }
+      },
+      "presets": {
+        "name": "Product spotlight"
+      }
+    },
+    "ritual_steps": {
+      "name": "Ritual steps",
+      "settings": {
+        "heading": {
+          "info": "Italic words show in the accent colour."
+        },
+        "image_side": {
+          "label": "Image position",
+          "options": {
+            "left": "Left",
+            "right": "Right"
+          }
+        },
+        "show_trail": {
+          "label": "Show trail line",
+          "info": "A fine line in the left margin numbers each chapter of the page. Shown on screens 1200px and wider."
+        }
+      },
+      "blocks": {
+        "step": {
+          "name": "Step",
+          "settings": {
+            "title": {
+              "label": "Title"
+            }
+          }
+        }
+      },
+      "presets": {
+        "name": "Ritual steps"
+      }
+    },
+    "discovery_offer": {
+      "name": "Discovery set offer",
+      "settings": {
+        "product": {
+          "label": "Discovery set product",
+          "info": "Shows the price. Products without options get an Add to bag button."
+        },
+        "image": {
+          "info": "Leave empty to show a row of illustrated vials."
+        },
+        "heading": {
+          "info": "Italic words show in the accent colour."
+        },
+        "note": {
+          "label": "Small print"
+        },
+        "show_trail": {
+          "label": "Show trail line",
+          "info": "A fine line in the left margin numbers each chapter of the page. Shown on screens 1200px and wider."
+        }
+      },
+      "blocks": {
+        "item": {
+          "name": "Included item"
+        }
+      },
+      "presets": {
+        "name": "Discovery set offer"
+      }
+    },
+    "press_quotes": {
+      "name": "Press quotes",
+      "settings": {
+        "show_trail": {
+          "label": "Show trail line",
+          "info": "A fine line in the left margin numbers each chapter of the page. Shown on screens 1200px and wider."
+        }
+      },
+      "blocks": {
+        "quote": {
+          "name": "Quote",
+          "settings": {
+            "quote": {
+              "label": "Quote"
+            },
+            "publication": {
+              "label": "Publication name"
+            },
+            "logo": {
+              "label": "Logo",
+              "info": "Optional. Shown instead of the publication name."
+            }
+          }
+        }
+      },
+      "presets": {
+        "name": "Press quotes"
+      }
+    },
+    "ugc_gallery": {
+      "name": "Customer photos",
+      "settings": {
+        "heading": {
+          "info": "Italic words show in the accent colour."
+        },
+        "link_label": {
+          "label": "Link label"
+        },
+        "link": {
+          "info": "For example your Instagram profile."
+        },
+        "show_trail": {
+          "label": "Show trail line",
+          "info": "A fine line in the left margin numbers each chapter of the page. Shown on screens 1200px and wider."
+        }
+      },
+      "blocks": {
+        "photo": {
+          "name": "Photo",
+          "settings": {
+            "product": {
+              "label": "Product in the photo"
+            },
+            "caption": {
+              "label": "Caption",
+              "info": "For example the customer’s handle, with their permission."
+            }
+          }
+        }
+      },
+      "presets": {
+        "name": "Customer photos"
+      }
+    },
+    "closing_banner": {
+      "name": "Closing banner",
+      "settings": {
+        "heading": {
+          "info": "Italic words show in the accent colour."
+        },
+        "show_newsletter": {
+          "label": "Show email signup"
+        },
+        "button_label": {
+          "info": "Shown when email signup is off."
+        },
+        "show_trail": {
+          "label": "Show trail line",
+          "info": "A fine line in the left margin numbers each chapter of the page. Shown on screens 1200px and wider."
+        }
+      },
+      "blocks": {
+        "perk": {
+          "name": "Perk"
+        }
+      },
+      "presets": {
+        "name": "Closing banner"
+      }
     }
   },
   "settings_schema": {
@@ -1287,6 +1869,13 @@
         },
         "show_gift_message": {
           "label": "Show gift message field"
+        },
+        "samples_text": {
+          "label": "Free samples line",
+          "info": "Shown under the items in the cart. Only promise samples you actually send. Leave empty to hide it."
+        },
+        "samples_note": {
+          "label": "Free samples detail"
         }
       }
     },
@@ -1407,6 +1996,22 @@
         },
         "show_quick_view": {
           "label": "Enable quick view"
+        },
+        "image_fit": {
+          "label": "Image fit",
+          "info": "Use \"Show whole image\" for product photos on a white background.",
+          "options": {
+            "cover": "Fill the frame",
+            "contain": "Show whole image"
+          }
+        },
+        "show_rating": {
+          "label": "Show product rating",
+          "info": "Requires a product reviews app that fills the standard rating metafield."
+        },
+        "show_notes": {
+          "label": "Show fragrance notes",
+          "info": "Uses the custom.notes product metafield, written as a comma-separated list."
         }
       }
     },

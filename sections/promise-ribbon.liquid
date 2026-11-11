@@ -1,0 +1,236 @@
+{{ 'section-home.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'section-home.js' | asset_url }}" defer="defer"></script>
+
+{%- capture items -%}
+  {%- for block in section.blocks -%}
+    <li class="ribbon__item">
+      {%- if block.settings.icon != 'none' -%}
+        {% render 'icon', icon: block.settings.icon %}
+      {%- endif -%}
+      <span>{{ block.settings.text | escape }}</span>
+    </li>
+  {%- endfor -%}
+{%- endcapture -%}
+
+<promise-ribbon
+  class="ribbon ribbon--{{ section.settings.size }}{% if section.settings.direction == 'right' %} ribbon--reverse{% endif %} color-{{ section.settings.color_scheme }}"
+  style="--ribbon-speed: {{ section.settings.speed }}s; --pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  {%- if section.settings.show_trail -%}{% render 'trail' %}{%- endif -%}
+  {%- if section.blocks.size > 0 -%}
+    <div class="ribbon__viewport">
+      <div class="ribbon__track">
+        <ul class="ribbon__group" role="list">{{ items }}{{ items }}</ul>
+        <ul class="ribbon__group" role="list" aria-hidden="true">{{ items }}{{ items }}</ul>
+      </div>
+    </div>
+    <button
+      type="button"
+      class="icon-button ribbon__toggle"
+      aria-pressed="false"
+      aria-label="{{ 'sections.home.ribbon_pause' | t }}"
+      data-label-pause="{{ 'sections.home.ribbon_pause' | t }}"
+      data-label-play="{{ 'sections.home.ribbon_play' | t }}"
+    >
+      <span class="ribbon__icon-pause">{% render 'icon', icon: 'pause' %}</span>
+      <span class="ribbon__icon-play">{% render 'icon', icon: 'play' %}</span>
+    </button>
+  {%- endif -%}
+</promise-ribbon>
+
+{% schema %}
+{
+  "name": "t:sections.promise_ribbon.name",
+  "tag": "div",
+  "class": "section",
+  "max_blocks": 8,
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "size",
+      "default": "small",
+      "label": "t:sections.all.size",
+      "options": [
+        {
+          "value": "small",
+          "label": "t:sections.promise_ribbon.settings.size.options.small"
+        },
+        {
+          "value": "display",
+          "label": "t:sections.promise_ribbon.settings.size.options.display"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "min": 20,
+      "max": 90,
+      "step": 5,
+      "unit": "s",
+      "default": 45,
+      "label": "t:sections.promise_ribbon.settings.speed.label"
+    },
+    {
+      "type": "select",
+      "id": "direction",
+      "default": "left",
+      "label": "t:sections.promise_ribbon.settings.direction.label",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.promise_ribbon.settings.direction.options.left"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.promise_ribbon.settings.direction.options.right"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trail",
+      "default": true,
+      "label": "t:sections.promise_ribbon.settings.show_trail.label",
+      "info": "t:sections.promise_ribbon.settings.show_trail.info"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.color_scheme.label",
+      "default": "scheme-3"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "t:sections.all.padding_top",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "t:sections.all.padding_bottom",
+      "default": 24
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "t:sections.promise_ribbon.blocks.item.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "default": "Two free samples with every order",
+          "label": "t:sections.all.text"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "default": "vial",
+          "label": "t:sections.all.icon.label",
+          "options": [
+            {
+              "value": "none",
+              "label": "t:sections.all.icon.options.none"
+            },
+            {
+              "value": "truck",
+              "label": "t:sections.all.icon.options.truck"
+            },
+            {
+              "value": "gift",
+              "label": "t:sections.all.icon.options.gift"
+            },
+            {
+              "value": "leaf",
+              "label": "t:sections.all.icon.options.leaf"
+            },
+            {
+              "value": "return",
+              "label": "t:sections.all.icon.options.return"
+            },
+            {
+              "value": "lock",
+              "label": "t:sections.all.icon.options.lock"
+            },
+            {
+              "value": "bottle",
+              "label": "t:sections.all.icon.options.bottle"
+            },
+            {
+              "value": "vial",
+              "label": "t:sections.all.icon.options.vial"
+            },
+            {
+              "value": "droplet",
+              "label": "t:sections.all.icon.options.droplet"
+            },
+            {
+              "value": "heart",
+              "label": "t:sections.all.icon.options.heart"
+            },
+            {
+              "value": "clock",
+              "label": "t:sections.all.icon.options.clock"
+            },
+            {
+              "value": "chat",
+              "label": "t:sections.all.icon.options.chat"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.promise_ribbon.presets.name",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "text": "Two free samples with every order",
+            "icon": "vial"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "Hand blended in small batches",
+            "icon": "droplet"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "Complimentary gift wrapping",
+            "icon": "gift"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "Vegan and cruelty-free",
+            "icon": "leaf"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

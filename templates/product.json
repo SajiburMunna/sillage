@@ -79,14 +79,41 @@
           "settings": {
             "share_label": "Share"
           }
+        },
+        "trust": {
+          "type": "trust",
+          "settings": {
+            "icon_1": "truck",
+            "text_1": "Free shipping over $50",
+            "icon_2": "vial",
+            "text_2": "Two free samples with every order",
+            "icon_3": "return",
+            "text_3": "30-day returns, even if opened"
+          }
+        },
+        "notes": {
+          "type": "notes",
+          "settings": {}
+        },
+        "delivery": {
+          "type": "delivery",
+          "settings": {
+            "min_days": 2,
+            "max_days": 5,
+            "skip_weekends": true,
+            "cutoff_hour": 14
+          }
         }
       },
       "block_order": [
         "vendor",
         "title",
         "price",
+        "notes",
         "variant_picker",
         "buy_buttons",
+        "delivery",
+        "trust",
         "fragrance_notes",
         "description",
         "how_to_wear",

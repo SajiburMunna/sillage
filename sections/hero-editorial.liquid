@@ -1,0 +1,399 @@
+{{ 'section-home.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign is_first = false
+  if section.index == 1
+    assign is_first = true
+  endif
+  assign loading = 'lazy'
+  assign priority = 'auto'
+  if section.index <= 2
+    assign loading = 'eager'
+  endif
+  if is_first
+    assign priority = 'high'
+  endif
+  assign tone = 'light'
+  assign bg_brightness = section.settings.color_scheme.settings.background | color_brightness
+  if bg_brightness < 128
+    assign tone = 'dark'
+  endif
+  assign notes = section.blocks | where: 'type', 'note'
+-%}
+
+<section
+  class="hero-ed section-padding color-{{ section.settings.color_scheme }}{% if section.settings.full_height %} hero-ed--full{% endif %}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+  data-header-tone="{{ tone }}"
+>
+  {%- if section.settings.show_trail -%}{% render 'trail' %}{%- endif -%}
+  <div class="hero-ed__glow" aria-hidden="true"></div>
+
+  <div class="page-width hero-ed__grid">
+    <div class="hero-ed__content">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'eyebrow' -%}
+            <p class="eyebrow hero-ed__step" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</p>
+          {%- when 'heading' -%}
+            {%- if is_first -%}
+              <h1 class="h-display {{ block.settings.size }} hero-ed__heading hero-ed__step" {{ block.shopify_attributes }}>{{ block.settings.heading }}</h1>
+            {%- else -%}
+              <h2 class="h-display {{ block.settings.size }} hero-ed__heading hero-ed__step" {{ block.shopify_attributes }}>{{ block.settings.heading }}</h2>
+            {%- endif -%}
+          {%- when 'text' -%}
+            <div class="rte hero-ed__text hero-ed__step" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+          {%- when 'buttons' -%}
+            <div class="hero-ed__buttons hero-ed__step" {{ block.shopify_attributes }}>
+              {%- if block.settings.label_1 != blank -%}
+                <a
+                  {% if block.settings.link_1 != blank %}
+                    href="{{ block.settings.link_1 }}"
+                  {% else %}
+                    role="link" aria-disabled="true"
+                  {% endif %}
+                  class="button"
+                >
+                  {{- block.settings.label_1 | escape -}}
+                </a>
+              {%- endif -%}
+              {%- if block.settings.label_2 != blank -%}
+                <a
+                  {% if block.settings.link_2 != blank %}
+                    href="{{ block.settings.link_2 }}"
+                  {% else %}
+                    role="link" aria-disabled="true"
+                  {% endif %}
+                  class="button button--secondary"
+                >
+                  {{- block.settings.label_2 | escape -}}
+                </a>
+              {%- endif -%}
+            </div>
+          {%- when 'rating' -%}
+            <p class="hero-ed__rating hero-ed__step" {{ block.shopify_attributes }}>
+              {%- if block.settings.rating > 0 -%}
+                <span class="stars" style="--rating: {{ block.settings.rating | times: 20 }}%;" aria-hidden="true"></span>
+              {%- endif -%}
+              <span>{{ block.settings.text | escape }}</span>
+            </p>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="hero-ed__media">
+      <div class="vessel hero-ed__vessel">
+        {%- if section.settings.image != blank -%}
+          {%- capture focal -%}object-position: {{ section.settings.image.presentation.focal_point | default: 'center' }};{%- endcapture -%}
+          {{
+            section.settings.image
+            | image_url: width: 1600
+            | image_tag:
+              widths: '500, 750, 1000, 1300, 1600',
+              sizes: '(min-width: 990px) 42vw, 90vw',
+              loading: loading,
+              fetchpriority: priority,
+              alt: section.settings.image.alt,
+              style: focal
+          }}
+        {%- else -%}
+          {% render 'placeholder-bottle', tint: 'rgb(var(--color-accent))', variant: 1 %}
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.image_2 != blank -%}
+        <div class="vessel hero-ed__inset">
+          {{
+            section.settings.image_2
+            | image_url: width: 600
+            | image_tag: widths: '300, 450, 600', sizes: '(min-width: 990px) 14vw, 30vw', loading: loading, alt: section.settings.image_2.alt
+          }}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.badge_text != blank -%}
+        <div class="hero-ed__badge" aria-hidden="true">
+          <svg class="hero-ed__badge-ring" viewBox="0 0 120 120" focusable="false">
+            <defs>
+              <path id="HeroBadge-{{ section.id }}" d="M60 60 m-44 0 a44 44 0 1 1 88 0 a44 44 0 1 1 -88 0"/>
+            </defs>
+            <text>
+              <textPath href="#HeroBadge-{{ section.id }}" textLength="276">{{ section.settings.badge_text | escape }} · {{ section.settings.badge_text | escape }} ·</textPath>
+            </text>
+          </svg>
+          <span class="hero-ed__badge-mark">{{ shop.name | strip | slice: 0 }}</span>
+        </div>
+      {%- endif -%}
+
+      {%- if notes.size > 0 -%}
+        <ul class="note-chips hero-ed__notes" role="list">
+          {%- for block in notes limit: 3 -%}
+            <li class="hero-ed__note hero-ed__note--{{ forloop.index }}" {{ block.shopify_attributes }}>
+              {%- if block.settings.link != blank -%}
+                <a class="note-chip" href="{{ block.settings.link }}" style="--chip-tint: {{ block.settings.tint }};">{{ block.settings.text | escape }}</a>
+              {%- else -%}
+                <span class="note-chip" style="--chip-tint: {{ block.settings.tint }};">{{ block.settings.text | escape }}</span>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.hero_editorial.name",
+  "tag": "div",
+  "class": "section",
+  "max_blocks": 10,
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.hero_editorial.settings.image.label",
+      "info": "t:sections.hero_editorial.settings.image.info"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "t:sections.hero_editorial.settings.image_2.label"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "default": "Hand blended in small batches",
+      "label": "t:sections.hero_editorial.settings.badge_text.label",
+      "info": "t:sections.hero_editorial.settings.badge_text.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_height",
+      "default": true,
+      "label": "t:sections.hero_editorial.settings.full_height.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trail",
+      "default": true,
+      "label": "t:sections.hero_editorial.settings.show_trail.label",
+      "info": "t:sections.hero_editorial.settings.show_trail.info"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "t:sections.all.padding_top",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "t:sections.all.padding_bottom",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "eyebrow",
+      "name": "t:sections.all.eyebrow",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "default": "Maison de parfum",
+          "label": "t:sections.all.text"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "name": "t:sections.all.heading",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "label": "t:sections.all.heading",
+          "info": "t:sections.hero_editorial.blocks.heading.settings.heading.info",
+          "default": "Scent that stays <em>after</em> you leave"
+        },
+        {
+          "type": "select",
+          "id": "size",
+          "default": "h-display--lg",
+          "label": "t:sections.all.size",
+          "options": [
+            {
+              "value": "h-display--md",
+              "label": "t:sections.all.size_options.medium"
+            },
+            {
+              "value": "h-display--lg",
+              "label": "t:sections.all.size_options.large"
+            },
+            {
+              "value": "h-display--xl",
+              "label": "t:sections.all.size_options.extra_large"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "t:sections.all.text",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Small-batch extraits, blended by hand and made to linger from morning until long after dinner.</p>",
+          "label": "t:sections.all.text"
+        }
+      ]
+    },
+    {
+      "type": "buttons",
+      "name": "t:sections.hero_editorial.blocks.buttons.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label_1",
+          "default": "Shop the collection",
+          "label": "t:sections.hero_editorial.blocks.buttons.settings.label_1.label"
+        },
+        {
+          "type": "url",
+          "id": "link_1",
+          "label": "t:sections.hero_editorial.blocks.buttons.settings.link_1.label"
+        },
+        {
+          "type": "text",
+          "id": "label_2",
+          "default": "Find your scent",
+          "label": "t:sections.hero_editorial.blocks.buttons.settings.label_2.label"
+        },
+        {
+          "type": "url",
+          "id": "link_2",
+          "label": "t:sections.hero_editorial.blocks.buttons.settings.link_2.label"
+        }
+      ]
+    },
+    {
+      "type": "rating",
+      "name": "t:sections.hero_editorial.blocks.rating.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "range",
+          "id": "rating",
+          "min": 0,
+          "max": 5,
+          "step": 0.1,
+          "default": 4.9,
+          "label": "t:sections.hero_editorial.blocks.rating.settings.rating.label",
+          "info": "t:sections.hero_editorial.blocks.rating.settings.rating.info"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "default": "Rated 4.9 by our customers",
+          "label": "t:sections.all.text",
+          "info": "t:sections.hero_editorial.blocks.rating.settings.text.info"
+        }
+      ]
+    },
+    {
+      "type": "note",
+      "name": "t:sections.hero_editorial.blocks.note.name",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "default": "Bergamot",
+          "label": "t:sections.hero_editorial.blocks.note.settings.text.label"
+        },
+        {
+          "type": "color",
+          "id": "tint",
+          "default": "#D9A441",
+          "label": "t:sections.hero_editorial.blocks.note.settings.tint.label"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:sections.all.link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.hero_editorial.presets.name",
+      "blocks": [
+        {
+          "type": "eyebrow"
+        },
+        {
+          "type": "heading"
+        },
+        {
+          "type": "text"
+        },
+        {
+          "type": "buttons"
+        },
+        {
+          "type": "rating"
+        },
+        {
+          "type": "note",
+          "settings": {
+            "text": "Bergamot",
+            "tint": "#D9A441"
+          }
+        },
+        {
+          "type": "note",
+          "settings": {
+            "text": "Iris",
+            "tint": "#B98BB5"
+          }
+        },
+        {
+          "type": "note",
+          "settings": {
+            "text": "Oud",
+            "tint": "#6B4A2F"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

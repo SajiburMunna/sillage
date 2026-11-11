@@ -3,29 +3,43 @@
 {%- liquid
   assign current_variant = product.selected_or_first_available_variant
   assign featured_media = current_variant.featured_media | default: product.featured_media
+  assign tint = product.metafields.custom.tint.value | default: product.metafields.custom.tint
 -%}
 
 <section
   id="MainProduct-{{ section.id }}"
-  class="product section-padding color-{{ section.settings.color_scheme }}"
-  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+  class="product section-padding color-{{ section.settings.color_scheme }}{% if tint != blank %} product--tinted{% endif %}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;{% if tint != blank %} --tint: {{ tint }};{% endif %}"
   data-product-root
   data-section="{{ section.id }}"
   data-viewed-handle="{{ product.handle }}"
 >
-  <div class="page-width product__grid">
+  {%- if section.settings.show_breadcrumbs -%}
+    <div class="page-width">{% render 'breadcrumbs' %}</div>
+  {%- endif -%}
+  <div class="page-width product__grid{% if section.settings.media_layout == 'carousel' %} product__grid--carousel{% endif %}">
     {%- comment -%} Media {%- endcomment -%}
     <media-gallery class="product__media" aria-label="{{ 'products.product.media.gallery_viewer' | t }}">
       <ul class="product__media-list" role="list" data-gallery-viewer>
         {%- if featured_media -%}
           <li class="product__media-item is-active" data-media-id="{{ featured_media.id }}">
             {% render 'product-media', media: featured_media, loading: 'eager', sizes: '(min-width: 990px) 55vw, 100vw' %}
+            {%- if section.settings.enable_zoom and featured_media.media_type == 'image' -%}
+              <button type="button" class="product__zoom" data-lightbox-open="{{ featured_media.id }}" aria-haspopup="dialog" aria-label="{{ 'products.product.media.open_zoom' | t }}">
+                {% render 'icon', icon: 'zoom' %}
+              </button>
+            {%- endif -%}
           </li>
         {%- endif -%}
         {%- for media in product.media -%}
           {%- unless media.id == featured_media.id -%}
             <li class="product__media-item" data-media-id="{{ media.id }}">
               {% render 'product-media', media: media, loading: 'lazy', sizes: '(min-width: 990px) 55vw, 100vw' %}
+              {%- if section.settings.enable_zoom and media.media_type == 'image' -%}
+              <button type="button" class="product__zoom" data-lightbox-open="{{ media.id }}" aria-haspopup="dialog" aria-label="{{ 'products.product.media.open_zoom' | t }}">
+                {% render 'icon', icon: 'zoom' %}
+              </button>
+            {%- endif -%}
             </li>
           {%- endunless -%}
         {%- endfor -%}
@@ -63,6 +77,48 @@
         </script>
       {%- endif -%}
     </media-gallery>
+
+    {%- if section.settings.enable_zoom -%}
+      {%- assign zoom_images = product.media | where: 'media_type', 'image' -%}
+      {%- if zoom_images.size > 0 -%}
+        <media-lightbox class="lightbox" data-section="{{ section.id }}">
+          <dialog class="lightbox__dialog color-{{ section.settings.color_scheme }}" aria-label="{{ 'products.product.media.zoom_viewer' | t: title: product.title | escape }}">
+            <div class="lightbox__toolbar">
+              <p class="lightbox__counter" data-lightbox-counter aria-live="polite"></p>
+              <button type="button" class="icon-button lightbox__close" data-lightbox-close aria-label="{{ 'accessibility.close' | t }}">
+                {% render 'icon', icon: 'close' %}
+              </button>
+            </div>
+            <ul class="lightbox__track" role="list" data-lightbox-track>
+              {%- for media in zoom_images -%}
+                <li class="lightbox__slide" data-media-id="{{ media.id }}">
+                  <button type="button" class="lightbox__zoom" data-lightbox-zoom aria-pressed="false" aria-label="{{ 'products.product.media.toggle_zoom' | t }}">
+                    {{
+                      media
+                      | image_url: width: 2400
+                      | image_tag:
+                        widths: '900, 1400, 1800, 2400',
+                        sizes: '100vw',
+                        loading: 'lazy',
+                        alt: media.alt,
+                        class: 'lightbox__image'
+                    }}
+                  </button>
+                </li>
+              {%- endfor -%}
+            </ul>
+            {%- if zoom_images.size > 1 -%}
+              <button type="button" class="icon-button lightbox__nav lightbox__nav--prev" data-lightbox-prev aria-label="{{ 'products.product.media.previous' | t }}">
+                {% render 'icon', icon: 'arrow-left' %}
+              </button>
+              <button type="button" class="icon-button lightbox__nav lightbox__nav--next" data-lightbox-next aria-label="{{ 'products.product.media.next' | t }}">
+                {% render 'icon', icon: 'arrow' %}
+              </button>
+            {%- endif -%}
+          </dialog>
+        </media-lightbox>
+      {%- endif -%}
+    {%- endif -%}
 
     {%- comment -%} Info {%- endcomment -%}
     <div class="product__info">
@@ -110,12 +166,54 @@
               <p class="product__inventory" data-product-update="inventory" {{ block.shopify_attributes }}>
                 {%- if current_variant.inventory_management == 'shopify' and current_variant.available -%}
                   {%- if current_variant.inventory_quantity <= block.settings.threshold and current_variant.inventory_quantity > 0 -%}
-                    {{ 'products.product.inventory_low_stock_show_count' | t: quantity: current_variant.inventory_quantity }}
+                    <span class="product__stock product__stock--low">{{ 'products.product.inventory_low_stock_show_count' | t: quantity: current_variant.inventory_quantity }}</span>
                   {%- else -%}
-                    {{ 'products.product.inventory_in_stock' | t }}
+                    <span class="product__stock">{{ 'products.product.inventory_in_stock' | t }}</span>
                   {%- endif -%}
                 {%- endif -%}
               </p>
+            {%- when 'notes' -%}
+              {%- liquid
+                assign mf = product.metafields.custom
+                assign note_list = mf.notes.value | default: mf.notes
+                if note_list == blank
+                  assign top_first = mf.top_notes.value | split: ',' | first
+                  assign heart_first = mf.heart_notes.value | split: ',' | first
+                  assign base_first = mf.base_notes.value | split: ',' | first
+                  assign note_list = top_first | append: ',' | append: heart_first | append: ',' | append: base_first
+                endif
+                assign note_items = note_list | split: ','
+              -%}
+              {%- capture chips -%}
+                {%- for note in note_items limit: 6 -%}
+                  {%- assign note_name = note | strip -%}
+                  {%- if note_name != blank -%}
+                    <li><a class="note-chip" href="{{ routes.search_url }}?q={{ note_name | url_encode }}&type=product">{{ note_name | escape }}</a></li>
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endcapture -%}
+              {%- if chips != blank -%}
+                <ul class="note-chips product__notes" role="list" aria-label="{{ 'products.product.notes_label' | t }}" {{ block.shopify_attributes }}>{{ chips }}</ul>
+              {%- endif -%}
+            {%- when 'delivery' -%}
+              <div class="product__delivery" data-product-update="delivery" {{ block.shopify_attributes }}>
+                {%- if current_variant.available -%}
+                  <delivery-estimate
+                    class="product__delivery-inner"
+                    data-min="{{ block.settings.min_days }}"
+                    data-max="{{ block.settings.max_days }}"
+                    data-weekends="{{ block.settings.skip_weekends }}"
+                    data-cutoff="{{ block.settings.cutoff_hour }}"
+                    data-locale="{{ request.locale.iso_code }}"
+                    data-template="{{ 'products.product.delivery_estimate' | t | escape }}"
+                    data-template-single="{{ 'products.product.delivery_estimate_single' | t | escape }}"
+                    hidden
+                  >
+                    {% render 'icon', icon: 'truck' %}
+                    <span data-delivery-text></span>
+                  </delivery-estimate>
+                {%- endif -%}
+              </div>
             {%- when 'description' -%}
               {%- if product.description != blank -%}
                 <div class="product__description rte" {{ block.shopify_attributes }}>{{ product.description }}</div>
@@ -131,16 +229,26 @@
                 </div>
               </details>
             {%- when 'share' -%}
-              <div class="product__share" {{ block.shopify_attributes }}>
-                <button
-                  type="button"
-                  class="link product__share-button"
-                  onclick="if (navigator.share) { navigator.share({ title: {{ product.title | json | escape }}, url: '{{ request.origin }}{{ product.url }}' }); } else { navigator.clipboard.writeText('{{ request.origin }}{{ product.url }}'); this.querySelector('span').textContent = {{ 'general.share.success_message' | t | json | escape }}; }"
-                >
+              <share-button class="product__share" data-url="{{ request.origin }}{{ product.url }}" data-title="{{ product.title | escape }}" {{ block.shopify_attributes }}>
+                <button type="button" class="link product__share-button">
                   {% render 'icon', icon: 'share' %}
-                  <span>{{ block.settings.share_label | escape }}</span>
+                  <span data-share-label>{{ block.settings.share_label | escape }}</span>
                 </button>
-              </div>
+                <span class="visually-hidden" role="status" data-share-status data-success="{{ 'general.share.success_message' | t | escape }}"></span>
+              </share-button>
+            {%- when 'trust' -%}
+              <ul class="product__trust" role="list" {{ block.shopify_attributes }}>
+                {%- for i in (1..3) -%}
+                  {%- assign text_key = 'text_' | append: i -%}
+                  {%- assign icon_key = 'icon_' | append: i -%}
+                  {%- if block.settings[text_key] != blank -%}
+                    <li class="product__trust-item">
+                      {% render 'icon', icon: block.settings[icon_key] %}
+                      <span>{{ block.settings[text_key] }}</span>
+                    </li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
             {%- when 'custom_liquid' -%}
               <div {{ block.shopify_attributes }}>{{ block.settings.custom_liquid }}</div>
             {%- when 'complementary' -%}
@@ -310,6 +418,59 @@
       ]
     },
     {
+      "type": "notes",
+      "name": "t:sections.main_product.blocks.notes.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "t:sections.main_product.blocks.notes.settings.paragraph.content"
+        }
+      ]
+    },
+    {
+      "type": "delivery",
+      "name": "t:sections.main_product.blocks.delivery.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "range",
+          "id": "min_days",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "default": 2,
+          "label": "t:sections.main_product.blocks.delivery.settings.min_days.label"
+        },
+        {
+          "type": "range",
+          "id": "max_days",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "default": 5,
+          "label": "t:sections.main_product.blocks.delivery.settings.max_days.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "skip_weekends",
+          "default": true,
+          "label": "t:sections.main_product.blocks.delivery.settings.skip_weekends.label"
+        },
+        {
+          "type": "range",
+          "id": "cutoff_hour",
+          "min": 0,
+          "max": 23,
+          "step": 1,
+          "default": 14,
+          "unit": "h",
+          "label": "t:sections.main_product.blocks.delivery.settings.cutoff_hour.label",
+          "info": "t:sections.main_product.blocks.delivery.settings.cutoff_hour.info"
+        }
+      ]
+    },
+    {
       "type": "inventory",
       "name": "t:sections.main_product.blocks.inventory.name",
       "limit": 1,
@@ -434,6 +595,187 @@
       ]
     },
     {
+      "type": "trust",
+      "name": "t:sections.main_product.blocks.trust.name",
+      "limit": 2,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon_1",
+          "default": "truck",
+          "label": "t:sections.all.icon.label",
+          "options": [
+            {
+              "value": "truck",
+              "label": "t:sections.all.icon.options.truck"
+            },
+            {
+              "value": "gift",
+              "label": "t:sections.all.icon.options.gift"
+            },
+            {
+              "value": "leaf",
+              "label": "t:sections.all.icon.options.leaf"
+            },
+            {
+              "value": "return",
+              "label": "t:sections.all.icon.options.return"
+            },
+            {
+              "value": "lock",
+              "label": "t:sections.all.icon.options.lock"
+            },
+            {
+              "value": "bottle",
+              "label": "t:sections.all.icon.options.bottle"
+            },
+            {
+              "value": "vial",
+              "label": "t:sections.all.icon.options.vial"
+            },
+            {
+              "value": "droplet",
+              "label": "t:sections.all.icon.options.droplet"
+            },
+            {
+              "value": "heart",
+              "label": "t:sections.all.icon.options.heart"
+            },
+            {
+              "value": "clock",
+              "label": "t:sections.all.icon.options.clock"
+            },
+            {
+              "value": "chat",
+              "label": "t:sections.all.icon.options.chat"
+            }
+          ]
+        },
+        {
+          "type": "inline_richtext",
+          "id": "text_1",
+          "default": "Free shipping over $50",
+          "label": "t:sections.all.text"
+        },
+        {
+          "type": "select",
+          "id": "icon_2",
+          "default": "vial",
+          "label": "t:sections.all.icon.label",
+          "options": [
+            {
+              "value": "truck",
+              "label": "t:sections.all.icon.options.truck"
+            },
+            {
+              "value": "gift",
+              "label": "t:sections.all.icon.options.gift"
+            },
+            {
+              "value": "leaf",
+              "label": "t:sections.all.icon.options.leaf"
+            },
+            {
+              "value": "return",
+              "label": "t:sections.all.icon.options.return"
+            },
+            {
+              "value": "lock",
+              "label": "t:sections.all.icon.options.lock"
+            },
+            {
+              "value": "bottle",
+              "label": "t:sections.all.icon.options.bottle"
+            },
+            {
+              "value": "vial",
+              "label": "t:sections.all.icon.options.vial"
+            },
+            {
+              "value": "droplet",
+              "label": "t:sections.all.icon.options.droplet"
+            },
+            {
+              "value": "heart",
+              "label": "t:sections.all.icon.options.heart"
+            },
+            {
+              "value": "clock",
+              "label": "t:sections.all.icon.options.clock"
+            },
+            {
+              "value": "chat",
+              "label": "t:sections.all.icon.options.chat"
+            }
+          ]
+        },
+        {
+          "type": "inline_richtext",
+          "id": "text_2",
+          "default": "Two free samples with every order",
+          "label": "t:sections.all.text"
+        },
+        {
+          "type": "select",
+          "id": "icon_3",
+          "default": "return",
+          "label": "t:sections.all.icon.label",
+          "options": [
+            {
+              "value": "truck",
+              "label": "t:sections.all.icon.options.truck"
+            },
+            {
+              "value": "gift",
+              "label": "t:sections.all.icon.options.gift"
+            },
+            {
+              "value": "leaf",
+              "label": "t:sections.all.icon.options.leaf"
+            },
+            {
+              "value": "return",
+              "label": "t:sections.all.icon.options.return"
+            },
+            {
+              "value": "lock",
+              "label": "t:sections.all.icon.options.lock"
+            },
+            {
+              "value": "bottle",
+              "label": "t:sections.all.icon.options.bottle"
+            },
+            {
+              "value": "vial",
+              "label": "t:sections.all.icon.options.vial"
+            },
+            {
+              "value": "droplet",
+              "label": "t:sections.all.icon.options.droplet"
+            },
+            {
+              "value": "heart",
+              "label": "t:sections.all.icon.options.heart"
+            },
+            {
+              "value": "clock",
+              "label": "t:sections.all.icon.options.clock"
+            },
+            {
+              "value": "chat",
+              "label": "t:sections.all.icon.options.chat"
+            }
+          ]
+        },
+        {
+          "type": "inline_richtext",
+          "id": "text_3",
+          "default": "30-day returns, even if opened",
+          "label": "t:sections.all.text"
+        }
+      ]
+    },
+    {
       "type": "custom_liquid",
       "name": "t:sections.all.custom_liquid.name",
       "settings": [
@@ -453,6 +795,35 @@
       "default": true,
       "label": "t:sections.main_product.settings.show_sticky_cart.label",
       "info": "t:sections.main_product.settings.show_sticky_cart.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_zoom",
+      "default": true,
+      "label": "t:sections.main_product.settings.enable_zoom.label",
+      "info": "t:sections.main_product.settings.enable_zoom.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "default": true,
+      "label": "t:sections.all.show_breadcrumbs"
+    },
+    {
+      "type": "select",
+      "id": "media_layout",
+      "default": "stacked",
+      "label": "t:sections.main_product.settings.media_layout.label",
+      "options": [
+        {
+          "value": "stacked",
+          "label": "t:sections.main_product.settings.media_layout.options.stacked"
+        },
+        {
+          "value": "carousel",
+          "label": "t:sections.main_product.settings.media_layout.options.carousel"
+        }
+      ]
     },
     {
       "type": "color_scheme",

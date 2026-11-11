@@ -12,10 +12,12 @@
 
     {%- if cart.empty? -%}
       <div class="cart-empty">
-        <p class="h3">{{ 'sections.cart.empty' | t }}</p>
+        <span class="cart-empty__icon">{% render 'icon', icon: 'bag' %}</span>
+        <p class="h3 cart-empty__title">{{ 'sections.cart.empty' | t }}</p>
+        <p class="cart-empty__text">{{ 'sections.cart.empty_text' | t }}</p>
         <a href="{{ routes.all_products_collection_url }}" class="button">{{ 'general.continue_shopping' | t }}</a>
         {%- if shop.customer_accounts_enabled and customer == null -%}
-          <p>{{ 'sections.cart.login.paragraph_html' | t: link: routes.account_login_url }}</p>
+          <p class="cart-empty__login">{{ 'sections.cart.login.paragraph_html' | t: link: routes.account_login_url }}</p>
         {%- endif -%}
       </div>
     {%- else -%}
@@ -23,6 +25,7 @@
         <div class="cart-page__items">
           {% render 'cart-progress' %}
           {% render 'cart-line-items' %}
+          {% render 'cart-samples' %}
           {% render 'cart-upsell' %}
           <noscript>
             <form action="{{ routes.cart_url }}" method="post">

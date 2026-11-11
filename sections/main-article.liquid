@@ -1,44 +1,78 @@
+{{ 'section-pages.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign word_count = article.content | strip_html | split: ' ' | size
+  assign minutes = word_count | divided_by: 220 | at_least: 1
+-%}
+
 <article
-  class="section-padding color-{{ section.settings.color_scheme }}"
+  class="article section-padding color-{{ section.settings.color_scheme }}"
   style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
 >
-  <div class="page-width page-width--narrow">
-    <header class="text-center" style="margin-bottom: 4rem;">
-      <p class="eyebrow">{{ article.published_at | time_tag: format: 'date' }}</p>
-      <h1 class="h-display h-display--md">{{ article.title | escape }}</h1>
-      {%- if section.settings.show_author -%}
-        <p class="text-muted">{{ 'blogs.article.by_author' | t: author: article.author }}</p>
+  <div class="page-width">
+    {%- if section.settings.show_breadcrumbs -%}{% render 'breadcrumbs' %}{%- endif -%}
+    <header class="article__hero{% if article.image %} article__hero--image{% endif %}">
+      <div class="article__heading">
+        <p class="eyebrow">
+          {{- article.published_at | time_tag: format: 'date' -}}
+          <span aria-hidden="true">&nbsp;·&nbsp;</span>{{ 'blogs.article.reading_time' | t: count: minutes }}
+        </p>
+        <h1 class="h-display h-display--md article__title">{{ article.title | escape }}</h1>
+        {%- if section.settings.show_author -%}
+          <p class="article__author">{{ 'blogs.article.by_author' | t: author: article.author }}</p>
+        {%- endif -%}
+      </div>
+      {%- if article.image -%}
+        <div class="vessel article__media">
+          {{
+            article.image
+            | image_url: width: 1600
+            | image_tag: widths: '500, 750, 1100, 1600', sizes: '(min-width: 990px) 45vw, 100vw', loading: 'eager', fetchpriority: 'high', alt: article.image.alt | default: article.title
+          }}
+        </div>
       {%- endif -%}
     </header>
   </div>
-  {%- if article.image -%}
-    <div class="page-width" style="margin-bottom: 4.8rem;">
-      <div class="media media--wide">
-        {{
-          article.image
-          | image_url: width: 2000
-          | image_tag: widths: '750, 1100, 1500, 2000', sizes: '100vw', loading: 'eager', fetchpriority: 'high', alt: article.image.alt | default: article.title
-        }}
-      </div>
-    </div>
-  {%- endif -%}
-  <div class="page-width page-width--narrow">
-    <div class="rte" style="font-size: 1.8rem; line-height: 1.75;">{{ article.content }}</div>
 
-    {%- if article.tags.size > 0 -%}
-      <ul class="facets__active" role="list" style="list-style: none; padding: 0;">
-        {%- for tag in article.tags -%}
-          <li><a href="{{ blog.url }}/tagged/{{ tag | handleize }}" class="link-underline">#{{ tag }}</a></li>
+  <div class="page-width page-width--narrow">
+    <div class="rte article__content">{{ article.content }}</div>
+
+    <div class="article__footer">
+      {%- if article.tags.size > 0 -%}
+        <ul class="article__tags" role="list">
+          {%- for tag in article.tags -%}
+            <li><a href="{{ blog.url }}/tagged/{{ tag | handleize }}" class="blog-tags__tag">{{ tag | escape }}</a></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+      <share-button class="article__share" data-url="{{ request.origin }}{{ article.url }}" data-title="{{ article.title | escape }}">
+        <button type="button" class="link product__share-button">
+          {% render 'icon', icon: 'share' %}
+          <span data-share-label>{{ 'blogs.article.share' | t }}</span>
+        </button>
+        <span class="visually-hidden" role="status" data-share-status data-success="{{ 'general.share.success_message' | t | escape }}"></span>
+      </share-button>
+    </div>
+  </div>
+
+  {%- if section.settings.related_products.count > 0 -%}
+    <div class="page-width article__related">
+      <h2 class="h3 article__related-title">{{ section.settings.related_heading | escape }}</h2>
+      <ul class="grid" role="list" style="--cols: 4; --cols-tablet: 3; --cols-mobile: 2;">
+        {%- for product in section.settings.related_products limit: 4 -%}
+          <li>{% render 'product-card', product: product, section_id: section.id %}</li>
         {%- endfor -%}
       </ul>
-    {%- endif -%}
+    </div>
+  {%- endif -%}
 
+  <div class="page-width page-width--narrow">
     {%- if blog.comments_enabled? -%}
-      <section class="article-comments" style="margin-top: 6.4rem;">
+      <section class="article-comments">
         <h2 class="h3">{{ 'blogs.article.comments' | t: count: article.comments_count }}</h2>
         {%- paginate article.comments by 10 -%}
           {%- for comment in article.comments -%}
-            <div style="padding: 2rem 0; border-bottom: 1px solid rgba(var(--color-foreground), 0.12);">
+            <div class="article-comment">
               <div class="rte">{{ comment.content }}</div>
               <p class="text-muted">{{ comment.author }} · {{ comment.created_at | time_tag: format: 'date' }}</p>
             </div>
@@ -47,7 +81,7 @@
         {%- endpaginate -%}
 
         {%- form 'new_comment', article -%}
-          <h2 class="h3" style="margin-top: 4rem;">{{ 'blogs.article.comment_form_title' | t }}</h2>
+          <h2 class="h3 article-comments__form-title">{{ 'blogs.article.comment_form_title' | t }}</h2>
           {%- if form.errors -%}
             <div class="form__message form__message--error" role="alert">{{ form.errors | default_errors }}</div>
           {%- elsif form.posted_successfully? -%}
@@ -75,8 +109,8 @@
       </section>
     {%- endif -%}
 
-    <p style="margin-top: 4.8rem;">
-      <a href="{{ blog.url }}" class="link-underline">{% render 'icon', icon: 'arrow-left' %} {{ 'blogs.article.back_to_blog' | t: title: blog.title }}</a>
+    <p class="article__back">
+      <a href="{{ blog.url }}" class="button button--tertiary article__back-link">{% render 'icon', icon: 'arrow-left' %} {{ 'blogs.article.back_to_blog' | t: title: blog.title }}</a>
     </p>
   </div>
 </article>
@@ -91,10 +125,57 @@
   "tag": "div",
   "class": "section",
   "settings": [
-    { "type": "checkbox", "id": "show_author", "default": true, "label": "t:sections.main_blog.settings.show_author.label" },
-    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" },
-    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 64 },
-    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 72 }
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "default": true,
+      "label": "t:sections.all.show_breadcrumbs"
+    },
+    {
+      "type": "product_list",
+      "id": "related_products",
+      "limit": 4,
+      "label": "t:sections.main_article.settings.related_products.label",
+      "info": "t:sections.main_article.settings.related_products.info"
+    },
+    {
+      "type": "text",
+      "id": "related_heading",
+      "default": "Scents in this story",
+      "label": "t:sections.main_article.settings.related_heading.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "default": true,
+      "label": "t:sections.main_blog.settings.show_author.label"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding_top",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding_bottom",
+      "default": 72
+    }
   ]
 }
 {% endschema %}

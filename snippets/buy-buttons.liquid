@@ -46,11 +46,22 @@
           {%- unless product.requires_selling_plan -%}
             <label class="selling-plans__option">
               <input type="radio" name="selling_plan" value="" {% unless current_variant.selected_selling_plan_allocation %}checked{% endunless %}>
-              {{ 'products.product.one_time_purchase' | t }}
+              <span class="selling-plans__body">
+                <span class="selling-plans__name">{{ 'products.product.one_time_purchase' | t }}</span>
+              </span>
+              <span class="selling-plans__price">{{ current_variant.price | money }}</span>
             </label>
           {%- endunless -%}
           {%- for group in product.selling_plan_groups -%}
             {%- for plan in group.selling_plans -%}
+              {%- liquid
+                assign plan_price = nil
+                for allocation in current_variant.selling_plan_allocations
+                  if allocation.selling_plan.id == plan.id
+                    assign plan_price = allocation.price
+                  endif
+                endfor
+              -%}
               <label class="selling-plans__option">
                 <input
                   type="radio"
@@ -62,7 +73,15 @@
                     checked
                   {% endif %}
                 >
-                {{ group.name }} · {{ plan.name }}
+                <span class="selling-plans__body">
+                  <span class="selling-plans__name">{{ plan.name | escape }}</span>
+                  {%- if group.name != plan.name -%}
+                    <span class="selling-plans__group">{{ group.name | escape }}</span>
+                  {%- endif -%}
+                </span>
+                {%- if plan_price != nil -%}
+                  <span class="selling-plans__price">{{ plan_price | money }}</span>
+                {%- endif -%}
               </label>
             {%- endfor -%}
           {%- endfor -%}
@@ -126,6 +145,40 @@
       <p class="form__message form__message--error" data-product-form-error role="alert" hidden></p>
     {%- endform -%}
   </product-form>
+
+  <div class="buy-buttons__notify" data-product-update="notify">
+    {%- if current_variant != null and current_variant.available == false -%}
+      {%- assign notify_id = 'Notify-' | append: section_id -%}
+      {%- form 'contact', id: notify_id, class: 'notify-form' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="form__message form__message--success" role="status">{% render 'icon', icon: 'check' %} {{ 'products.product.notify.success' | t }}</p>
+        {%- else -%}
+          <p class="notify-form__heading">{% render 'icon', icon: 'clock' %} {{ 'products.product.notify.heading' | t }}</p>
+          <input type="hidden" name="contact[{{ 'products.product.notify.body_label' | t | escape }}]" value="{{ product.title | escape }}{% unless product.has_only_default_variant %} – {{ current_variant.title | escape }}{% endunless %} ({{ request.origin }}{{ current_variant.url }})">
+          <div class="notify-form__row">
+            <div class="field">
+              <label class="visually-hidden" for="{{ notify_id }}-Email">{{ 'products.product.notify.label' | t }}</label>
+              <input
+                id="{{ notify_id }}-Email"
+                type="email"
+                name="contact[email]"
+                autocomplete="email"
+                placeholder="{{ 'products.product.notify.label' | t }}"
+                required
+                {% if form.errors %}
+                  aria-invalid="true" aria-describedby="{{ notify_id }}-Error"
+                {% endif %}
+              >
+            </div>
+            <button type="submit" class="button button--secondary">{{ 'products.product.notify.button' | t }}</button>
+          </div>
+          {%- if form.errors -%}
+            <p class="form__message form__message--error" id="{{ notify_id }}-Error">{% render 'icon', icon: 'error' %} {{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endform -%}
+    {%- endif -%}
+  </div>
 
   {%- if block.settings.show_pickup_availability -%}
     <pickup-availability
