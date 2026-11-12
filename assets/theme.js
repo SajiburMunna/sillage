@@ -545,8 +545,22 @@ class VariantPicker extends HTMLElement {
         }
       });
 
+      // Quantity rules differ per variant: carry over min / max / step.
+      const freshQty = html.querySelector('.quantity__input[name="quantity"]');
+      root?.querySelectorAll('.quantity__input[name="quantity"]').forEach((input) => {
+        if (!freshQty) return;
+        ['min', 'step'].forEach((attr) => input.setAttribute(attr, freshQty.getAttribute(attr)));
+        freshQty.hasAttribute('max') ? input.setAttribute('max', freshQty.getAttribute('max')) : input.removeAttribute('max');
+        const min = Number(input.min) || 1;
+        const step = Number(input.step) || 1;
+        const max = input.hasAttribute('max') ? Number(input.max) : Infinity;
+        let value = Math.max(min, Number(input.value) || min);
+        value = Math.min(max, min + Math.round((value - min) / step) * step);
+        input.value = value;
+      });
+
       if (variant) {
-        root?.querySelectorAll('input[name="id"]').forEach((input) => {
+        root?.querySelectorAll('input[name="id"]:not([data-independent-form])').forEach((input) => {
           input.value = variant.id;
           input.dispatchEvent(new Event('change', { bubbles: true }));
         });
@@ -1002,8 +1016,9 @@ class StickyAtc extends HTMLElement {
       const past = !entry.isIntersecting && entry.boundingClientRect.top < 0;
       this.classList.toggle('is-visible', past);
       this.setAttribute('aria-hidden', String(!past));
-      const button = this.querySelector('button');
-      if (button) button.tabIndex = past ? 0 : -1;
+      // inert removes every control (button, links, inputs) from focus and the accessibility tree while hidden
+      this.inert = !past;
+      document.documentElement.classList.toggle('has-sticky-atc', past);
     });
     this.observer.observe(mainButton);
     this.onVariant = () => this.sync(mainButton);

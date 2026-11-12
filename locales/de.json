@@ -35,7 +35,10 @@
         "other": "{{ count }} Min. Lesezeit"
       },
       "read_more": "Zum Beitrag",
-      "share": "Beitrag teilen"
+      "share": "Beitrag teilen",
+      "more_stories": "Weitere Geschichten",
+      "older_post": "Älterer Beitrag",
+      "newer_post": "Neuerer Beitrag"
     }
   },
   "customer": {
@@ -311,6 +314,37 @@
         "button": "Benachrichtigen",
         "success": "Danke. Wir melden uns, sobald es wieder verfügbar ist.",
         "body_label": "Anfrage zur Wiederverfügbarkeit"
+      },
+      "volume_pricing": {
+        "title": "Staffelpreise",
+        "price_each": "Preis pro Stück",
+        "minimum_of": "Mindestens {{ quantity }}",
+        "maximum_of": "Höchstens {{ quantity }}",
+        "increments_of": "Erhältlich in Schritten von {{ quantity }}"
+      },
+      "scent_profile": {
+        "concentration": "Konzentration",
+        "longevity": "Haltbarkeit",
+        "sillage": "Sillage",
+        "season": "Ideal im",
+        "wear": "Tragen",
+        "rating": "{{ value }} von 5",
+        "longevity_1": "Flüchtig",
+        "longevity_2": "Einige Stunden",
+        "longevity_3": "Einen halben Tag",
+        "longevity_4": "Langanhaltend",
+        "longevity_5": "Tag und Nacht",
+        "sillage_1": "Hautduft",
+        "sillage_2": "Dezent",
+        "sillage_3": "Mittel",
+        "sillage_4": "Stark",
+        "sillage_5": "Füllt den Raum",
+        "spring": "Frühling",
+        "summer": "Sommer",
+        "autumn": "Herbst",
+        "winter": "Winter",
+        "day": "Tag",
+        "night": "Abend"
       }
     }
   },

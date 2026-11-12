@@ -103,6 +103,29 @@
             "skip_weekends": true,
             "cutoff_hour": 14
           }
+        },
+        "scent_profile": {
+          "type": "scent_profile",
+          "settings": {
+            "heading": "Scent profile",
+            "concentration": "Eau de parfum",
+            "longevity": 4,
+            "sillage": 3,
+            "spring": true,
+            "summer": false,
+            "autumn": true,
+            "winter": true,
+            "day": false,
+            "night": true
+          }
+        },
+        "layer_with": {
+          "type": "layer_with",
+          "settings": {
+            "heading": "Layer it with",
+            "text": "Spray one, then the other. Each pairing is blended to wear together.",
+            "products": []
+          }
         }
       },
       "block_order": [
@@ -115,9 +138,11 @@
         "delivery",
         "trust",
         "fragrance_notes",
+        "scent_profile",
         "description",
         "how_to_wear",
         "ingredients",
+        "layer_with",
         "complementary",
         "share"
       ],

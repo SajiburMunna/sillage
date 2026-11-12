@@ -35,7 +35,10 @@
         "other": "{{ count }} min de lecture"
       },
       "read_more": "Lire l’histoire",
-      "share": "Partager cette histoire"
+      "share": "Partager cette histoire",
+      "more_stories": "Autres histoires",
+      "older_post": "Article précédent",
+      "newer_post": "Article suivant"
     }
   },
   "customer": {
@@ -311,6 +314,37 @@
         "button": "Me prévenir",
         "success": "Merci. Nous vous écrirons dès son retour.",
         "body_label": "Demande de réassort"
+      },
+      "volume_pricing": {
+        "title": "Tarifs dégressifs",
+        "price_each": "Prix unitaire",
+        "minimum_of": "Minimum de {{ quantity }}",
+        "maximum_of": "Maximum de {{ quantity }}",
+        "increments_of": "Vendu par multiples de {{ quantity }}"
+      },
+      "scent_profile": {
+        "concentration": "Concentration",
+        "longevity": "Tenue",
+        "sillage": "Sillage",
+        "season": "Idéal en",
+        "wear": "Porter",
+        "rating": "{{ value }} sur 5",
+        "longevity_1": "Éphémère",
+        "longevity_2": "Quelques heures",
+        "longevity_3": "Une demi-journée",
+        "longevity_4": "Longue tenue",
+        "longevity_5": "Jour et nuit",
+        "sillage_1": "Parfum de peau",
+        "sillage_2": "Intime",
+        "sillage_3": "Modéré",
+        "sillage_4": "Puissant",
+        "sillage_5": "Emplit la pièce",
+        "spring": "Printemps",
+        "summer": "Été",
+        "autumn": "Automne",
+        "winter": "Hiver",
+        "day": "Jour",
+        "night": "Soir"
       }
     }
   },

@@ -83,23 +83,23 @@
         {%- form 'new_comment', article -%}
           <h2 class="h3 article-comments__form-title">{{ 'blogs.article.comment_form_title' | t }}</h2>
           {%- if form.errors -%}
-            <div class="form__message form__message--error" role="alert">{{ form.errors | default_errors }}</div>
+            <div class="form__message form__message--error" id="CommentForm-error" role="alert">{% render 'icon', icon: 'error' %} {{ form.errors | default_errors }}</div>
           {%- elsif form.posted_successfully? -%}
-            <p class="form__message form__message--success">
+            <p class="form__message form__message--success" role="status">{% render 'icon', icon: 'check' %} 
               {%- if blog.moderated? -%}{{ 'blogs.article.success_moderated' | t }}{%- else -%}{{ 'blogs.article.success' | t }}{%- endif -%}
             </p>
           {%- endif -%}
           <div class="field">
             <label class="field__label" for="CommentForm-author">{{ 'blogs.article.name' | t }} <span aria-hidden="true">*</span></label>
-            <input type="text" name="comment[author]" id="CommentForm-author" autocomplete="name" value="{{ form.author | escape }}" required aria-required="true">
+            <input type="text" name="comment[author]" id="CommentForm-author"{% if form.errors contains 'author' %} aria-invalid="true" aria-describedby="CommentForm-error"{% endif %} autocomplete="name" value="{{ form.author | escape }}" required aria-required="true">
           </div>
           <div class="field">
             <label class="field__label" for="CommentForm-email">{{ 'blogs.article.email' | t }} <span aria-hidden="true">*</span></label>
-            <input type="email" name="comment[email]" id="CommentForm-email" autocomplete="email" value="{{ form.email | escape }}" required aria-required="true">
+            <input type="email" name="comment[email]" id="CommentForm-email" spellcheck="false" autocapitalize="off"{% if form.errors contains 'email' %} aria-invalid="true" aria-describedby="CommentForm-error"{% endif %} autocomplete="email" value="{{ form.email | escape }}" required aria-required="true">
           </div>
           <div class="field">
             <label class="field__label" for="CommentForm-body">{{ 'blogs.article.message' | t }} <span aria-hidden="true">*</span></label>
-            <textarea rows="5" name="comment[body]" id="CommentForm-body" required aria-required="true">{{ form.body | escape }}</textarea>
+            <textarea rows="5" name="comment[body]" id="CommentForm-body"{% if form.errors contains 'body' %} aria-invalid="true" aria-describedby="CommentForm-error"{% endif %} required aria-required="true">{{ form.body | escape }}</textarea>
           </div>
           {%- if blog.moderated? -%}
             <p class="text-muted">{{ 'blogs.article.moderated' | t }}</p>
@@ -107,6 +107,23 @@
           <button type="submit" class="button">{{ 'blogs.article.post' | t }}</button>
         {%- endform -%}
       </section>
+    {%- endif -%}
+
+    {%- if blog.previous_article or blog.next_article -%}
+      <nav class="article-pager" aria-label="{{ 'blogs.article.more_stories' | t }}">
+        {%- if blog.next_article -%}
+          <a href="{{ blog.next_article.url }}" class="article-pager__link article-pager__link--prev" rel="prev">
+            <span class="article-pager__label">{% render 'icon', icon: 'arrow-left' %} {{ 'blogs.article.older_post' | t }}</span>
+            <span class="article-pager__title">{{ blog.next_article.title | escape }}</span>
+          </a>
+        {%- endif -%}
+        {%- if blog.previous_article -%}
+          <a href="{{ blog.previous_article.url }}" class="article-pager__link article-pager__link--next" rel="next">
+            <span class="article-pager__label">{{ 'blogs.article.newer_post' | t }} {% render 'icon', icon: 'arrow' %}</span>
+            <span class="article-pager__title">{{ blog.previous_article.title | escape }}</span>
+          </a>
+        {%- endif -%}
+      </nav>
     {%- endif -%}
 
     <p class="article__back">

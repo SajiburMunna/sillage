@@ -3,14 +3,23 @@
   gap: 4rem;
 }
 
+/* Tablet (iPad portrait and up): media and buy box side by side */
+@media screen and (min-width: 750px) {
+  .product__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 3.2rem;
+    align-items: start;
+  }
+  .product__info-sticky {
+    position: sticky;
+    top: calc(var(--header-offset, 0px) + 2.4rem);
+  }
+}
+
 @media screen and (min-width: 990px) {
   .product__grid {
     grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
     gap: 6.4rem;
-  }
-  .product__info-sticky {
-    position: sticky;
-    top: 10rem;
   }
 }
 
@@ -369,6 +378,79 @@ input:checked + .variant-picker__pill--swatch {
   margin-top: 1rem;
 }
 
+/* B2B: quantity rules + volume pricing */
+.volume-pricing:empty {
+  display: none;
+}
+
+.volume-pricing {
+  margin-top: 1.2rem;
+  font-size: 1.4rem;
+}
+
+.volume-pricing__rule {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.6rem;
+  margin: 0 0 0.8rem;
+  color: rgba(var(--color-foreground), 0.75);
+}
+
+.volume-pricing__details {
+  border-top: 1px solid rgba(var(--color-foreground), 0.15);
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.15);
+}
+
+.volume-pricing__details summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 4.4rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.volume-pricing__details summary::-webkit-details-marker {
+  display: none;
+}
+
+.volume-pricing__details summary .icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  transition: transform 0.25s var(--ease-out, ease);
+}
+
+.volume-pricing__details[open] summary .icon {
+  transform: rotate(180deg);
+}
+
+.volume-pricing__table {
+  width: 100%;
+  margin-bottom: 1.2rem;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.volume-pricing__table th,
+.volume-pricing__table td {
+  padding: 0.8rem 0;
+  text-align: left;
+  border-top: 1px solid rgba(var(--color-foreground), 0.08);
+}
+
+.volume-pricing__table th:last-child,
+.volume-pricing__table td:last-child {
+  text-align: right;
+}
+
+.volume-pricing__table th {
+  font-weight: var(--font-body-weight-bold);
+  font-size: 1.2rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.75);
+}
+
 .pickup-availability {
   display: block;
   margin-top: 1.6rem;
@@ -452,6 +534,232 @@ input:checked + .variant-picker__pill--swatch {
 
 .fragrance-notes__dot.is-filled {
   background: rgb(var(--color-foreground));
+}
+
+/* Scent profile: longevity, sillage, seasons, wear */
+.scent-profile {
+  padding: 2.4rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(var(--color-foreground), 0.12);
+}
+
+.scent-profile__heading {
+  margin-bottom: 1.6rem;
+}
+
+.scent-profile__list {
+  display: grid;
+  margin: 0;
+}
+
+.scent-profile__row {
+  display: grid;
+  grid-template-columns: 14.5rem minmax(0, 1fr);
+  gap: 1.6rem;
+  align-items: center;
+  padding-block: 1.2rem;
+  border-top: 1px solid rgba(var(--color-foreground), 0.08);
+}
+
+.scent-profile__row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.scent-profile__row:last-child {
+  padding-bottom: 0;
+}
+
+.scent-profile__row dt {
+  font-family: var(--font-label-family);
+  font-weight: 500;
+  font-size: 1.2rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.72);
+}
+
+.scent-profile__row dd {
+  margin: 0;
+}
+
+.scent-profile__value {
+  font-family: var(--font-heading-family);
+  font-size: 1.8rem;
+}
+
+.scent-profile__metric {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1.2rem;
+}
+
+.scent-profile__bar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.4rem;
+  width: min(100%, 14rem);
+}
+
+.scent-profile__seg {
+  height: 0.6rem;
+  border-radius: 999px;
+  background: rgba(var(--color-foreground), 0.12);
+}
+
+.scent-profile__seg.is-on {
+  background: rgb(var(--color-accent));
+}
+
+.scent-profile__word {
+  font-size: 1.4rem;
+  color: rgba(var(--color-foreground), 0.85);
+}
+
+.scent-profile__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.scent-profile__chip {
+  padding: 0.4rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--color-foreground), 0.14);
+  font-size: 1.3rem;
+  line-height: 1.6;
+  color: rgba(var(--color-foreground), 0.62);
+}
+
+.scent-profile__chip.is-on {
+  border-color: rgb(var(--color-foreground));
+  background: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+}
+
+@media screen and (max-width: 419px) {
+  .scent-profile__row {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+}
+
+/* Layer it with */
+.layer-with__head {
+  margin-bottom: 1.2rem;
+}
+
+.layer-with__heading {
+  margin-bottom: 0.4rem;
+}
+
+.layer-with__text {
+  margin: 0;
+  font-size: 1.4rem;
+  color: rgba(var(--color-foreground), 0.75);
+}
+
+.layer-with__list {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.layer-with__item {
+  display: grid;
+  grid-template-columns: 7.2rem minmax(0, 1fr) auto;
+  gap: 1.4rem;
+  align-items: center;
+  padding: 1rem;
+  border-radius: var(--radius);
+  background: rgb(var(--color-surface));
+}
+
+.layer-with__media {
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: calc(var(--radius) * 0.6);
+  background: rgba(var(--color-foreground), 0.04);
+}
+
+.layer-with__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.layer-with__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.layer-with__title {
+  align-self: flex-start;
+  font-family: var(--font-heading-family);
+  font-size: 1.7rem;
+  line-height: 1.25;
+  color: inherit;
+}
+
+.layer-with__notes {
+  overflow: hidden;
+  font-size: 1.3rem;
+  color: rgba(var(--color-foreground), 0.72);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.layer-with__info .price {
+  font-size: 1.4rem;
+}
+
+.layer-with__add {
+  border: 1px solid rgba(var(--color-foreground), 0.2);
+  border-radius: 50%;
+  background: rgb(var(--color-background));
+  transition: background var(--duration-fast, 0.2s) ease, color var(--duration-fast, 0.2s) ease;
+}
+
+.layer-with__add:hover {
+  background: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+}
+
+.layer-with__add .loading-spinner {
+  display: none;
+}
+
+.layer-with__add[aria-busy='true'] {
+  pointer-events: none;
+}
+
+.layer-with__add[aria-busy='true'] .button__label {
+  opacity: 0;
+}
+
+.layer-with__add[aria-busy='true'] .loading-spinner {
+  display: block;
+  position: absolute;
+}
+
+.layer-with__add .button__label {
+  display: grid;
+  place-items: center;
+}
+
+.layer-with__form .form__message {
+  grid-column: 1 / -1;
+  margin-top: 0.4rem;
+  font-size: 1.2rem;
 }
 
 /* Complementary */
@@ -893,4 +1201,11 @@ share-button {
 .notify-form__row .field {
   flex: 1;
   margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product__stock--low::before,
+  .lightbox__dialog[open] {
+    animation: none;
+  }
 }

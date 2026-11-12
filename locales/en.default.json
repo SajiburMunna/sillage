@@ -35,7 +35,10 @@
         "other": "{{ count }} min read"
       },
       "read_more": "Read the story",
-      "share": "Share this story"
+      "share": "Share this story",
+      "more_stories": "More stories",
+      "older_post": "Older story",
+      "newer_post": "Newer story"
     }
   },
   "customer": {
@@ -311,6 +314,37 @@
         "button": "Notify me",
         "success": "Thank you. We’ll email you as soon as it’s back.",
         "body_label": "Restock request"
+      },
+      "volume_pricing": {
+        "title": "Volume pricing",
+        "price_each": "Price each",
+        "minimum_of": "Minimum of {{ quantity }}",
+        "maximum_of": "Maximum of {{ quantity }}",
+        "increments_of": "Sold in increments of {{ quantity }}"
+      },
+      "scent_profile": {
+        "concentration": "Concentration",
+        "longevity": "Longevity",
+        "sillage": "Sillage",
+        "season": "Best in",
+        "wear": "Wear",
+        "rating": "{{ value }} out of 5",
+        "longevity_1": "Fleeting",
+        "longevity_2": "A few hours",
+        "longevity_3": "Half a day",
+        "longevity_4": "Long-lasting",
+        "longevity_5": "All day and night",
+        "sillage_1": "Skin scent",
+        "sillage_2": "Intimate",
+        "sillage_3": "Moderate",
+        "sillage_4": "Strong",
+        "sillage_5": "Fills the room",
+        "spring": "Spring",
+        "summer": "Summer",
+        "autumn": "Autumn",
+        "winter": "Winter",
+        "day": "Day",
+        "night": "Night"
       }
     }
   },

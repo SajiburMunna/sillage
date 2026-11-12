@@ -1261,3 +1261,10 @@
 .ss:has(.ss-water-toggle.is-paused) .ss-ring {
   animation-play-state: paused;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .ss-pill__menu,
+  .ss-loaded .ss-wearing {
+    animation: none;
+  }
+}

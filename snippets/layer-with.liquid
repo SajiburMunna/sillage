@@ -1,0 +1,73 @@
+{%- comment -%}
+  "Layer it with": scents designed to be worn together, each with its own add-to-bag.
+  Accepts:
+  - block {Object}
+  - section_id {String}
+  Uses the block's product list, or the product metafield custom.layer_with
+  (list.product_reference) when the block list is empty.
+{%- endcomment -%}
+{%- liquid
+  assign pairs = block.settings.products
+  if pairs == blank or pairs.count == 0
+    assign pairs = product.metafields.custom.layer_with.value
+  endif
+-%}
+{%- if pairs != blank and pairs.count > 0 -%}
+  <div class="layer-with" {{ block.shopify_attributes }}>
+    <div class="layer-with__head">
+      {%- if block.settings.heading != blank -%}
+        <h2 class="eyebrow layer-with__heading">{{ block.settings.heading | escape }}</h2>
+      {%- endif -%}
+      {%- if block.settings.text != blank -%}
+        <p class="layer-with__text">{{ block.settings.text | escape }}</p>
+      {%- endif -%}
+    </div>
+    <ul class="layer-with__list" role="list">
+      {%- for pair in pairs limit: 3 -%}
+        {%- if pair.id == product.id -%}{%- continue -%}{%- endif -%}
+        {%- assign pair_variant = pair.selected_or_first_available_variant -%}
+        <li class="layer-with__item">
+          <a href="{{ pair.url }}" class="layer-with__media" tabindex="-1" aria-hidden="true">
+            {%- if pair.featured_media -%}
+              {{ pair.featured_media | image_url: width: 200 | image_tag: loading: 'lazy', widths: '100, 200', sizes: '72px', alt: '' }}
+            {%- endif -%}
+          </a>
+          <div class="layer-with__info">
+            <a href="{{ pair.url }}" class="layer-with__title link-underline">{{ pair.title | escape }}</a>
+            {%- assign pair_notes = pair.metafields.custom.notes.value | default: pair.metafields.custom.notes -%}
+            {%- if pair_notes != blank -%}
+              <span class="layer-with__notes">{{ pair_notes | escape }}</span>
+            {%- endif -%}
+            {% render 'price', product: pair %}
+          </div>
+          {%- if pair.has_only_default_variant and pair_variant.available and pair.requires_selling_plan == false -%}
+            <product-form class="layer-with__form">
+              {%- assign layer_form_id = 'LayerForm-' | append: section_id | append: '-' | append: pair.id -%}
+              {%- form 'product', pair, id: layer_form_id -%}
+                <input type="hidden" name="id" value="{{ pair_variant.id }}" data-independent-form>
+                <button
+                  type="submit"
+                  name="add"
+                  class="icon-button layer-with__add"
+                  aria-label="{{ 'products.product.add_to_cart_named' | t: title: pair.title | escape }}"
+                >
+                  <span class="button__label">{% render 'icon', icon: 'plus' %}</span>
+                  <span class="loading-spinner" aria-hidden="true"></span>
+                </button>
+                <p class="form__message form__message--error" data-product-form-error role="alert" hidden></p>
+              {%- endform -%}
+            </product-form>
+          {%- else -%}
+            <a
+              href="{{ pair.url }}"
+              class="icon-button layer-with__add"
+              aria-label="{{ 'products.product.choose_options_named' | t: title: pair.title | escape }}"
+            >
+              {%- render 'icon', icon: 'arrow' -%}
+            </a>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+{%- endif -%}

@@ -10,7 +10,17 @@
         <div class="section-header">
           <h2 class="section-header__title h2">{{ section.settings.heading | escape }}</h2>
         </div>
-        <ul class="grid" role="list" style="--cols: {{ section.settings.columns_desktop }}; --cols-tablet: 3; --cols-mobile: 2;">
+        {%- assign shown = recommendations.products_count | at_most: section.settings.products_to_show -%}
+        {%- liquid
+            # Tablet columns: avoid a lone card on the last row (4 → 2×2, 6 → 3×2)
+            assign tablet_cols = 3
+            assign rem3 = shown | modulo: 3
+            assign rem2 = shown | modulo: 2
+            if rem3 != 0 and rem2 == 0
+              assign tablet_cols = 2
+            endif
+          -%}
+        <ul class="grid" role="list" style="--cols: {{ section.settings.columns_desktop }}; --cols-tablet: {{ tablet_cols }}; --cols-mobile: 2;">
           {%- for recommendation in recommendations.products -%}
             <li>{% render 'product-card', product: recommendation, section_id: section.id %}</li>
           {%- endfor -%}

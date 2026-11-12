@@ -54,10 +54,26 @@
         {% endunless %}
         data-panel
       >
-        <ul class="grid" role="list" style="--cols: {{ section.settings.columns_desktop }}; --cols-tablet: 3; --cols-mobile: 2; --grid-gap: clamp(1.6rem, 2vw, 3.2rem) clamp(1.2rem, 1.6vw, 2.4rem);">
+        {%- liquid
+          if c != blank and c.products_count > 0
+            assign shown = c.products_count | at_most: section.settings.products_to_show
+          else
+            assign shown = section.settings.columns_desktop
+          endif
+        -%}
+        {%- liquid
+            # Tablet columns: avoid a lone card on the last row (4 → 2×2, 6 → 3×2)
+            assign tablet_cols = 3
+            assign rem3 = shown | modulo: 3
+            assign rem2 = shown | modulo: 2
+            if rem3 != 0 and rem2 == 0
+              assign tablet_cols = 2
+            endif
+          -%}
+        <ul class="grid" role="list" style="--cols: {{ section.settings.columns_desktop }}; --cols-tablet: {{ tablet_cols }}; --cols-mobile: 2; --grid-gap: clamp(1.6rem, 2vw, 3.2rem) clamp(1.2rem, 1.6vw, 2.4rem);">
           {%- if c != blank and c.products_count > 0 -%}
             {%- for product in c.products limit: section.settings.products_to_show -%}
-              <li>{% render 'product-card', product: product, section_id: section.id %}</li>
+              <li>{%- assign card_scope = section.id | append: '-' | append: block.id -%}{% render 'product-card', product: product, section_id: card_scope %}</li>
             {%- endfor -%}
           {%- else -%}
             {%- for i in (1..section.settings.columns_desktop) -%}

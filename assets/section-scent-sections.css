@@ -271,6 +271,11 @@ cart-stepper[aria-busy='true'] {
 
 /* ---------- House story ---------- */
 
+/* The spinning text ring's corners sweep past the viewport on phones; clip sideways only */
+.sh {
+  overflow-x: clip;
+}
+
 .sh__inner {
   display: grid;
   gap: 48px;
@@ -407,6 +412,18 @@ cart-stepper[aria-busy='true'] {
 
 .sh__caption--left { left: 0; }
 .sh__caption--right { right: 0; }
+
+/* Phones: the circle fills the width, so captions sit just below it instead of across it */
+@media screen and (max-width: 749px) {
+  .sh__viz {
+    margin-bottom: 3.6rem;
+  }
+  .sh__caption {
+    bottom: -3.6rem;
+    font-size: 1.1rem;
+    letter-spacing: 0.18em;
+  }
+}
 
 .sh__copy {
   display: flex;
@@ -755,6 +772,12 @@ sc-tabs {
 
 @media (prefers-reduced-motion: reduce) {
   .sc-tabs__panel.is-entering {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-stepper {
     animation: none;
   }
 }

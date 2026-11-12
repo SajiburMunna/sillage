@@ -44,9 +44,9 @@
     {%- if article.excerpt.size > 0 or article.content.size > 0 -%}
       <p class="article-card__excerpt">
         {%- if featured -%}
-          {{ article.excerpt | default: article.content | strip_html | truncatewords: 40 }}
+          {{ article.excerpt_or_content | strip_html | truncatewords: 40 }}
         {%- else -%}
-          {{ article.excerpt | default: article.content | strip_html | truncatewords: 22 }}
+          {{ article.excerpt_or_content | strip_html | truncatewords: 22 }}
         {%- endif -%}
       </p>
     {%- endif -%}

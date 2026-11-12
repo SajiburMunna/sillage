@@ -47,6 +47,12 @@ html {
   font-size: calc(var(--font-body-scale) * 62.5%);
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
+  /* WCAG 2.4.11: keep focused elements and anchor targets clear of the sticky header and sticky add-to-bag bar */
+  scroll-padding-top: calc(var(--header-offset, 0px) + 1.6rem);
+}
+
+html.has-sticky-atc {
+  scroll-padding-bottom: calc(var(--sticky-atc-height, 0px) + 1.6rem);
 }
 
 ::selection {
@@ -1262,6 +1268,22 @@ html:has(.header-wrapper--transparent) .section-announcement {
   margin: 0;
   font-size: 1.2rem;
   letter-spacing: 0.32em;
+  white-space: nowrap;
+  /* letter-spacing trails the last letter; pull it back so the line is optically centred */
+  margin-right: -0.32em;
+}
+
+.header__logo-text {
+  margin-right: -0.22em;
+}
+
+/* Small phones: keep the wordmark and tagline on one line each */
+@media screen and (max-width: 419px) {
+  .header__tagline {
+    font-size: 1.2rem;
+    letter-spacing: 0.14em;
+    margin-right: -0.14em;
+  }
 }
 
 .header__tagline::before {
@@ -1836,8 +1858,13 @@ cart-drawer .drawer__title {
 }
 
 .footer__list a {
+  /* 24px minimum tap target; the underline stays on the text, not the padding */
+  display: inline-block;
+  padding-block: 0.3rem;
+  background-origin: content-box;
+  background-clip: content-box;
   color: rgba(var(--color-foreground), 0.82);
-  transition: color var(--duration-fast) ease;
+  transition: color var(--duration-fast) ease, background-size 0.4s ease;
 }
 
 .footer__list a:hover {
@@ -2658,6 +2685,8 @@ promo-popup {
 }
 
 .breadcrumbs__link {
+  display: inline-block;
+  padding-block: 0.4rem; /* 24px minimum tap target */
   color: rgba(var(--color-foreground), 0.72);
   text-decoration: none;
   transition: color var(--duration-fast) ease;

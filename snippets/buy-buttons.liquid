@@ -136,6 +136,56 @@
         </div>
       </div>
 
+      {%- comment -%} B2B: quantity rules and volume pricing (refreshed on variant change) {%- endcomment -%}
+      <div class="volume-pricing" data-product-update="volume-pricing">
+        {%- if current_variant != null -%}
+          {%- assign rule = current_variant.quantity_rule -%}
+          {%- if rule.min > 1 or rule.increment > 1 or rule.max != null -%}
+            <p class="volume-pricing__rule">
+              {%- if rule.increment > 1 -%}
+                <span>{{ 'products.product.volume_pricing.increments_of' | t: quantity: rule.increment }}</span>
+              {%- endif -%}
+              {%- if rule.min > 1 -%}
+                <span>{{ 'products.product.volume_pricing.minimum_of' | t: quantity: rule.min }}</span>
+              {%- endif -%}
+              {%- if rule.max != null -%}
+                <span>{{ 'products.product.volume_pricing.maximum_of' | t: quantity: rule.max }}</span>
+              {%- endif -%}
+            </p>
+          {%- endif -%}
+
+          {%- if current_variant.quantity_price_breaks.size > 0 -%}
+            <details class="volume-pricing__details">
+              <summary>
+                <span>{{ 'products.product.volume_pricing.title' | t }}</span>
+                {% render 'icon', icon: 'caret' %}
+              </summary>
+              <table class="volume-pricing__table">
+                <caption class="visually-hidden">{{ 'products.product.volume_pricing.title' | t }}</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">{{ 'products.product.quantity.label' | t }}</th>
+                    <th scope="col">{{ 'products.product.volume_pricing.price_each' | t }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ rule.min }}+</td>
+                    <td>{{ current_variant.price | money }}</td>
+                  </tr>
+                  {%- for price_break in current_variant.quantity_price_breaks -%}
+                    <tr>
+                      <td>{{ price_break.minimum_quantity }}+</td>
+                      <td>{{ price_break.price | money }}</td>
+                    </tr>
+                  {%- endfor -%}
+                </tbody>
+              </table>
+            </details>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+
       {%- if block.settings.show_dynamic_checkout or dynamic_checkout -%}
         <div class="buy-buttons__dynamic">
           {{ form | payment_button }}

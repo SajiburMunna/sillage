@@ -23,7 +23,7 @@
       <ul class="product__media-list" role="list" data-gallery-viewer>
         {%- if featured_media -%}
           <li class="product__media-item is-active" data-media-id="{{ featured_media.id }}">
-            {% render 'product-media', media: featured_media, loading: 'eager', sizes: '(min-width: 990px) 55vw, 100vw' %}
+            {% render 'product-media', media: featured_media, loading: 'eager', sizes: '(min-width: 990px) 55vw, (min-width: 750px) 50vw, 100vw' %}
             {%- if section.settings.enable_zoom and featured_media.media_type == 'image' -%}
               <button type="button" class="product__zoom" data-lightbox-open="{{ featured_media.id }}" aria-haspopup="dialog" aria-label="{{ 'products.product.media.open_zoom' | t }}">
                 {% render 'icon', icon: 'zoom' %}
@@ -34,7 +34,7 @@
         {%- for media in product.media -%}
           {%- unless media.id == featured_media.id -%}
             <li class="product__media-item" data-media-id="{{ media.id }}">
-              {% render 'product-media', media: media, loading: 'lazy', sizes: '(min-width: 990px) 55vw, 100vw' %}
+              {% render 'product-media', media: media, loading: 'lazy', sizes: '(min-width: 990px) 55vw, (min-width: 750px) 50vw, 100vw' %}
               {%- if section.settings.enable_zoom and media.media_type == 'image' -%}
               <button type="button" class="product__zoom" data-lightbox-open="{{ media.id }}" aria-haspopup="dialog" aria-label="{{ 'products.product.media.open_zoom' | t }}">
                 {% render 'icon', icon: 'zoom' %}
@@ -220,6 +220,10 @@
               {%- endif -%}
             {%- when 'fragrance_notes' -%}
               {% render 'fragrance-notes', block: block, product: product %}
+            {%- when 'scent_profile' -%}
+              {% render 'scent-profile', block: block, product: product %}
+            {%- when 'layer_with' -%}
+              {% render 'layer-with', block: block, product: product, section_id: section.id %}
             {%- when 'collapsible_tab' -%}
               <details class="accordion" {{ block.shopify_attributes }}>
                 <summary>{{ block.settings.heading | default: block.settings.page.title | escape }} {% render 'icon', icon: 'caret' %}</summary>
@@ -490,6 +494,37 @@
       "type": "description",
       "name": "t:sections.main_product.blocks.description.name",
       "limit": 1
+    },
+    {
+      "type": "scent_profile",
+      "name": "t:sections.main_product.blocks.scent_profile.name",
+      "limit": 1,
+      "settings": [
+        { "type": "paragraph", "content": "t:sections.main_product.blocks.scent_profile.settings.paragraph.content" },
+        { "type": "text", "id": "heading", "default": "Scent profile", "label": "t:sections.main_product.blocks.scent_profile.settings.heading.label" },
+        { "type": "text", "id": "concentration", "default": "Eau de parfum", "label": "t:sections.main_product.blocks.scent_profile.settings.concentration.label" },
+        { "type": "range", "id": "longevity", "min": 0, "max": 5, "step": 1, "default": 4, "label": "t:sections.main_product.blocks.scent_profile.settings.longevity.label", "info": "t:sections.main_product.blocks.scent_profile.settings.longevity.info" },
+        { "type": "range", "id": "sillage", "min": 0, "max": 5, "step": 1, "default": 3, "label": "t:sections.main_product.blocks.scent_profile.settings.sillage.label", "info": "t:sections.main_product.blocks.scent_profile.settings.longevity.info" },
+        { "type": "header", "content": "t:sections.main_product.blocks.scent_profile.settings.season_header.content" },
+        { "type": "checkbox", "id": "spring", "default": true, "label": "t:sections.main_product.blocks.scent_profile.settings.spring.label" },
+        { "type": "checkbox", "id": "summer", "default": false, "label": "t:sections.main_product.blocks.scent_profile.settings.summer.label" },
+        { "type": "checkbox", "id": "autumn", "default": true, "label": "t:sections.main_product.blocks.scent_profile.settings.autumn.label" },
+        { "type": "checkbox", "id": "winter", "default": true, "label": "t:sections.main_product.blocks.scent_profile.settings.winter.label" },
+        { "type": "header", "content": "t:sections.main_product.blocks.scent_profile.settings.wear_header.content" },
+        { "type": "checkbox", "id": "day", "default": false, "label": "t:sections.main_product.blocks.scent_profile.settings.day.label" },
+        { "type": "checkbox", "id": "night", "default": true, "label": "t:sections.main_product.blocks.scent_profile.settings.night.label" }
+      ]
+    },
+    {
+      "type": "layer_with",
+      "name": "t:sections.main_product.blocks.layer_with.name",
+      "limit": 1,
+      "settings": [
+        { "type": "paragraph", "content": "t:sections.main_product.blocks.layer_with.settings.paragraph.content" },
+        { "type": "text", "id": "heading", "default": "Layer it with", "label": "t:sections.main_product.blocks.layer_with.settings.heading.label" },
+        { "type": "text", "id": "text", "default": "Spray one, then the other. Each pairing is blended to wear together.", "label": "t:sections.main_product.blocks.layer_with.settings.text.label" },
+        { "type": "product_list", "id": "products", "limit": 3, "label": "t:sections.main_product.blocks.layer_with.settings.products.label" }
+      ]
     },
     {
       "type": "fragrance_notes",

@@ -59,6 +59,8 @@
               {%- else -%}
                 <button type="button" class="button button--full" disabled>{{ 'products.product.add_to_cart' | t }}</button>
               {%- endif -%}
+            {%- when 'custom_liquid' -%}
+              <div {{ block.shopify_attributes }}>{{ block.settings.custom_liquid }}</div>
             {%- when 'view_details' -%}
               {%- if product != blank -%}
                 <a href="{{ product.url }}" class="link-underline" {{ block.shopify_attributes }}>
@@ -85,6 +87,13 @@
   "disabled_on": { "groups": ["header", "footer"] },
   "blocks": [
     { "type": "@app" },
+    {
+      "type": "custom_liquid",
+      "name": "t:sections.all.custom_liquid.name",
+      "settings": [
+        { "type": "liquid", "id": "custom_liquid", "label": "t:sections.all.custom_liquid.label", "info": "t:sections.all.custom_liquid.info" }
+      ]
+    },
     {
       "type": "text",
       "name": "t:sections.all.text",

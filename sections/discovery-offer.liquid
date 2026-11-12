@@ -8,7 +8,11 @@
   if add_label == blank
     assign add_label = 'products.product.add_to_cart' | t
   endif
-  assign vials = '#d9a441,#b98bb5,#8a5235,#6f8f7a,#c97b63,#3b4f6b' | split: ','
+  capture vial_list
+    echo section.settings.vial_1 | append: ',' | append: section.settings.vial_2 | append: ',' | append: section.settings.vial_3
+    echo ',' | append: section.settings.vial_4 | append: ',' | append: section.settings.vial_5 | append: ',' | append: section.settings.vial_6
+  endcapture
+  assign vials = vial_list | split: ','
 -%}
 
 <section
@@ -23,10 +27,33 @@
           {{ section.settings.image | image_url: width: 1400 | image_tag: widths: '500, 800, 1100, 1400', sizes: '(min-width: 990px) 45vw, 90vw', loading: 'lazy', alt: section.settings.image.alt }}
         </div>
       {%- else -%}
-        <div class="offer__vials" aria-hidden="true">
-          {%- for color in vials -%}
-            <span class="offer__vial" style="--vial: {{ color }}; --i: {{ forloop.index0 }};"></span>
-          {%- endfor -%}
+        <div class="offer__set" aria-hidden="true">
+          <div class="offer__glow"></div>
+          <div class="offer__card">
+            <span class="offer__card-rule"></span>
+            <span class="offer__card-title">{{ shop.name | escape }}</span>
+            <span class="offer__card-sub">{{ section.settings.tray_label | escape }}</span>
+            <span class="offer__card-dots">
+              {%- for color in vials -%}<i style="--vial: {{ color }};"></i>{%- endfor -%}
+            </span>
+          </div>
+          <div class="offer__tray">
+            <div class="offer__vials">
+              {%- for color in vials -%}
+                <span class="offer__vial" style="--vial: {{ color }}; --i: {{ forloop.index0 }};">
+                  <span class="offer__cap"></span>
+                  <span class="offer__collar"></span>
+                  <span class="offer__glass">
+                    <span class="offer__liquid"></span>
+                    <span class="offer__tag">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+                  </span>
+                </span>
+              {%- endfor -%}
+            </div>
+            <div class="offer__tray-front">
+              <span>{{ section.settings.tray_label | escape }}</span>
+            </div>
+          </div>
         </div>
       {%- endif -%}
     </div>
@@ -93,6 +120,23 @@
       "label": "t:sections.all.image",
       "info": "t:sections.discovery_offer.settings.image.info"
     },
+    {
+      "type": "header",
+      "content": "t:sections.discovery_offer.settings.illustration.content",
+      "info": "t:sections.discovery_offer.settings.illustration.info"
+    },
+    {
+      "type": "text",
+      "id": "tray_label",
+      "default": "Discovery set · 6 × 2 ml",
+      "label": "t:sections.discovery_offer.settings.tray_label.label"
+    },
+    { "type": "color", "id": "vial_1", "default": "#D9A441", "label": "t:sections.discovery_offer.settings.vial_1.label" },
+    { "type": "color", "id": "vial_2", "default": "#B98BB5", "label": "t:sections.discovery_offer.settings.vial_2.label" },
+    { "type": "color", "id": "vial_3", "default": "#8A5235", "label": "t:sections.discovery_offer.settings.vial_3.label" },
+    { "type": "color", "id": "vial_4", "default": "#6F8F7A", "label": "t:sections.discovery_offer.settings.vial_4.label" },
+    { "type": "color", "id": "vial_5", "default": "#C97B63", "label": "t:sections.discovery_offer.settings.vial_5.label" },
+    { "type": "color", "id": "vial_6", "default": "#3B4F6B", "label": "t:sections.discovery_offer.settings.vial_6.label" },
     {
       "type": "text",
       "id": "eyebrow",

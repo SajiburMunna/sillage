@@ -35,7 +35,10 @@
         "other": "{{ count }} min de lectura"
       },
       "read_more": "Leer la historia",
-      "share": "Compartir esta historia"
+      "share": "Compartir esta historia",
+      "more_stories": "Más historias",
+      "older_post": "Artículo anterior",
+      "newer_post": "Artículo siguiente"
     }
   },
   "customer": {
@@ -311,6 +314,37 @@
         "button": "Avisarme",
         "success": "Gracias. Te escribiremos en cuanto vuelva.",
         "body_label": "Solicitud de reposición"
+      },
+      "volume_pricing": {
+        "title": "Precios por volumen",
+        "price_each": "Precio por unidad",
+        "minimum_of": "Mínimo de {{ quantity }}",
+        "maximum_of": "Máximo de {{ quantity }}",
+        "increments_of": "Se vende en múltiplos de {{ quantity }}"
+      },
+      "scent_profile": {
+        "concentration": "Concentración",
+        "longevity": "Duración",
+        "sillage": "Estela",
+        "season": "Ideal en",
+        "wear": "Llevar",
+        "rating": "{{ value }} de 5",
+        "longevity_1": "Efímera",
+        "longevity_2": "Unas horas",
+        "longevity_3": "Medio día",
+        "longevity_4": "Duradera",
+        "longevity_5": "Día y noche",
+        "sillage_1": "Aroma de piel",
+        "sillage_2": "Íntima",
+        "sillage_3": "Moderada",
+        "sillage_4": "Intensa",
+        "sillage_5": "Llena la sala",
+        "spring": "Primavera",
+        "summer": "Verano",
+        "autumn": "Otoño",
+        "winter": "Invierno",
+        "day": "Día",
+        "night": "Noche"
       }
     }
   },

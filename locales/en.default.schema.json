@@ -582,6 +582,68 @@
               "info": "Orders after this hour, in the shopper’s local time, count from the next day."
             }
           }
+        },
+        "scent_profile": {
+          "name": "Scent profile",
+          "settings": {
+            "paragraph": {
+              "content": "Each product's metafields (custom.longevity, custom.sillage, custom.seasons, custom.wear_time, custom.concentration) override these values, so one block can describe every fragrance."
+            },
+            "heading": {
+              "label": "Heading"
+            },
+            "concentration": {
+              "label": "Concentration"
+            },
+            "longevity": {
+              "label": "Longevity",
+              "info": "1 is fleeting, 5 lasts all day. Set to 0 to hide."
+            },
+            "sillage": {
+              "label": "Sillage (projection)"
+            },
+            "season_header": {
+              "content": "Best seasons"
+            },
+            "spring": {
+              "label": "Spring"
+            },
+            "summer": {
+              "label": "Summer"
+            },
+            "autumn": {
+              "label": "Autumn"
+            },
+            "winter": {
+              "label": "Winter"
+            },
+            "wear_header": {
+              "content": "Time of day"
+            },
+            "day": {
+              "label": "Day"
+            },
+            "night": {
+              "label": "Night"
+            }
+          }
+        },
+        "layer_with": {
+          "name": "Layer it with",
+          "settings": {
+            "paragraph": {
+              "content": "Pick up to 3 scents, or leave empty to use each product's custom.layer_with metafield (list of products)."
+            },
+            "heading": {
+              "label": "Heading"
+            },
+            "text": {
+              "label": "Text"
+            },
+            "products": {
+              "label": "Products"
+            }
+          }
         }
       },
       "name": "Product information",
@@ -1713,6 +1775,31 @@
         "show_trail": {
           "label": "Show trail line",
           "info": "A fine line in the left margin numbers each chapter of the page. Shown on screens 1200px and wider."
+        },
+        "illustration": {
+          "content": "Illustration",
+          "info": "Shown when no image is selected."
+        },
+        "tray_label": {
+          "label": "Tray label"
+        },
+        "vial_1": {
+          "label": "Vial 1 colour"
+        },
+        "vial_2": {
+          "label": "Vial 2 colour"
+        },
+        "vial_3": {
+          "label": "Vial 3 colour"
+        },
+        "vial_4": {
+          "label": "Vial 4 colour"
+        },
+        "vial_5": {
+          "label": "Vial 5 colour"
+        },
+        "vial_6": {
+          "label": "Vial 6 colour"
         }
       },
       "blocks": {
