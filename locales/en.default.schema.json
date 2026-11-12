@@ -2071,6 +2071,17 @@
           "label": "Font"
         }
       }
+    },
+    "sample_photos": {
+      "name": "Sample photography",
+      "settings": {
+        "paragraph": {
+          "content": "Home page sections without a chosen image show sample photography so the store looks finished. Choose your own images in each section to replace them."
+        },
+        "show": {
+          "label": "Show sample photography"
+        }
+      }
     }
   }
 }

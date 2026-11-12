@@ -183,6 +183,21 @@
     "breadcrumbs": {
       "label": "Ruta de navegación",
       "home": "Inicio"
+    },
+    "sample_photos": {
+      "home_hero": "Frasco de perfume junto a una nota manuscrita",
+      "home_floral": "Pétalos de rosa secos",
+      "home_woody": "Humo de incienso sobre madera oscura",
+      "home_amber": "Frasco de vidrio ámbar sobre lino suave",
+      "home_fresh": "Limones frescos en la rama",
+      "home_spotlight": "Frasco de cristal tallado sobre seda naranja",
+      "home_ritual_1": "Mano que sostiene un frasco de vidrio ámbar",
+      "home_ritual_2": "Bandeja de baño con un frasco y una vela",
+      "home_ritual_3": "Frasco de perfume antiguo en una ventana",
+      "home_closing": "Una voluta de humo sobre negro",
+      "home_ugc_1": "Frasco esmerilado con luz de tarde",
+      "home_ugc_2": "Pétalos de rosa",
+      "home_ugc_3": "Frasco oscuro sobre piedra jaspeada"
     }
   },
   "gift_cards": {

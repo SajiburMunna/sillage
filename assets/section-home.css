@@ -1286,3 +1286,23 @@ html:has(.header-wrapper--transparent) main > .shopify-section:first-child .hero
 .ugc__grid {
   grid-auto-flow: dense;
 }
+
+/* Sample photography fills its frame like a merchant image would */
+.sample-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* One gentle warm grade so photos from different shoots read as one set.
+   Applies to the bundled sample photos only, never to merchant images. */
+.sample-photo {
+  filter: saturate(0.82) sepia(0.08) contrast(1.02);
+}
+
+/* The rose petal photo runs hotter than the rest of the set */
+.sample-photo[src*='home-ugc-2'] {
+  filter: saturate(0.55) sepia(0.18) contrast(1.02);
+}

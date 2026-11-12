@@ -31,6 +31,8 @@
             | image_url: width: 1400
             | image_tag: widths: '500, 750, 1000, 1400', sizes: '(min-width: 990px) 40vw, 90vw', loading: 'lazy', alt: image.alt | default: title
           }}
+        {%- elsif settings.show_sample_photos -%}
+          {% render 'sample-photo', name: 'home-spotlight', sizes: '(min-width: 990px) 40vw, 90vw' %}
         {%- else -%}
           {% render 'placeholder-bottle', tint: section.settings.tint, variant: 2 %}
         {%- endif -%}

@@ -29,6 +29,9 @@
             <div class="ugc__media">
               {%- if block.settings.image != blank -%}
                 {{ block.settings.image | image_url: width: 900 | image_tag: widths: '300, 450, 600, 900', sizes: '(min-width: 990px) 25vw, 50vw', loading: 'lazy', alt: block.settings.image.alt | default: block.settings.caption }}
+              {%- elsif settings.show_sample_photos and forloop.index <= 5 -%}
+                {%- assign sample_names = 'home-ugc-1,home-ugc-2,home-ugc-3,home-closing,home-amber' | split: ',' -%}
+                {% render 'sample-photo', name: sample_names[forloop.index0], sizes: '(min-width: 990px) 33vw, 50vw' %}
               {%- else -%}
                 {% render 'placeholder-bottle', tint: tints[forloop.index0], variant: forloop.index %}
               {%- endif -%}

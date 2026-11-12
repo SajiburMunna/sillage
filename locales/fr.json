@@ -183,6 +183,21 @@
     "breadcrumbs": {
       "label": "Fil d'Ariane",
       "home": "Accueil"
+    },
+    "sample_photos": {
+      "home_hero": "Flacon de parfum près d’un mot manuscrit",
+      "home_floral": "Pétales de rose séchés",
+      "home_woody": "Fumée d’encens sur du bois sombre",
+      "home_amber": "Flacon en verre ambré sur un lin doux",
+      "home_fresh": "Citrons frais sur la branche",
+      "home_spotlight": "Flacon en cristal taillé sur une soie orange",
+      "home_ritual_1": "Main tenant un flacon en verre ambré",
+      "home_ritual_2": "Plateau de salle de bain avec un flacon et une bougie",
+      "home_ritual_3": "Flacon ancien sur un rebord de fenêtre",
+      "home_closing": "Une volute de fumée sur fond noir",
+      "home_ugc_1": "Flacon dépoli dans la lumière du soir",
+      "home_ugc_2": "Pétales de rose",
+      "home_ugc_3": "Flacon sombre sur pierre marbrée"
     }
   },
   "gift_cards": {

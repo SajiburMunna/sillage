@@ -183,6 +183,21 @@
     "breadcrumbs": {
       "label": "Breadcrumbs",
       "home": "Home"
+    },
+    "sample_photos": {
+      "home_hero": "Perfume bottle beside a handwritten note",
+      "home_floral": "Dried rose petals",
+      "home_woody": "Incense smoke rising over dark wood",
+      "home_amber": "Amber glass bottle on soft linen",
+      "home_fresh": "Fresh lemons on the branch",
+      "home_spotlight": "Cut crystal perfume bottle on orange silk",
+      "home_ritual_1": "Hand holding an amber glass bottle",
+      "home_ritual_2": "Bathroom tray with a bottle and a candle",
+      "home_ritual_3": "Vintage perfume bottle on a windowsill",
+      "home_closing": "A curl of smoke on black",
+      "home_ugc_1": "Frosted perfume bottle in late light",
+      "home_ugc_2": "Rose petals",
+      "home_ugc_3": "Dark perfume bottle on marbled stone"
     }
   },
   "gift_cards": {

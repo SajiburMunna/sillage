@@ -338,3 +338,23 @@ The biggest risk is visual: without real photography the redesign cannot look pr
 - [ ] Keep the current scent quiz on the new home page, or link to it from the hero?
 - [ ] Delivery estimate: a fixed range set in theme settings, or from an app?
 - [ ] Target price for the theme on the Theme Store?
+
+## Sample photography credits
+
+Bundled in `assets/home-*.webp` and shown on the home page until the merchant chooses their own images (Theme settings → Sample photography). All are from [Unsplash](https://unsplash.com/license): free for commercial use, no attribution required, credited here anyway. Photos showing other brands' products were rejected.
+
+| File | Photographer | Unsplash photo |
+| --- | --- | --- |
+| home-hero | Content Pixie | [cq1zGLQIFyA](https://unsplash.com/photos/cq1zGLQIFyA) |
+| home-floral | 360floralflaves | [Ja8BXlezFYs](https://unsplash.com/photos/Ja8BXlezFYs) |
+| home-woody | Petr Sidorov | [d_YI6RQdyoE](https://unsplash.com/photos/d_YI6RQdyoE) |
+| home-amber | Denise Chan | [lNXIaQbYuxQ](https://unsplash.com/photos/lNXIaQbYuxQ) |
+| home-fresh | Cristina Anne Costello | [MvCde9kgov8](https://unsplash.com/photos/MvCde9kgov8) |
+| home-spotlight | Timothy L Brock | [D1P-vxlB_K0](https://unsplash.com/photos/D1P-vxlB_K0) |
+| home-ritual-1 | Denise Chan | [3aEW2UfzP3w](https://unsplash.com/photos/3aEW2UfzP3w) |
+| home-ritual-2 | Abbey Houston | [JNUTuyehFQA](https://unsplash.com/photos/JNUTuyehFQA) |
+| home-ritual-3 | 21 Swan | [3C5ZfCLSGC4](https://unsplash.com/photos/3C5ZfCLSGC4) |
+| home-closing | Nicolas Hoizey | [qvS1EArlHIw](https://unsplash.com/photos/qvS1EArlHIw) |
+| home-ugc-1 | Angelica Echeverry | [752a7fdivow](https://unsplash.com/photos/752a7fdivow) |
+| home-ugc-2 | Zulfugar Karimov | [FJM3wo0eCGY](https://unsplash.com/photos/FJM3wo0eCGY) |
+| home-ugc-3 | Kier in Sight | [smVxAu_lqlo](https://unsplash.com/photos/smVxAu_lqlo) |

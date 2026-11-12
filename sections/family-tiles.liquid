@@ -31,6 +31,9 @@
                   | image_url: width: 900
                   | image_tag: widths: '300, 450, 600, 900', sizes: '(min-width: 990px) 25vw, 70vw', loading: 'lazy', alt: ''
                 }}
+              {%- elsif settings.show_sample_photos and forloop.index <= 4 -%}
+                {%- assign sample_names = 'home-floral,home-woody,home-amber,home-fresh' | split: ',' -%}
+                {% render 'sample-photo', name: sample_names[forloop.index0], sizes: '(min-width: 990px) 25vw, 70vw' %}
               {%- else -%}
                 {% render 'placeholder-bottle', tint: block.settings.tint, variant: forloop.index %}
               {%- endif -%}

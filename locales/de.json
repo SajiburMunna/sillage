@@ -183,6 +183,21 @@
     "breadcrumbs": {
       "label": "Brotkrümelnavigation",
       "home": "Startseite"
+    },
+    "sample_photos": {
+      "home_hero": "Parfümflakon neben einer handgeschriebenen Notiz",
+      "home_floral": "Getrocknete Rosenblätter",
+      "home_woody": "Räucherrauch über dunklem Holz",
+      "home_amber": "Bernsteinfarbene Glasflasche auf weichem Leinen",
+      "home_fresh": "Frische Zitronen am Zweig",
+      "home_spotlight": "Geschliffener Kristallflakon auf oranger Seide",
+      "home_ritual_1": "Hand hält eine bernsteinfarbene Glasflasche",
+      "home_ritual_2": "Badablage mit Flasche und Kerze",
+      "home_ritual_3": "Vintage-Flakon auf einer Fensterbank",
+      "home_closing": "Ein Rauchkringel auf Schwarz",
+      "home_ugc_1": "Mattierter Flakon im späten Licht",
+      "home_ugc_2": "Rosenblätter",
+      "home_ugc_3": "Dunkler Flakon auf marmoriertem Stein"
     }
   },
   "gift_cards": {

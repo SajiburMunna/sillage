@@ -183,6 +183,21 @@
     "breadcrumbs": {
       "label": "Percorso di navigazione",
       "home": "Home"
+    },
+    "sample_photos": {
+      "home_hero": "Flacone di profumo accanto a un biglietto scritto a mano",
+      "home_floral": "Petali di rosa essiccati",
+      "home_woody": "Fumo d’incenso sul legno scuro",
+      "home_amber": "Flacone in vetro ambrato su lino morbido",
+      "home_fresh": "Limoni freschi sul ramo",
+      "home_spotlight": "Flacone in cristallo molato su seta arancione",
+      "home_ritual_1": "Mano che tiene un flacone in vetro ambrato",
+      "home_ritual_2": "Vassoio da bagno con flacone e candela",
+      "home_ritual_3": "Flacone vintage sul davanzale",
+      "home_closing": "Una spirale di fumo sul nero",
+      "home_ugc_1": "Flacone satinato nella luce del tardo pomeriggio",
+      "home_ugc_2": "Petali di rosa",
+      "home_ugc_3": "Flacone scuro su pietra marmorizzata"
     }
   },
   "gift_cards": {

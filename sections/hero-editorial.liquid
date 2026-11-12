@@ -96,6 +96,8 @@
               alt: section.settings.image.alt,
               style: focal
           }}
+        {%- elsif settings.show_sample_photos -%}
+          {% render 'sample-photo', name: 'home-hero', sizes: '(min-width: 990px) 42vw, 90vw', loading: loading, priority: priority %}
         {%- else -%}
           {% render 'placeholder-bottle', tint: 'rgb(var(--color-accent))', variant: 1 %}
         {%- endif -%}

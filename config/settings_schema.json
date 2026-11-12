@@ -468,5 +468,20 @@
         "placeholder": "https://x.com/shopify"
       }
     ]
+  },
+  {
+    "name": "t:settings_schema.sample_photos.name",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "t:settings_schema.sample_photos.settings.paragraph.content"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_sample_photos",
+        "default": true,
+        "label": "t:settings_schema.sample_photos.settings.show.label"
+      }
+    ]
   }
 ]

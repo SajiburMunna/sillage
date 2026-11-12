@@ -1,0 +1,65 @@
+{%- comment -%}
+  Sample photography shipped with the theme. Shown when a section has no
+  image chosen, while Theme settings → Sample photography is on.
+  All photos are from Unsplash (free licence, no products of other brands).
+  Accepts:
+  - name {String} file stem, for example 'home-hero'
+  - sizes {String} sizes attribute
+  - loading {String} 'lazy' (default) or 'eager'
+  - priority {String} fetchpriority value (optional)
+  - class {String} extra classes (optional)
+{%- endcomment -%}
+{%- liquid
+  case name
+    when 'home-hero', 'home-floral', 'home-spotlight', 'home-closing'
+      assign h = 2700
+    when 'home-woody'
+      assign h = 2250
+    when 'home-fresh'
+      assign h = 1285
+    when 'home-ugc-3'
+      assign h = 1350
+    else
+      assign h = 1200
+  endcase
+  case name
+    when 'home-hero'
+      assign focal = '60% 62%'
+    when 'home-amber'
+      assign focal = '55% 45%'
+    when 'home-closing'
+      assign focal = '40% 62%'
+    when 'home-ritual-1'
+      assign focal = '68% 42%'
+    when 'home-ritual-2'
+      assign focal = '42% 55%'
+    when 'home-spotlight'
+      assign focal = '50% 42%'
+    when 'home-ugc-1'
+      assign focal = '70% 50%'
+    when 'home-ugc-3'
+      assign focal = '32% 40%'
+    when 'home-woody'
+      assign focal = '50% 58%'
+    else
+      assign focal = '50% 50%'
+  endcase
+  assign alt_key = 'general.sample_photos.' | append: name | replace: '-', '_'
+  assign small = name | append: '-900.webp' | asset_url
+  assign large = name | append: '-1800.webp' | asset_url
+-%}
+<img
+  src="{{ small }}"
+  srcset="{{ small }} 900w, {{ large }} 1800w"
+  sizes="{{ sizes | default: '100vw' }}"
+  width="1800"
+  height="{{ h }}"
+  alt="{{ alt_key | t | escape }}"
+  loading="{{ loading | default: 'lazy' }}"
+  decoding="async"
+  {% if priority %}
+    fetchpriority="{{ priority }}"
+  {% endif %}
+  class="sample-photo{% if class %} {{ class }}{% endif %}"
+  style="object-position: {{ focal }};"
+>

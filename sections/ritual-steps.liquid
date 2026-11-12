@@ -25,6 +25,9 @@
               <div class="ritual__frame{% if forloop.first %} is-active{% endif %}" data-ritual-frame>
                 {%- if block.settings.image != blank -%}
                   {{ block.settings.image | image_url: width: 1200 | image_tag: widths: '500, 800, 1200', sizes: '40vw', loading: 'lazy', alt: '' }}
+                {%- elsif settings.show_sample_photos and forloop.index <= 3 -%}
+                  {%- assign sample_name = 'home-ritual-' | append: forloop.index -%}
+                  {% render 'sample-photo', name: sample_name, sizes: '40vw' %}
                 {%- else -%}
                   {% render 'placeholder-bottle', tint: 'rgb(var(--color-accent))', variant: forloop.index %}
                 {%- endif -%}
@@ -42,6 +45,9 @@
             <div class="vessel ritual__step-media">
               {%- if block.settings.image != blank -%}
                 {{ block.settings.image | image_url: width: 900 | image_tag: widths: '400, 600, 900', sizes: '90vw', loading: 'lazy', alt: block.settings.image.alt }}
+              {%- elsif settings.show_sample_photos and forloop.index <= 3 -%}
+                {%- assign sample_name = 'home-ritual-' | append: forloop.index -%}
+                {% render 'sample-photo', name: sample_name, sizes: '90vw' %}
               {%- else -%}
                 {% render 'placeholder-bottle', tint: 'rgb(var(--color-accent))', variant: forloop.index %}
               {%- endif -%}
