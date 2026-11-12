@@ -20,7 +20,8 @@
           assign c = block.settings.collection
           assign title = block.settings.title | default: c.title
           assign image = block.settings.image | default: c.image | default: c.featured_image
-          assign url = c.url | default: routes.all_products_collection_url
+          assign family_handle = title | handleize
+          assign url = c.url | default: collections[family_handle].url | default: routes.all_products_collection_url
         -%}
         <li class="families__item" data-reveal style="--delay: {{ forloop.index0 | times: 0.08 }}s; --tint: {{ block.settings.tint }};" {{ block.shopify_attributes }}>
           <a class="families__tile" href="{{ url }}">

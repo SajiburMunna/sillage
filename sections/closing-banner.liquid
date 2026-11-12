@@ -18,14 +18,7 @@
           {% render 'newsletter-form', form_id: closing_form_id %}
         </div>
       {%- elsif section.settings.button_label != blank -%}
-        <a
-          {% if section.settings.button_link != blank %}
-            href="{{ section.settings.button_link }}"
-          {% else %}
-            role="link" aria-disabled="true"
-          {% endif %}
-          class="button"
-        >
+        <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="button">
           {{- section.settings.button_label | escape -}}
         </a>
       {%- endif -%}

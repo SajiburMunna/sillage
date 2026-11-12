@@ -148,12 +148,14 @@
         "tab_1": {
           "type": "tab",
           "settings": {
+            "collection": "bestsellers",
             "label": "Bestsellers"
           }
         },
         "tab_2": {
           "type": "tab",
           "settings": {
+            "collection": "new-arrivals",
             "label": "New in"
           }
         }

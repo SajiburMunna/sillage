@@ -2,7 +2,7 @@
 <script src="{{ 'section-home.js' | asset_url }}" defer="defer"></script>
 
 {%- liquid
-  assign p = section.settings.product
+  assign p = section.settings.product | default: collections.all.products.first
   assign variant = p.selected_or_first_available_variant
   assign mf = p.metafields.custom
   assign top = section.settings.top_notes | default: mf.top_notes.value

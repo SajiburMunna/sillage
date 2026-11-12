@@ -904,7 +904,7 @@ document.addEventListener('shopify:section:deselect', (event) => {
     sx += (x - sx) * k;
     sy += (y - sy) * k;
     hs += (hover - hs) * (1 - Math.exp(-dt * 11));
-    dot.style.transform = `translate(${sx.toFixed(1)}px, ${sy.toFixed(1)}px) scale(${((14 + hs * 48) / 64).toFixed(4)})`;
+    dot.style.transform = `translate(${sx.toFixed(1)}px, ${sy.toFixed(1)}px) scale(${(0.35 + hs * 0.65).toFixed(4)})`;
     if (Math.abs(x - sx) > 0.1 || Math.abs(y - sy) > 0.1 || Math.abs(hover - hs) > 0.001) {
       requestAnimationFrame(loop);
     } else {
@@ -921,6 +921,7 @@ document.addEventListener('shopify:section:deselect', (event) => {
         sy = y;
       }
       hover = e.target.closest?.('a, button, [role="button"], summary, label, .ss-bottle__item') ? 1 : 0;
+      dot.classList.toggle('is-hover', hover === 1);
       dot.style.opacity = '1';
       if (!running) {
         running = true;

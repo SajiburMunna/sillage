@@ -46,26 +46,12 @@
           {%- when 'buttons' -%}
             <div class="hero-ed__buttons hero-ed__step" {{ block.shopify_attributes }}>
               {%- if block.settings.label_1 != blank -%}
-                <a
-                  {% if block.settings.link_1 != blank %}
-                    href="{{ block.settings.link_1 }}"
-                  {% else %}
-                    role="link" aria-disabled="true"
-                  {% endif %}
-                  class="button"
-                >
+                <a href="{{ block.settings.link_1 | default: routes.all_products_collection_url }}" class="button">
                   {{- block.settings.label_1 | escape -}}
                 </a>
               {%- endif -%}
               {%- if block.settings.label_2 != blank -%}
-                <a
-                  {% if block.settings.link_2 != blank %}
-                    href="{{ block.settings.link_2 }}"
-                  {% else %}
-                    role="link" aria-disabled="true"
-                  {% endif %}
-                  class="button button--secondary"
-                >
+                <a href="{{ block.settings.link_2 | default: routes.collections_url }}" class="button button--secondary">
                   {{- block.settings.label_2 | escape -}}
                 </a>
               {%- endif -%}

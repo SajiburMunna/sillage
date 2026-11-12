@@ -42,7 +42,17 @@
     </div>
 
     {%- for block in section.blocks -%}
-      {%- assign c = block.settings.collection -%}
+      {%- liquid
+        assign c = block.settings.collection
+        if c == blank and collections.all.products_count > 0
+          assign c = collections.all
+        endif
+        if block.settings.collection == blank and forloop.first == false
+          assign tab_products = c.products | sort: 'created_at' | reverse
+        else
+          assign tab_products = c.products
+        endif
+      -%}
       <div
         class="tabs__panel"
         id="Panel-{{ section.id }}-{{ forloop.index }}"
@@ -72,7 +82,7 @@
           -%}
         <ul class="grid" role="list" style="--cols: {{ section.settings.columns_desktop }}; --cols-tablet: {{ tablet_cols }}; --cols-mobile: 2; --grid-gap: clamp(1.6rem, 2vw, 3.2rem) clamp(1.2rem, 1.6vw, 2.4rem);">
           {%- if c != blank and c.products_count > 0 -%}
-            {%- for product in c.products limit: section.settings.products_to_show -%}
+            {%- for product in tab_products limit: section.settings.products_to_show -%}
               <li>{%- assign card_scope = section.id | append: '-' | append: block.id -%}{% render 'product-card', product: product, section_id: card_scope %}</li>
             {%- endfor -%}
           {%- else -%}
