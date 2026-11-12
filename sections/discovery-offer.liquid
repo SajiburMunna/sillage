@@ -1,0 +1,250 @@
+{{ 'section-home.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign p = section.settings.product
+  assign variant = p.selected_or_first_available_variant
+  assign link = section.settings.button_link | default: p.url | default: routes.all_products_collection_url
+  assign add_label = section.settings.button_label
+  if add_label == blank
+    assign add_label = 'products.product.add_to_cart' | t
+  endif
+  capture vial_list
+    echo section.settings.vial_1 | append: ',' | append: section.settings.vial_2 | append: ',' | append: section.settings.vial_3
+    echo ',' | append: section.settings.vial_4 | append: ',' | append: section.settings.vial_5 | append: ',' | append: section.settings.vial_6
+  endcapture
+  assign vials = vial_list | split: ','
+-%}
+
+<section
+  class="offer section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  {%- if section.settings.show_trail -%}{% render 'trail' %}{%- endif -%}
+  <div class="page-width offer__grid">
+    <div class="offer__visual" data-reveal>
+      {%- if section.settings.image != blank -%}
+        <div class="vessel offer__vessel">
+          {{ section.settings.image | image_url: width: 1400 | image_tag: widths: '500, 800, 1100, 1400', sizes: '(min-width: 990px) 45vw, 90vw', loading: 'lazy', alt: section.settings.image.alt }}
+        </div>
+      {%- else -%}
+        <div class="offer__set" aria-hidden="true">
+          <div class="offer__glow"></div>
+          <div class="offer__card">
+            <span class="offer__card-rule"></span>
+            <span class="offer__card-title">{{ shop.name | escape }}</span>
+            <span class="offer__card-sub">{{ section.settings.tray_label | escape }}</span>
+            <span class="offer__card-dots">
+              {%- for color in vials -%}<i style="--vial: {{ color }};"></i>{%- endfor -%}
+            </span>
+          </div>
+          <div class="offer__tray">
+            <div class="offer__vials">
+              {%- for color in vials -%}
+                <span class="offer__vial" style="--vial: {{ color }}; --i: {{ forloop.index0 }};">
+                  <span class="offer__cap"></span>
+                  <span class="offer__collar"></span>
+                  <span class="offer__glass">
+                    <span class="offer__liquid"></span>
+                    <span class="offer__tag">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+                  </span>
+                </span>
+              {%- endfor -%}
+            </div>
+            <div class="offer__tray-front">
+              <span>{{ section.settings.tray_label | escape }}</span>
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="offer__content" data-reveal>
+      {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+      {%- if section.settings.heading != blank -%}<h2 class="h-display h-display--md offer__title">{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if section.settings.text != blank -%}<div class="rte offer__text">{{ section.settings.text }}</div>{%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <ul class="offer__includes" role="list">
+          {%- for block in section.blocks -%}
+            <li {{ block.shopify_attributes }}>{% render 'icon', icon: 'check' %}<span>{{ block.settings.text | escape }}</span></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      <div class="offer__buy">
+        {%- if p != blank -%}
+          <div class="offer__price">{% render 'price', product: p, use_variant: true, class: 'price--large' %}</div>
+        {%- endif -%}
+        {%- if p != blank and p.has_only_default_variant and variant.available and p.requires_selling_plan == false -%}
+          <product-form>
+            {%- form 'product', p, id: nil -%}
+              <input type="hidden" name="id" value="{{ variant.id }}">
+              <button type="submit" name="add" class="button offer__button">
+                <span class="button__label">{{ add_label | escape }}</span>
+                <span class="loading-spinner" aria-hidden="true"></span>
+              </button>
+              <p class="form__message form__message--error" data-product-form-error role="alert" hidden></p>
+            {%- endform -%}
+          </product-form>
+        {%- elsif section.settings.button_label != blank -%}
+          <a href="{{ link }}" class="button offer__button">{{ section.settings.button_label | escape }}</a>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.note != blank -%}<p class="offer__note">{{ section.settings.note | escape }}</p>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.discovery_offer.name",
+  "tag": "div",
+  "class": "section",
+  "max_blocks": 6,
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "t:sections.discovery_offer.settings.product.label",
+      "info": "t:sections.discovery_offer.settings.product.info"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.all.image",
+      "info": "t:sections.discovery_offer.settings.image.info"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.discovery_offer.settings.illustration.content",
+      "info": "t:sections.discovery_offer.settings.illustration.info"
+    },
+    {
+      "type": "text",
+      "id": "tray_label",
+      "default": "Discovery set · 6 × 2 ml",
+      "label": "t:sections.discovery_offer.settings.tray_label.label"
+    },
+    { "type": "color", "id": "vial_1", "default": "#D9A441", "label": "t:sections.discovery_offer.settings.vial_1.label" },
+    { "type": "color", "id": "vial_2", "default": "#B98BB5", "label": "t:sections.discovery_offer.settings.vial_2.label" },
+    { "type": "color", "id": "vial_3", "default": "#8A5235", "label": "t:sections.discovery_offer.settings.vial_3.label" },
+    { "type": "color", "id": "vial_4", "default": "#6F8F7A", "label": "t:sections.discovery_offer.settings.vial_4.label" },
+    { "type": "color", "id": "vial_5", "default": "#C97B63", "label": "t:sections.discovery_offer.settings.vial_5.label" },
+    { "type": "color", "id": "vial_6", "default": "#3B4F6B", "label": "t:sections.discovery_offer.settings.vial_6.label" },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "default": "Not sure yet?",
+      "label": "t:sections.all.eyebrow"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:sections.all.heading",
+      "info": "t:sections.discovery_offer.settings.heading.info",
+      "default": "Start with the <em>discovery</em> set"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "default": "<p>Six of our scents in 2 ml vials. Wear each for a day, then choose your bottle.</p>",
+      "label": "t:sections.all.text"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "Order the set",
+      "label": "t:sections.all.button_label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:sections.all.button_link"
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "default": "The price of the set comes back as credit on your first full bottle.",
+      "label": "t:sections.discovery_offer.settings.note.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trail",
+      "default": true,
+      "label": "t:sections.discovery_offer.settings.show_trail.label",
+      "info": "t:sections.discovery_offer.settings.show_trail.info"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.color_scheme.label",
+      "default": "scheme-3"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "t:sections.all.padding_top",
+      "default": 112
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "t:sections.all.padding_bottom",
+      "default": 112
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "t:sections.discovery_offer.blocks.item.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "default": "Six 2 ml vials",
+          "label": "t:sections.all.text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.discovery_offer.presets.name",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "text": "Six 2 ml vials"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "A scent guide card for each"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "Free delivery"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

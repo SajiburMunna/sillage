@@ -1,0 +1,174 @@
+{%- comment -%}
+  Scent profile: longevity, sillage (projection), best seasons, day or night and concentration.
+  Accepts:
+  - block {Object}
+  Reads product metafields first, then falls back to the block settings:
+  - custom.longevity (number_integer 1–5)
+  - custom.sillage (number_integer 1–5)
+  - custom.seasons (single_line_text_field, e.g. "Autumn, Winter")
+  - custom.wear_time (single_line_text_field, e.g. "Day, Night")
+  - custom.concentration (single_line_text_field, e.g. "Eau de parfum")
+{%- endcomment -%}
+{%- liquid
+  assign mf = product.metafields.custom
+
+  assign longevity = block.settings.longevity
+  if mf.longevity.value != blank
+    assign longevity = mf.longevity.value | plus: 0
+  endif
+  assign longevity = longevity | at_most: 5 | at_least: 0
+
+  assign sillage = block.settings.sillage
+  if mf.sillage.value != blank
+    assign sillage = mf.sillage.value | plus: 0
+  endif
+  assign sillage = sillage | at_most: 5 | at_least: 0
+
+  if mf.seasons.value != blank
+    assign season_text = mf.seasons.value | downcase
+    assign s_spring = false
+    assign s_summer = false
+    assign s_autumn = false
+    assign s_winter = false
+    if season_text contains 'spring'
+      assign s_spring = true
+    endif
+    if season_text contains 'summer'
+      assign s_summer = true
+    endif
+    if season_text contains 'autumn' or season_text contains 'fall'
+      assign s_autumn = true
+    endif
+    if season_text contains 'winter'
+      assign s_winter = true
+    endif
+  else
+    assign s_spring = block.settings.spring
+    assign s_summer = block.settings.summer
+    assign s_autumn = block.settings.autumn
+    assign s_winter = block.settings.winter
+  endif
+
+  if mf.wear_time.value != blank
+    assign wear_text = mf.wear_time.value | downcase
+    assign w_day = false
+    assign w_night = false
+    if wear_text contains 'day'
+      assign w_day = true
+    endif
+    if wear_text contains 'night' or wear_text contains 'evening'
+      assign w_night = true
+    endif
+  else
+    assign w_day = block.settings.day
+    assign w_night = block.settings.night
+  endif
+
+  assign concentration = mf.concentration.value | default: block.settings.concentration
+
+  assign has_season = false
+  if s_spring or s_summer or s_autumn or s_winter
+    assign has_season = true
+  endif
+  assign has_wear = false
+  if w_day or w_night
+    assign has_wear = true
+  endif
+-%}
+
+{%- if longevity > 0 or sillage > 0 or has_season or has_wear or concentration != blank -%}
+  <div class="scent-profile" {{ block.shopify_attributes }}>
+    {%- if block.settings.heading != blank -%}
+      <h2 class="scent-profile__heading eyebrow">{{ block.settings.heading | escape }}</h2>
+    {%- endif -%}
+
+    <dl class="scent-profile__list">
+      {%- if concentration != blank -%}
+        <div class="scent-profile__row">
+          <dt>{{ 'products.product.scent_profile.concentration' | t }}</dt>
+          <dd class="scent-profile__value">{{ concentration | escape }}</dd>
+        </div>
+      {%- endif -%}
+
+      {%- for metric in (1..2) -%}
+        {%- liquid
+          if metric == 1
+            assign value = longevity
+            assign key = 'longevity'
+          else
+            assign value = sillage
+            assign key = 'sillage'
+          endif
+          assign word_key = 'products.product.scent_profile.' | append: key | append: '_' | append: value
+          assign label_key = 'products.product.scent_profile.' | append: key
+        -%}
+        {%- if value > 0 -%}
+          <div class="scent-profile__row">
+            <dt>{{ label_key | t }}</dt>
+            <dd class="scent-profile__metric">
+              <span class="scent-profile__bar" aria-hidden="true">
+                {%- for i in (1..5) -%}<span class="scent-profile__seg{% if i <= value %} is-on{% endif %}"></span>{%- endfor -%}
+              </span>
+              <span class="scent-profile__word">{{ word_key | t }}</span>
+              <span class="visually-hidden">{{ 'products.product.scent_profile.rating' | t: value: value }}</span>
+            </dd>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if has_season -%}
+        <div class="scent-profile__row">
+          <dt>{{ 'products.product.scent_profile.season' | t }}</dt>
+          <dd>
+            <ul class="scent-profile__chips" role="list">
+              {%- for season in (1..4) -%}
+                {%- liquid
+                  case season
+                    when 1
+                      assign on = s_spring
+                      assign skey = 'spring'
+                    when 2
+                      assign on = s_summer
+                      assign skey = 'summer'
+                    when 3
+                      assign on = s_autumn
+                      assign skey = 'autumn'
+                    when 4
+                      assign on = s_winter
+                      assign skey = 'winter'
+                  endcase
+                  assign chip_key = 'products.product.scent_profile.' | append: skey
+                -%}
+                {%- if on -%}
+                  <li class="scent-profile__chip is-on">{{ chip_key | t }}</li>
+                {%- else -%}
+                  <li class="scent-profile__chip" aria-hidden="true">{{ chip_key | t }}</li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          </dd>
+        </div>
+      {%- endif -%}
+
+      {%- if has_wear -%}
+        <div class="scent-profile__row">
+          <dt>{{ 'products.product.scent_profile.wear' | t }}</dt>
+          <dd>
+            <ul class="scent-profile__chips" role="list">
+              {%- if w_day -%}
+                <li class="scent-profile__chip is-on">{{ 'products.product.scent_profile.day' | t }}</li>
+              {%- else -%}
+                <li class="scent-profile__chip" aria-hidden="true">{{ 'products.product.scent_profile.day' | t }}</li>
+              {%- endif -%}
+              {%- if w_night -%}
+                <li class="scent-profile__chip is-on">{{ 'products.product.scent_profile.night' | t }}</li>
+              {%- else -%}
+                <li class="scent-profile__chip" aria-hidden="true">{{ 'products.product.scent_profile.night' | t }}</li>
+              {%- endif -%}
+            </ul>
+          </dd>
+        </div>
+      {%- endif -%}
+    </dl>
+  </div>
+{%- endif -%}

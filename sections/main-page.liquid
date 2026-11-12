@@ -3,6 +3,7 @@
   style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
 >
   <div class="page-width page-width--narrow">
+    {%- if section.settings.show_breadcrumbs -%}{% render 'breadcrumbs' %}{%- endif -%}
     <h1 class="h-display h-display--md main-page-title">{{ page.title | escape }}</h1>
     <div class="rte">{{ page.content }}</div>
   </div>
@@ -14,6 +15,7 @@
   "tag": "div",
   "class": "section",
   "settings": [
+    { "type": "checkbox", "id": "show_breadcrumbs", "default": true, "label": "t:sections.all.show_breadcrumbs" },
     { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.all.color_scheme.label", "default": "scheme-1" },
     { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_top", "default": 64 },
     { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "t:sections.all.padding_bottom", "default": 64 }

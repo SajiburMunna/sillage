@@ -16,7 +16,23 @@
       {%- endif -%}
     </div>
 
-    <ul class="grid" role="list" style="--cols: {{ section.settings.columns_desktop }}; --cols-tablet: 3; --cols-mobile: {{ section.settings.columns_mobile }};">
+    {%- liquid
+      if section.settings.collection != blank
+        assign shown = section.settings.collection.products_count | at_most: products_to_show
+      else
+        assign shown = products_to_show
+      endif
+    -%}
+    {%- liquid
+            # Tablet columns: avoid a lone card on the last row (4 → 2×2, 6 → 3×2)
+            assign tablet_cols = 3
+            assign rem3 = shown | modulo: 3
+            assign rem2 = shown | modulo: 2
+            if rem3 != 0 and rem2 == 0
+              assign tablet_cols = 2
+            endif
+          -%}
+    <ul class="grid" role="list" style="--cols: {{ section.settings.columns_desktop }}; --cols-tablet: {{ tablet_cols }}; --cols-mobile: {{ section.settings.columns_mobile }};">
       {%- if section.settings.collection != blank -%}
         {%- for product in section.settings.collection.products limit: products_to_show -%}
           <li>{% render 'product-card', product: product, section_id: section.id %}</li>

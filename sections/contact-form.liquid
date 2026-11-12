@@ -13,7 +13,7 @@
           {{ 'templates.contact.form.post_success' | t }}
         </p>
       {%- elsif form.errors -%}
-        <div class="form__message form__message--error" role="alert">
+        <div class="form__message form__message--error" id="ContactForm-error" role="alert">
           {% render 'icon', icon: 'error' %}
           {{ form.errors | default_errors }}
         </div>
@@ -25,12 +25,12 @@
         </div>
         <div class="field">
           <label class="field__label" for="ContactForm-email">{{ 'templates.contact.form.email' | t }} <span aria-hidden="true">*</span></label>
-          <input id="ContactForm-email" type="email" autocomplete="email" name="contact[email]" required aria-required="true" value="{% if form.email %}{{ form.email | escape }}{% elsif customer %}{{ customer.email | escape }}{% endif %}">
+          <input id="ContactForm-email" type="email" autocomplete="email" name="contact[email]" spellcheck="false" autocapitalize="off" required aria-required="true"{% if form.errors contains 'email' %} aria-invalid="true" aria-describedby="ContactForm-error"{% endif %} value="{% if form.email %}{{ form.email | escape }}{% elsif customer %}{{ customer.email | escape }}{% endif %}">
         </div>
       </div>
       <div class="field">
         <label class="field__label" for="ContactForm-phone">{{ 'templates.contact.form.phone' | t }}</label>
-        <input id="ContactForm-phone" type="tel" autocomplete="tel" name="contact[{{ 'templates.contact.form.phone' | t }}]" pattern="[0-9\-]*" value="{% if form.phone %}{{ form.phone | escape }}{% elsif customer %}{{ customer.phone | escape }}{% endif %}">
+        <input id="ContactForm-phone" type="tel" autocomplete="tel" name="contact[{{ 'templates.contact.form.phone' | t }}]" value="{% if form.phone %}{{ form.phone | escape }}{% elsif customer %}{{ customer.phone | escape }}{% endif %}">
       </div>
       <div class="field">
         <label class="field__label" for="ContactForm-body">{{ 'templates.contact.form.comment' | t }}</label>

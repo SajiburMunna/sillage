@@ -6,8 +6,8 @@
 .ss {
   --vh: 100vh;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --cream: #f3f0eb;
-  --ink: #191714;
+  --cream: #f6f2ec;
+  --ink: #1e1a17;
   display: block;
   position: relative;
   color: var(--ink);
@@ -49,8 +49,8 @@
   bottom: 32px;
   transition: opacity 0.6s ease, transform 0.35s var(--ease);
   color: var(--cream);
-  border-color: rgba(243, 240, 235, 0.35);
-  background: rgba(25, 23, 20, 0.2);
+  border-color: rgba(246, 242, 236, 0.35);
+  background: rgba(30, 26, 23, 0.2);
 }
 
 .ss-stage:not([data-idx='0']) .ss-water-toggle {
@@ -116,7 +116,8 @@
 
 .ss-title__text {
   margin: 0;
-  font-family: var(--font-heading-family);
+  font-family: var(--font-label-family);
+  font-weight: 500;
   font-size: clamp(44px, 6.6vw, 108px);
   line-height: 1;
   letter-spacing: 0.02em;
@@ -249,7 +250,8 @@
 
 .ss-hero__heading {
   margin: 0;
-  font-family: var(--font-heading-family);
+  font-family: var(--font-label-family);
+  font-weight: 500;
   font-weight: var(--font-heading-weight);
   font-size: clamp(56px, 10vw, 180px);
   line-height: 0.88;
@@ -306,7 +308,7 @@
   width: 1px;
   height: 40px;
   overflow: hidden;
-  background: rgba(243, 240, 235, 0.25);
+  background: rgba(246, 242, 236, 0.25);
 }
 
 .ss-hero__cue-line::after {
@@ -412,7 +414,8 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-family: var(--font-heading-family);
+  font-family: var(--font-label-family);
+  font-weight: 500;
   font-size: 13px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -454,7 +457,8 @@
 }
 
 .ss-chapter__vendor {
-  font-family: var(--font-heading-family);
+  font-family: var(--font-label-family);
+  font-weight: 500;
   font-size: 12px;
   letter-spacing: 0.24em;
   text-transform: uppercase;
@@ -462,6 +466,8 @@
 }
 
 .ss-chapter__name {
+  letter-spacing: normal;
+  text-transform: none;
   margin: 0;
   font-family: var(--font-heading-family);
   font-size: clamp(24px, 2.4vw, 36px);
@@ -556,7 +562,8 @@
 }
 
 .ss-ritual__label {
-  font-family: var(--font-heading-family);
+  font-family: var(--font-label-family);
+  font-weight: 500;
   font-size: 13px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -640,7 +647,7 @@
   color: var(--ink);
   font-size: 15px;
   cursor: pointer;
-  box-shadow: 0 10px 30px rgba(25, 23, 20, 0.16);
+  box-shadow: 0 10px 30px rgba(30, 26, 23, 0.16);
   transition: transform 0.35s var(--ease);
 }
 
@@ -683,7 +690,7 @@
   padding: 8px;
   border-radius: 20px;
   background: #ffffff;
-  box-shadow: 0 20px 50px rgba(25, 23, 20, 0.18);
+  box-shadow: 0 20px 50px rgba(30, 26, 23, 0.18);
   display: flex;
   flex-direction: column;
   animation: ss-menu 0.35s var(--ease);
@@ -829,7 +836,7 @@
     max-width: none;
     padding: 16px;
     border-radius: 16px;
-    background: rgba(243, 240, 235, 0.72);
+    background: rgba(246, 242, 236, 0.72);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
   }
@@ -1015,7 +1022,7 @@
   text-transform: uppercase;
   color: var(--cream);
   background: rgba(23, 18, 15, 0.35);
-  border: 1px solid rgba(243, 240, 235, 0.28);
+  border: 1px solid rgba(246, 242, 236, 0.28);
   opacity: 0;
   will-change: opacity, transform;
   animation: ss-note-rise 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
@@ -1048,7 +1055,7 @@
   padding: 10px 16px 10px 14px;
   border-radius: 999px;
   background: rgba(23, 18, 15, 0.45);
-  border: 1px solid rgba(243, 240, 235, 0.2);
+  border: 1px solid rgba(246, 242, 236, 0.2);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   color: var(--cream);
@@ -1087,7 +1094,7 @@
 }
 
 .ss-wearing__label {
-  font-size: 11px;
+  font-size: 1.2rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   opacity: 0.7;
@@ -1248,4 +1255,16 @@
 .ss-stage.is-jumping::after {
   opacity: 0.7;
   transition-duration: 0.15s;
+}
+
+/* WCAG 2.2.2: the section's pause control also stops the rotating ring */
+.ss:has(.ss-water-toggle.is-paused) .ss-ring {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ss-pill__menu,
+  .ss-loaded .ss-wearing {
+    animation: none;
+  }
 }

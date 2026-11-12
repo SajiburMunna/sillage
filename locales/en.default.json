@@ -8,7 +8,8 @@
     "play_animation": "Play background animation",
     "skip_to_text": "Skip to content",
     "unit_price_separator": "per",
-    "vendor": "Vendor:"
+    "vendor": "Vendor:",
+    "star_reviews_info": "{{ rating_value }} out of {{ rating_max }} stars"
   },
   "blogs": {
     "article": {
@@ -25,7 +26,19 @@
       "name": "Name",
       "post": "Post comment",
       "success": "Your comment was posted! Thank you!",
-      "success_moderated": "Your comment was posted successfully. We will publish it in a little while, as our blog is moderated."
+      "success_moderated": "Your comment was posted successfully. We will publish it in a little while, as our blog is moderated.",
+      "tags_label": "Filter articles by topic",
+      "all_topics": "All",
+      "no_articles": "No articles in this topic yet.",
+      "reading_time": {
+        "one": "{{ count }} min read",
+        "other": "{{ count }} min read"
+      },
+      "read_more": "Read the story",
+      "share": "Share this story",
+      "more_stories": "More stories",
+      "older_post": "Older story",
+      "newer_post": "Newer story"
     }
   },
   "customer": {
@@ -169,6 +182,25 @@
         "x": "X (Twitter)",
         "youtube": "YouTube"
       }
+    },
+    "breadcrumbs": {
+      "label": "Breadcrumbs",
+      "home": "Home"
+    },
+    "sample_photos": {
+      "home_hero": "Perfume bottle beside a handwritten note",
+      "home_floral": "Dried rose petals",
+      "home_woody": "Incense smoke rising over dark wood",
+      "home_amber": "Amber glass bottle on soft linen",
+      "home_fresh": "Fresh lemons on the branch",
+      "home_spotlight": "Cut crystal perfume bottle on orange silk",
+      "home_ritual_1": "Hand holding an amber glass bottle",
+      "home_ritual_2": "Bathroom tray with a bottle and a candle",
+      "home_ritual_3": "Vintage perfume bottle on a windowsill",
+      "home_closing": "A curl of smoke on black",
+      "home_ugc_1": "Frosted perfume bottle in late light",
+      "home_ugc_2": "Rose petals",
+      "home_ugc_3": "Dark perfume bottle on marbled stone"
     }
   },
   "gift_cards": {
@@ -209,7 +241,12 @@
       },
       "sort_by_label": "Sort by",
       "to": "To",
-      "view_results": "View results"
+      "view_results": "View results",
+      "layout_label": "Product grid layout",
+      "layout_columns": {
+        "one": "Show {{ count }} column",
+        "other": "Show {{ count }} columns"
+      }
     },
     "product": {
       "add_to_cart": "Add to bag",
@@ -231,7 +268,12 @@
         "load_image": "Load image {{ index }} in gallery view",
         "play_video": "Play video",
         "view_in_3d": "View in 3D",
-        "view_in_space": "View in your space"
+        "view_in_space": "View in your space",
+        "open_zoom": "Open image in zoom view",
+        "zoom_viewer": "Zoomed images of {{ title }}",
+        "toggle_zoom": "Zoom in or out",
+        "previous": "Previous image",
+        "next": "Next image"
       },
       "on_sale": "Sale",
       "one_time_purchase": "One-time purchase",
@@ -262,7 +304,48 @@
       "variant_sold_out_or_unavailable": "Variant sold out or unavailable",
       "view_full_details": "View full details",
       "quick_view": "Quick view",
-      "quick_view_named": "Quick view {{ title }}"
+      "quick_view_named": "Quick view {{ title }}",
+      "notes_label": "Fragrance notes",
+      "delivery_estimate": "Order today, arrives {{ start }} – {{ end }}",
+      "delivery_estimate_single": "Order today, arrives {{ start }}",
+      "notify": {
+        "heading": "Sold out for now. We can email you when it’s back.",
+        "label": "Email",
+        "button": "Notify me",
+        "success": "Thank you. We’ll email you as soon as it’s back.",
+        "body_label": "Restock request"
+      },
+      "volume_pricing": {
+        "title": "Volume pricing",
+        "price_each": "Price each",
+        "minimum_of": "Minimum of {{ quantity }}",
+        "maximum_of": "Maximum of {{ quantity }}",
+        "increments_of": "Sold in increments of {{ quantity }}"
+      },
+      "scent_profile": {
+        "concentration": "Concentration",
+        "longevity": "Longevity",
+        "sillage": "Sillage",
+        "season": "Best in",
+        "wear": "Wear",
+        "rating": "{{ value }} out of 5",
+        "longevity_1": "Fleeting",
+        "longevity_2": "A few hours",
+        "longevity_3": "Half a day",
+        "longevity_4": "Long-lasting",
+        "longevity_5": "All day and night",
+        "sillage_1": "Skin scent",
+        "sillage_2": "Intimate",
+        "sillage_3": "Moderate",
+        "sillage_4": "Strong",
+        "sillage_5": "Fills the room",
+        "spring": "Spring",
+        "summer": "Summer",
+        "autumn": "Autumn",
+        "winter": "Winter",
+        "day": "Day",
+        "night": "Night"
+      }
     }
   },
   "recipient": {
@@ -300,7 +383,10 @@
       "free_shipping_progress": "Progress towards free shipping",
       "gift_wrap_label": "Add gift wrapping",
       "gift_message_label": "Gift message",
-      "gift_message_placeholder": "Write a note for the recipient (optional)"
+      "gift_message_placeholder": "Write a note for the recipient (optional)",
+      "empty_text": "Discover a scent you'll want to wear every day. Free samples come with every order.",
+      "secure_checkout": "Secure, encrypted checkout",
+      "free": "Free"
     },
     "collection": {
       "clear_all": "Clear all",
@@ -387,6 +473,20 @@
     "store_locations": {
       "hours": "Opening hours",
       "directions": "Get directions"
+    },
+    "slideshow": {
+      "slide_label": "Slide {{ index }} of {{ count }}",
+      "choose_slide": "Choose a slide",
+      "go_to_slide": "Go to slide {{ index }}",
+      "pause": "Pause slideshow",
+      "play": "Play slideshow",
+      "previous": "Previous slide",
+      "next": "Next slide"
+    },
+    "home": {
+      "ribbon_pause": "Pause scrolling text",
+      "ribbon_play": "Play scrolling text",
+      "press_label": "Press"
     }
   },
   "templates": {
@@ -416,7 +516,12 @@
       },
       "search_for": "Search for “{{ terms }}”",
       "suggestions": "Suggestions",
-      "title": "Search results"
+      "title": "Search results",
+      "types_label": "Search result types",
+      "tab_all": "All",
+      "tab_products": "Products",
+      "tab_other": "Articles and pages",
+      "no_results_hint": "Check the spelling, try a single note like “iris”, or browse the full collection."
     }
   }
 }

@@ -8,7 +8,8 @@
     "play_animation": "Hintergrundanimation abspielen",
     "skip_to_text": "Direkt zum Inhalt",
     "unit_price_separator": "pro",
-    "vendor": "Anbieter:"
+    "vendor": "Anbieter:",
+    "star_reviews_info": "{{ rating_value }} von {{ rating_max }} Sternen"
   },
   "blogs": {
     "article": {
@@ -25,7 +26,19 @@
       "name": "Name",
       "post": "Kommentar posten",
       "success": "Dein Kommentar wurde veröffentlicht. Vielen Dank!",
-      "success_moderated": "Dein Kommentar wurde erfolgreich gesendet. Er wird in Kürze veröffentlicht, da unser Blog moderiert wird."
+      "success_moderated": "Dein Kommentar wurde erfolgreich gesendet. Er wird in Kürze veröffentlicht, da unser Blog moderiert wird.",
+      "tags_label": "Beiträge nach Thema filtern",
+      "all_topics": "Alle",
+      "no_articles": "Zu diesem Thema gibt es noch keine Beiträge.",
+      "reading_time": {
+        "one": "{{ count }} Min. Lesezeit",
+        "other": "{{ count }} Min. Lesezeit"
+      },
+      "read_more": "Zum Beitrag",
+      "share": "Beitrag teilen",
+      "more_stories": "Weitere Geschichten",
+      "older_post": "Älterer Beitrag",
+      "newer_post": "Neuerer Beitrag"
     }
   },
   "customer": {
@@ -169,6 +182,25 @@
         "x": "X (Twitter)",
         "youtube": "YouTube"
       }
+    },
+    "breadcrumbs": {
+      "label": "Brotkrümelnavigation",
+      "home": "Startseite"
+    },
+    "sample_photos": {
+      "home_hero": "Parfümflakon neben einer handgeschriebenen Notiz",
+      "home_floral": "Getrocknete Rosenblätter",
+      "home_woody": "Räucherrauch über dunklem Holz",
+      "home_amber": "Bernsteinfarbene Glasflasche auf weichem Leinen",
+      "home_fresh": "Frische Zitronen am Zweig",
+      "home_spotlight": "Geschliffener Kristallflakon auf oranger Seide",
+      "home_ritual_1": "Hand hält eine bernsteinfarbene Glasflasche",
+      "home_ritual_2": "Badablage mit Flasche und Kerze",
+      "home_ritual_3": "Vintage-Flakon auf einer Fensterbank",
+      "home_closing": "Ein Rauchkringel auf Schwarz",
+      "home_ugc_1": "Mattierter Flakon im späten Licht",
+      "home_ugc_2": "Rosenblätter",
+      "home_ugc_3": "Dunkler Flakon auf marmoriertem Stein"
     }
   },
   "gift_cards": {
@@ -209,7 +241,12 @@
       },
       "sort_by_label": "Sortieren nach",
       "to": "Bis",
-      "view_results": "Ergebnisse anzeigen"
+      "view_results": "Ergebnisse anzeigen",
+      "layout_label": "Raster-Layout",
+      "layout_columns": {
+        "one": "{{ count }} Spalte anzeigen",
+        "other": "{{ count }} Spalten anzeigen"
+      }
     },
     "product": {
       "add_to_cart": "In den Warenkorb",
@@ -231,7 +268,12 @@
         "load_image": "Bild {{ index }} in der Galerieansicht laden",
         "play_video": "Video abspielen",
         "view_in_3d": "In 3D ansehen",
-        "view_in_space": "In deinem Raum ansehen"
+        "view_in_space": "In deinem Raum ansehen",
+        "open_zoom": "Bild in der Zoomansicht öffnen",
+        "zoom_viewer": "Vergrößerte Bilder von {{ title }}",
+        "toggle_zoom": "Vergrößern oder verkleinern",
+        "previous": "Vorheriges Bild",
+        "next": "Nächstes Bild"
       },
       "on_sale": "Angebot",
       "one_time_purchase": "Einmaliger Kauf",
@@ -262,7 +304,48 @@
       "variant_sold_out_or_unavailable": "Variante ausverkauft oder nicht verfügbar",
       "view_full_details": "Alle Details ansehen",
       "quick_view": "Schnellansicht",
-      "quick_view_named": "Schnellansicht von {{ title }}"
+      "quick_view_named": "Schnellansicht von {{ title }}",
+      "notes_label": "Duftnoten",
+      "delivery_estimate": "Heute bestellt, Lieferung {{ start }} – {{ end }}",
+      "delivery_estimate_single": "Heute bestellt, Lieferung {{ start }}",
+      "notify": {
+        "heading": "Derzeit ausverkauft. Wir benachrichtigen dich per E-Mail, sobald es wieder da ist.",
+        "label": "E-Mail",
+        "button": "Benachrichtigen",
+        "success": "Danke. Wir melden uns, sobald es wieder verfügbar ist.",
+        "body_label": "Anfrage zur Wiederverfügbarkeit"
+      },
+      "volume_pricing": {
+        "title": "Staffelpreise",
+        "price_each": "Preis pro Stück",
+        "minimum_of": "Mindestens {{ quantity }}",
+        "maximum_of": "Höchstens {{ quantity }}",
+        "increments_of": "Erhältlich in Schritten von {{ quantity }}"
+      },
+      "scent_profile": {
+        "concentration": "Konzentration",
+        "longevity": "Haltbarkeit",
+        "sillage": "Sillage",
+        "season": "Ideal im",
+        "wear": "Tragen",
+        "rating": "{{ value }} von 5",
+        "longevity_1": "Flüchtig",
+        "longevity_2": "Einige Stunden",
+        "longevity_3": "Einen halben Tag",
+        "longevity_4": "Langanhaltend",
+        "longevity_5": "Tag und Nacht",
+        "sillage_1": "Hautduft",
+        "sillage_2": "Dezent",
+        "sillage_3": "Mittel",
+        "sillage_4": "Stark",
+        "sillage_5": "Füllt den Raum",
+        "spring": "Frühling",
+        "summer": "Sommer",
+        "autumn": "Herbst",
+        "winter": "Winter",
+        "day": "Tag",
+        "night": "Abend"
+      }
     }
   },
   "recipient": {
@@ -300,7 +383,10 @@
       "free_shipping_progress": "Fortschritt zum kostenlosen Versand",
       "gift_wrap_label": "Geschenkverpackung hinzufügen",
       "gift_message_label": "Geschenknachricht",
-      "gift_message_placeholder": "Schreibe eine Nachricht an den Empfänger (optional)"
+      "gift_message_placeholder": "Schreibe eine Nachricht an den Empfänger (optional)",
+      "empty_text": "Entdecke einen Duft, den du jeden Tag tragen möchtest. Jeder Bestellung liegen kostenlose Proben bei.",
+      "secure_checkout": "Sichere, verschlüsselte Kasse",
+      "free": "Gratis"
     },
     "collection": {
       "clear_all": "Alle entfernen",
@@ -387,6 +473,20 @@
     "store_locations": {
       "hours": "Öffnungszeiten",
       "directions": "Route anzeigen"
+    },
+    "slideshow": {
+      "slide_label": "Folie {{ index }} von {{ count }}",
+      "choose_slide": "Folie auswählen",
+      "go_to_slide": "Zu Folie {{ index }}",
+      "pause": "Diashow anhalten",
+      "play": "Diashow abspielen",
+      "previous": "Vorherige Folie",
+      "next": "Nächste Folie"
+    },
+    "home": {
+      "ribbon_pause": "Lauftext anhalten",
+      "ribbon_play": "Lauftext abspielen",
+      "press_label": "Presse"
     }
   },
   "templates": {
@@ -416,7 +516,12 @@
       },
       "search_for": "Nach „{{ terms }}“ suchen",
       "suggestions": "Vorschläge",
-      "title": "Suchergebnisse"
+      "title": "Suchergebnisse",
+      "types_label": "Arten von Suchergebnissen",
+      "tab_all": "Alle",
+      "tab_products": "Produkte",
+      "tab_other": "Beiträge und Seiten",
+      "no_results_hint": "Prüfe die Schreibweise, suche nach einer einzelnen Note wie „Iris“ oder stöbere in der ganzen Kollektion."
     }
   }
 }

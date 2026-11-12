@@ -1,0 +1,224 @@
+{{ 'section-banner.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign is_first = false
+  if section.index == 1
+    assign is_first = true
+  endif
+  assign loading = 'lazy'
+  assign priority = 'auto'
+  if section.index <= 2
+    assign loading = 'eager'
+  endif
+  if is_first
+    assign priority = 'high'
+  endif
+  assign tone = 'dark'
+  if section.settings.text_tone == 'dark'
+    assign tone = 'light'
+  endif
+-%}
+
+<div
+  class="banner banner--{{ section.settings.height }} banner--text-{{ section.settings.text_tone }}{% if section.settings.show_box %} banner--boxed{% endif %}"
+  style="--overlay: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"
+  data-header-tone="{{ tone }}"
+>
+  <div class="banner__media">
+    {%- if section.settings.image != blank -%}
+      <picture>
+        {%- if section.settings.image_mobile != blank -%}
+          {%- assign m = section.settings.image_mobile -%}
+          <source
+            media="(max-width: 749px)"
+            srcset="{{ m | image_url: width: 375 }} 375w, {{ m | image_url: width: 750 }} 750w, {{ m | image_url: width: 1100 }} 1100w, {{ m | image_url: width: 1500 }} 1500w"
+            sizes="100vw"
+            width="{{ m.width }}"
+            height="{{ m.height }}"
+          >
+        {%- endif -%}
+        {%- capture focal -%}object-position: {{ section.settings.image.presentation.focal_point | default: 'center' }};{%- endcapture -%}
+        {{
+          section.settings.image
+          | image_url: width: 3000
+          | image_tag:
+            widths: '750, 1100, 1500, 1800, 2200, 3000',
+            sizes: '100vw',
+            loading: loading,
+            fetchpriority: priority,
+            alt: section.settings.image.alt,
+            class: 'banner__image',
+            style: focal
+        }}
+      </picture>
+    {%- else -%}
+      {{ 'hero-apparel-1' | placeholder_svg_tag: 'placeholder-svg banner__image' }}
+    {%- endif -%}
+  </div>
+
+  <div class="banner__inner page-width banner__inner--{{ section.settings.position_vertical }} banner__inner--{{ section.settings.position_horizontal }}">
+    <div class="banner__content{% if section.settings.show_box %} color-{{ section.settings.color_scheme }}{% endif %}" data-reveal>
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'eyebrow' -%}
+            <p class="eyebrow banner__eyebrow" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</p>
+          {%- when 'heading' -%}
+            {%- if is_first -%}
+              <h1 class="h-display {{ block.settings.size }} banner__heading" {{ block.shopify_attributes }}>{{ block.settings.heading }}</h1>
+            {%- else -%}
+              <h2 class="h-display {{ block.settings.size }} banner__heading" {{ block.shopify_attributes }}>{{ block.settings.heading }}</h2>
+            {%- endif -%}
+          {%- when 'text' -%}
+            <div class="rte banner__text" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+          {%- when 'buttons' -%}
+            <div class="banner__buttons" {{ block.shopify_attributes }}>
+              {%- if block.settings.label_1 != blank -%}
+                <a
+                  {% if block.settings.link_1 != blank %}
+                    href="{{ block.settings.link_1 }}"
+                  {% else %}
+                    role="link" aria-disabled="true"
+                  {% endif %}
+                  class="button banner__button"
+                >
+                  {{- block.settings.label_1 | escape -}}
+                </a>
+              {%- endif -%}
+              {%- if block.settings.label_2 != blank -%}
+                <a
+                  {% if block.settings.link_2 != blank %}
+                    href="{{ block.settings.link_2 }}"
+                  {% else %}
+                    role="link" aria-disabled="true"
+                  {% endif %}
+                  class="button button--secondary banner__button banner__button--secondary"
+                >
+                  {{- block.settings.label_2 | escape -}}
+                </a>
+              {%- endif -%}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+
+{% schema %}
+{
+  "name": "t:sections.image_banner.name",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "t:sections.all.image" },
+    { "type": "image_picker", "id": "image_mobile", "label": "t:sections.image_banner.settings.image_mobile.label", "info": "t:sections.image_banner.settings.image_mobile.info" },
+    {
+      "type": "select",
+      "id": "height",
+      "default": "large",
+      "label": "t:sections.image_banner.settings.height.label",
+      "options": [
+        { "value": "small", "label": "t:sections.image_banner.settings.height.options.small" },
+        { "value": "medium", "label": "t:sections.image_banner.settings.height.options.medium" },
+        { "value": "large", "label": "t:sections.image_banner.settings.height.options.large" },
+        { "value": "full", "label": "t:sections.image_banner.settings.height.options.full" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 30,
+      "label": "t:sections.image_banner.settings.overlay_opacity.label"
+    },
+    {
+      "type": "select",
+      "id": "text_tone",
+      "default": "light",
+      "label": "t:sections.image_banner.settings.text_tone.label",
+      "options": [
+        { "value": "light", "label": "t:sections.image_banner.settings.text_tone.options.light" },
+        { "value": "dark", "label": "t:sections.image_banner.settings.text_tone.options.dark" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "position_horizontal",
+      "default": "left",
+      "label": "t:sections.image_banner.settings.position_horizontal.label",
+      "options": [
+        { "value": "left", "label": "t:sections.image_banner.settings.position_horizontal.options.left" },
+        { "value": "center", "label": "t:sections.image_banner.settings.position_horizontal.options.center" },
+        { "value": "right", "label": "t:sections.image_banner.settings.position_horizontal.options.right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "position_vertical",
+      "default": "bottom",
+      "label": "t:sections.image_banner.settings.position_vertical.label",
+      "options": [
+        { "value": "top", "label": "t:sections.image_banner.settings.position_vertical.options.top" },
+        { "value": "middle", "label": "t:sections.image_banner.settings.position_vertical.options.middle" },
+        { "value": "bottom", "label": "t:sections.image_banner.settings.position_vertical.options.bottom" }
+      ]
+    },
+    { "type": "checkbox", "id": "show_box", "default": false, "label": "t:sections.image_banner.settings.show_box.label" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:sections.image_banner.settings.color_scheme.label", "default": "scheme-1" }
+  ],
+  "blocks": [
+    {
+      "type": "eyebrow",
+      "name": "t:sections.all.eyebrow",
+      "limit": 1,
+      "settings": [{ "type": "text", "id": "text", "default": "New season", "label": "t:sections.all.text" }]
+    },
+    {
+      "type": "heading",
+      "name": "t:sections.all.heading",
+      "limit": 1,
+      "settings": [
+        { "type": "inline_richtext", "id": "heading", "default": "Scent that stays after you leave", "label": "t:sections.all.heading" },
+        {
+          "type": "select",
+          "id": "size",
+          "default": "h-display--lg",
+          "label": "t:sections.all.size",
+          "options": [
+            { "value": "h-display--md", "label": "t:sections.all.size_options.medium" },
+            { "value": "h-display--lg", "label": "t:sections.all.size_options.large" },
+            { "value": "h-display--xl", "label": "t:sections.all.size_options.extra_large" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "t:sections.all.text",
+      "limit": 1,
+      "settings": [{ "type": "richtext", "id": "text", "default": "<p>Small-batch fragrances, blended by hand and built to linger.</p>", "label": "t:sections.all.text" }]
+    },
+    {
+      "type": "buttons",
+      "name": "t:sections.image_banner.blocks.buttons.name",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "label_1", "default": "Shop the collection", "label": "t:sections.image_banner.blocks.buttons.settings.label_1" },
+        { "type": "url", "id": "link_1", "label": "t:sections.image_banner.blocks.buttons.settings.link_1" },
+        { "type": "text", "id": "label_2", "label": "t:sections.image_banner.blocks.buttons.settings.label_2" },
+        { "type": "url", "id": "link_2", "label": "t:sections.image_banner.blocks.buttons.settings.link_2" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.image_banner.presets.name",
+      "blocks": [{ "type": "eyebrow" }, { "type": "heading" }, { "type": "text" }, { "type": "buttons" }]
+    }
+  ]
+}
+{% endschema %}

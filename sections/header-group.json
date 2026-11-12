@@ -39,7 +39,7 @@
         "cta_link": "",
         "sticky_mode": "always",
         "transparent_on_home": true,
-        "transparent_text": "#F3F0EB",
+        "transparent_text": "#F6F2EC",
         "color_scheme": "scheme-1",
         "show_country": true,
         "show_language": true

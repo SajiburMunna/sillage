@@ -1,0 +1,221 @@
+{{ 'section-home.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'section-home.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign has_tabs = false
+  if section.blocks.size > 1
+    assign has_tabs = true
+  endif
+  assign label = section.settings.heading | strip_html | escape
+-%}
+
+<collection-tabs
+  class="tabs-section section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  {%- if section.settings.show_trail -%}{% render 'trail' %}{%- endif -%}
+  <div class="page-width">
+    <div class="section-header home-header" data-reveal>
+      <div>
+        {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        {%- if section.settings.heading != blank -%}<h2 class="section-header__title h-display h-display--md">{{ section.settings.heading }}</h2>{%- endif -%}
+      </div>
+      {%- if has_tabs -%}
+        <div class="tabs" role="tablist" aria-label="{{ label }}">
+          {%- for block in section.blocks -%}
+            <button
+              type="button"
+              class="tabs__tab"
+              role="tab"
+              id="Tab-{{ section.id }}-{{ forloop.index }}"
+              aria-controls="Panel-{{ section.id }}-{{ forloop.index }}"
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
+              data-tab
+              {{ block.shopify_attributes }}
+            >
+              {{- block.settings.label | default: block.settings.collection.title | escape -}}
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign c = block.settings.collection
+        if c == blank and collections.all.products_count > 0
+          assign c = collections.all
+        endif
+        if block.settings.collection == blank and forloop.first == false
+          assign tab_products = c.products | sort: 'created_at' | reverse
+        else
+          assign tab_products = c.products
+        endif
+      -%}
+      <div
+        class="tabs__panel"
+        id="Panel-{{ section.id }}-{{ forloop.index }}"
+        {% if has_tabs %}
+          role="tabpanel" aria-labelledby="Tab-{{ section.id }}-{{ forloop.index }}" tabindex="0"
+        {% endif %}
+        {% unless forloop.first %}
+          hidden
+        {% endunless %}
+        data-panel
+      >
+        {%- liquid
+          if c != blank and c.products_count > 0
+            assign shown = c.products_count | at_most: section.settings.products_to_show
+          else
+            assign shown = section.settings.columns_desktop
+          endif
+        -%}
+        {%- liquid
+            # Tablet columns: avoid a lone card on the last row (4 → 2×2, 6 → 3×2)
+            assign tablet_cols = 3
+            assign rem3 = shown | modulo: 3
+            assign rem2 = shown | modulo: 2
+            if rem3 != 0 and rem2 == 0
+              assign tablet_cols = 2
+            endif
+          -%}
+        <ul class="grid" role="list" style="--cols: {{ section.settings.columns_desktop }}; --cols-tablet: {{ tablet_cols }}; --cols-mobile: 2; --grid-gap: clamp(1.6rem, 2vw, 3.2rem) clamp(1.2rem, 1.6vw, 2.4rem);">
+          {%- if c != blank and c.products_count > 0 -%}
+            {%- for product in tab_products limit: section.settings.products_to_show -%}
+              <li>{%- assign card_scope = section.id | append: '-' | append: block.id -%}{% render 'product-card', product: product, section_id: card_scope %}</li>
+            {%- endfor -%}
+          {%- else -%}
+            {%- for i in (1..section.settings.columns_desktop) -%}
+              <li>{% render 'product-card', product: blank, placeholder_index: i %}</li>
+            {%- endfor -%}
+          {%- endif -%}
+        </ul>
+        {%- if c != blank -%}
+          <div class="tabs__footer">
+            <a href="{{ c.url }}" class="button button--secondary">{{ 'sections.featured_collection.view_all' | t }}</a>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</collection-tabs>
+
+{% schema %}
+{
+  "name": "t:sections.collection_tabs.name",
+  "tag": "div",
+  "class": "section",
+  "max_blocks": 4,
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "default": "The edit",
+      "label": "t:sections.all.eyebrow"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:sections.all.heading",
+      "info": "t:sections.collection_tabs.settings.heading.info",
+      "default": "Loved by <em>many</em>"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4,
+      "label": "t:sections.all.products_to_show"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4,
+      "label": "t:sections.all.columns_desktop"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trail",
+      "default": true,
+      "label": "t:sections.collection_tabs.settings.show_trail.label",
+      "info": "t:sections.collection_tabs.settings.show_trail.info"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "t:sections.all.padding_top",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "t:sections.all.padding_bottom",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "t:sections.collection_tabs.blocks.tab.name",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "t:sections.collection_tabs.blocks.tab.settings.collection.label"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "t:sections.collection_tabs.blocks.tab.settings.label.label",
+          "info": "t:sections.collection_tabs.blocks.tab.settings.label.info"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.collection_tabs.presets.name",
+      "blocks": [
+        {
+          "type": "tab",
+          "settings": {
+            "label": "Bestsellers"
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "label": "New in"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,387 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-editorial",
+      "settings": {
+        "badge_text": "Made in small batches, by hand"
+      },
+      "blocks": {
+        "eyebrow_1": {
+          "type": "eyebrow",
+          "settings": {
+            "text": "Botanical skincare"
+          }
+        },
+        "heading_2": {
+          "type": "heading",
+          "settings": {
+            "heading": "Skin that <em>remembers</em> calm"
+          }
+        },
+        "text_3": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Gentle, plant-led formulas in glass and aluminium. Fewer steps, better ingredients, nothing you need to decode.</p>"
+          }
+        },
+        "buttons_4": {
+          "type": "buttons",
+          "settings": {
+            "label_1": "Shop skincare",
+            "label_2": "Build your routine"
+          }
+        },
+        "rating_5": {
+          "type": "rating",
+          "settings": {}
+        },
+        "note_6": {
+          "type": "note",
+          "settings": {
+            "text": "Neroli",
+            "tint": "#C9B27A"
+          }
+        },
+        "note_7": {
+          "type": "note",
+          "settings": {
+            "text": "Oat",
+            "tint": "#B9A88E"
+          }
+        },
+        "note_8": {
+          "type": "note",
+          "settings": {
+            "text": "Green tea",
+            "tint": "#6F8F7A"
+          }
+        }
+      },
+      "block_order": [
+        "eyebrow_1",
+        "heading_2",
+        "text_3",
+        "buttons_4",
+        "rating_5",
+        "note_6",
+        "note_7",
+        "note_8"
+      ]
+    },
+    "promises": {
+      "type": "promise-ribbon",
+      "settings": {
+        "color_scheme": "scheme-3"
+      },
+      "blocks": {
+        "item_1": {
+          "type": "item",
+          "settings": {
+            "text": "Free samples with every order",
+            "icon": "vial"
+          }
+        },
+        "item_2": {
+          "type": "item",
+          "settings": {
+            "text": "Refillable glass bottles",
+            "icon": "droplet"
+          }
+        },
+        "item_3": {
+          "type": "item",
+          "settings": {
+            "text": "Dermatologist tested",
+            "icon": "heart"
+          }
+        },
+        "item_4": {
+          "type": "item",
+          "settings": {
+            "text": "Vegan and cruelty-free",
+            "icon": "leaf"
+          }
+        }
+      },
+      "block_order": [
+        "item_1",
+        "item_2",
+        "item_3",
+        "item_4"
+      ]
+    },
+    "families": {
+      "type": "family-tiles",
+      "settings": {
+        "eyebrow": "Shop by step",
+        "heading": "Build your <em>ritual</em>",
+        "text": "<p>Four steps, morning and night. Start with one and add the rest when your skin asks for it.</p>"
+      },
+      "blocks": {
+        "family_1": {
+          "type": "family",
+          "settings": {
+            "title": "Cleanse",
+            "notes": "Gels, oils and balms",
+            "tint": "#A7B8A3"
+          }
+        },
+        "family_2": {
+          "type": "family",
+          "settings": {
+            "title": "Treat",
+            "notes": "Serums and essences",
+            "tint": "#C9B27A"
+          }
+        },
+        "family_3": {
+          "type": "family",
+          "settings": {
+            "title": "Hydrate",
+            "notes": "Creams and mists",
+            "tint": "#9FB4BF"
+          }
+        },
+        "family_4": {
+          "type": "family",
+          "settings": {
+            "title": "Protect",
+            "notes": "Daily mineral SPF",
+            "tint": "#D8B9A0"
+          }
+        }
+      },
+      "block_order": [
+        "family_1",
+        "family_2",
+        "family_3",
+        "family_4"
+      ]
+    },
+    "bestsellers": {
+      "type": "collection-tabs",
+      "settings": {
+        "eyebrow": "Most loved",
+        "heading": "The <em>essentials</em>"
+      },
+      "blocks": {
+        "tab_1": {
+          "type": "tab",
+          "settings": {
+            "label": "Bestsellers"
+          }
+        },
+        "tab_2": {
+          "type": "tab",
+          "settings": {
+            "label": "New in"
+          }
+        }
+      },
+      "block_order": [
+        "tab_1",
+        "tab_2"
+      ]
+    },
+    "spotlight": {
+      "type": "product-spotlight",
+      "settings": {
+        "eyebrow": "Hero product",
+        "top_notes": "",
+        "heart_notes": "",
+        "base_notes": "",
+        "tint": "#B7CDB8",
+        "color_scheme": "scheme-5"
+      }
+    },
+    "ritual": {
+      "type": "ritual-steps",
+      "settings": {
+        "eyebrow": "The routine",
+        "heading": "Your evening <em>ritual</em>",
+        "color_scheme": "scheme-4"
+      },
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "title": "Cleanse",
+            "text": "<p>Massage the balm onto dry skin for a full minute, then rinse with warm water.</p>"
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "title": "Treat",
+            "text": "<p>Press two drops of serum into damp skin. Damp skin absorbs more.</p>"
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "title": "Seal",
+            "text": "<p>Finish with the night cream, pressed in rather than rubbed.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "step_1",
+        "step_2",
+        "step_3"
+      ]
+    },
+    "discovery": {
+      "type": "discovery-offer",
+      "settings": {
+        "eyebrow": "New to us?",
+        "heading": "Start with the <em>travel</em> kit",
+        "text": "<p>Five of our essentials in travel sizes. Enough for two weeks, so your skin can decide.</p>",
+        "button_label": "Order the kit",
+        "note": "The price of the kit comes back as credit on your first full-size order."
+      },
+      "blocks": {
+        "item_1": {
+          "type": "item",
+          "settings": {
+            "text": "Five travel sizes"
+          }
+        },
+        "item_2": {
+          "type": "item",
+          "settings": {
+            "text": "A routine card"
+          }
+        },
+        "item_3": {
+          "type": "item",
+          "settings": {
+            "text": "Free delivery"
+          }
+        }
+      },
+      "block_order": [
+        "item_1",
+        "item_2",
+        "item_3"
+      ]
+    },
+    "press": {
+      "type": "press-quotes",
+      "settings": {
+        "eyebrow": "As seen in"
+      },
+      "blocks": {
+        "quote_1": {
+          "type": "quote",
+          "settings": {
+            "quote": "A scent that lingers in the best possible way.",
+            "publication": "Magazine one"
+          }
+        },
+        "quote_2": {
+          "type": "quote",
+          "settings": {
+            "quote": "Quietly luxurious, and impossible to forget.",
+            "publication": "Magazine two"
+          }
+        },
+        "quote_3": {
+          "type": "quote",
+          "settings": {
+            "quote": "The discovery set is the smartest way to find a signature scent.",
+            "publication": "Journal three"
+          }
+        }
+      },
+      "block_order": [
+        "quote_1",
+        "quote_2",
+        "quote_3"
+      ]
+    },
+    "worn_by_you": {
+      "type": "ugc-gallery",
+      "settings": {
+        "eyebrow": "Your routines",
+        "heading": "Shared by our <em>community</em>"
+      },
+      "blocks": {
+        "photo_1": {
+          "type": "photo",
+          "settings": {}
+        },
+        "photo_2": {
+          "type": "photo",
+          "settings": {}
+        },
+        "photo_3": {
+          "type": "photo",
+          "settings": {}
+        },
+        "photo_4": {
+          "type": "photo",
+          "settings": {}
+        },
+        "photo_5": {
+          "type": "photo",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "photo_1",
+        "photo_2",
+        "photo_3",
+        "photo_4",
+        "photo_5"
+      ]
+    },
+    "closing": {
+      "type": "closing-banner",
+      "settings": {
+        "eyebrow": "Join us",
+        "heading": "Join the <em>ritual</em>",
+        "text": "<p>New formulas, restocks and skin notes from our chemist, once a month.</p>"
+      },
+      "blocks": {
+        "perk_1": {
+          "type": "perk",
+          "settings": {
+            "icon": "vial",
+            "text": "Samples of new formulas"
+          }
+        },
+        "perk_2": {
+          "type": "perk",
+          "settings": {
+            "icon": "gift",
+            "text": "A birthday gift every year"
+          }
+        },
+        "perk_3": {
+          "type": "perk",
+          "settings": {
+            "icon": "droplet",
+            "text": "Refill reminders"
+          }
+        }
+      },
+      "block_order": [
+        "perk_1",
+        "perk_2",
+        "perk_3"
+      ]
+    }
+  },
+  "order": [
+    "hero",
+    "promises",
+    "families",
+    "bestsellers",
+    "spotlight",
+    "ritual",
+    "discovery",
+    "press",
+    "worn_by_you",
+    "closing"
+  ]
+}

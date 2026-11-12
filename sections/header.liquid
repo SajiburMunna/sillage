@@ -132,7 +132,7 @@
           <span class="header__logo-text">{{ shop.name }}</span>
         {%- endif -%}
         {%- if section.settings.tagline != blank -%}
-          <span class="eyebrow" style="margin: 0; font-size: 0.9rem; letter-spacing: 0.4em;">{{ section.settings.tagline | escape }}</span>
+          <span class="eyebrow header__tagline">{{ section.settings.tagline | escape }}</span>
         {%- endif -%}
       </a>
     </div>
@@ -150,12 +150,12 @@
       </a>
 
       {%- if shop.customer_accounts_enabled -%}
-        <a href="{{ routes.account_url }}" class="icon-button header__icon--account">
-          {% render 'icon', icon: 'account' %}
-          <span class="visually-hidden">
-            {%- if customer -%}{{ 'customer.account_fallback' | t }}{%- else -%}{{ 'customer.log_in' | t }}{%- endif -%}
+        <shopify-account class="header__account" menu="{{ section.settings.customer_account_menu | default: 'customer-account-main-menu' }}">
+          <span slot="signed-out-avatar" class="header__account-icon">
+            {% render 'icon', icon: 'account' %}
+            <span class="visually-hidden">{{ 'customer.log_in' | t }}</span>
           </span>
-        </a>
+        </shopify-account>
       {%- endif -%}
 
       <a
@@ -315,6 +315,7 @@
     ]
   },
   "settings": [
+    { "type": "link_list", "id": "customer_account_menu", "label": "t:sections.header.settings.customer_account_menu.label", "default": "customer-account-main-menu" },
     {
       "type": "link_list",
       "id": "menu",
@@ -407,7 +408,7 @@
     {
       "type": "color",
       "id": "transparent_text",
-      "default": "#F3F0EB",
+      "default": "#F6F2EC",
       "label": "t:sections.header.settings.transparent_text.label"
     },
     {

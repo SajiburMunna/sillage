@@ -1,0 +1,157 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "vendor": {
+          "type": "vendor",
+          "settings": {}
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "buttons"
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_quantity": true,
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": true,
+            "show_pickup_availability": true
+          }
+        },
+        "fragrance_notes": {
+          "type": "fragrance_notes",
+          "settings": {
+            "heading": "Fragrance notes",
+            "top_notes": "",
+            "heart_notes": "",
+            "base_notes": "",
+            "intensity": 3
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "how_to_wear": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "How to wear",
+            "content": "<p>Explain how and where to apply this fragrance.</p>"
+          }
+        },
+        "ingredients": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Ingredients",
+            "content": "<p>List the full ingredients here, or connect this field to a product metafield.</p>"
+          }
+        },
+        "complementary": {
+          "type": "complementary",
+          "settings": {
+            "heading": "Layer it with",
+            "product_count": 3
+          }
+        },
+        "share": {
+          "type": "share",
+          "settings": {
+            "share_label": "Share"
+          }
+        },
+        "trust": {
+          "type": "trust",
+          "settings": {
+            "icon_1": "truck",
+            "text_1": "Free shipping over $50",
+            "icon_2": "vial",
+            "text_2": "Two free samples with every order",
+            "icon_3": "return",
+            "text_3": "30-day returns, even if opened"
+          }
+        },
+        "notes": {
+          "type": "notes",
+          "settings": {}
+        },
+        "delivery": {
+          "type": "delivery",
+          "settings": {
+            "min_days": 2,
+            "max_days": 5,
+            "skip_weekends": true,
+            "cutoff_hour": 14
+          }
+        }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "price",
+        "notes",
+        "variant_picker",
+        "buy_buttons",
+        "delivery",
+        "trust",
+        "fragrance_notes",
+        "description",
+        "how_to_wear",
+        "ingredients",
+        "complementary",
+        "share"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "padding_top": 48,
+        "padding_bottom": 64
+      }
+    },
+    "recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "heading": "You may also love",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "color_scheme": "scheme-1",
+        "padding_top": 48,
+        "padding_bottom": 72
+      }
+    },
+    "recently_viewed": {
+      "type": "recently-viewed",
+      "settings": {
+        "heading": "Recently viewed",
+        "limit": 4,
+        "color_scheme": "scheme-1",
+        "padding_top": 24,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": [
+    "main",
+    "recommendations",
+    "recently_viewed"
+  ]
+}

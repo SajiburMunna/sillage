@@ -1,9 +1,6 @@
 <footer class="footer color-{{ section.settings.color_scheme }}">
   <div class="page-width">
     <div class="footer__top">
-      {%- if section.settings.show_wordmark -%}
-        <a href="{{ routes.root_url }}" class="footer__wordmark" data-reveal>{{ shop.name }}</a>
-      {%- endif -%}
 
       <div class="footer__blocks">
         {%- for block in section.blocks -%}
@@ -38,14 +35,18 @@
       </div>
     </div>
 
+    {%- if section.settings.show_wordmark -%}
+      <a href="{{ routes.root_url }}" class="footer__wordmark" style="--chars: {{ shop.name | strip | size | at_least: 4 }};" data-reveal>{{ shop.name | strip }}</a>
+    {%- endif -%}
+
     <div class="footer__bottom">
-      <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+      <div class="footer__legal">
         <span>
           &copy; {{ 'now' | date: '%Y' }}, {{ shop.name | link_to: routes.root_url }}
           {%- if section.settings.legal_text != blank %} · {{ section.settings.legal_text | escape }}{% endif -%}
         </span>
         {%- if section.settings.show_policy -%}
-          <ul class="footer__list" role="list" style="flex-direction: row; flex-wrap: wrap; gap: 1.6rem;">
+          <ul class="footer__list footer__policies" role="list">
             {%- for policy in shop.policies -%}
               {%- if policy != blank -%}
                 <li><a href="{{ policy.url }}" class="link-underline">{{ policy.title | escape }}</a></li>
@@ -57,8 +58,15 @@
 
       {% render 'localization-form', show_country: section.settings.show_country, show_language: section.settings.show_language, id_prefix: 'Footer' %}
 
-      {%- if section.settings.show_social -%}
-        {% render 'social-icons' %}
+      {%- if section.settings.show_social or section.settings.enable_follow_on_shop -%}
+        <div class="footer__social">
+          {%- if section.settings.show_social -%}
+            {% render 'social-icons' %}
+          {%- endif -%}
+          {%- if section.settings.enable_follow_on_shop and request.page_type != 'password' -%}
+            <div class="footer__follow">{{ shop | login_button: action: 'follow' }}</div>
+          {%- endif -%}
+        </div>
       {%- endif -%}
 
       {%- if section.settings.payment_enable -%}
@@ -110,6 +118,7 @@
     { "type": "checkbox", "id": "show_wordmark", "default": true, "label": "t:sections.footer.settings.show_wordmark.label" },
     { "type": "text", "id": "legal_text", "label": "t:sections.footer.settings.legal_text.label", "default": "For external use only." },
     { "type": "checkbox", "id": "show_policy", "default": true, "label": "t:sections.footer.settings.show_policy.label" },
+    { "type": "checkbox", "id": "enable_follow_on_shop", "default": true, "label": "t:sections.footer.settings.enable_follow_on_shop.label", "info": "t:sections.footer.settings.enable_follow_on_shop.info" },
     { "type": "checkbox", "id": "show_social", "default": true, "label": "t:sections.footer.settings.show_social.label", "info": "t:sections.footer.settings.show_social.info" },
     { "type": "checkbox", "id": "payment_enable", "default": true, "label": "t:sections.footer.settings.payment_enable.label" },
     { "type": "header", "content": "t:sections.footer.settings.header_localization.content" },

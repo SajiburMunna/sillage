@@ -1,0 +1,10 @@
+URL handle,Fragrance notes (product.metafields.custom.notes),Top notes (product.metafields.custom.top_notes),Heart notes (product.metafields.custom.heart_notes),Base notes (product.metafields.custom.base_notes),Scent family (product.metafields.custom.scent_family),Intensity (product.metafields.custom.intensity),Tint (product.metafields.custom.tint)
+ambrette-noir,"Ambrette, Iris, Oud","Bergamot, pink pepper","Iris, ambrette seed","Oud, musk, vanilla",Woody,4,#8A5235
+rose-velours,"Rose, Saffron, Musk","Saffron, lychee","Turkish rose, raspberry leaf","White musk, cashmere wood",Floral,3,#C97B63
+cedre-blanc,"Cedar, Vetiver, Fig","Fig leaf, cardamom","Atlas cedar, vetiver","Sandalwood, ambroxan",Woody,3,#A8836A
+ambre-nu,"Vanilla, Benzoin, Labdanum","Mandarin, pink pepper","Labdanum, tonka bean","Madagascan vanilla, benzoin",Amber,4,#D9A441
+iris-poudre,"Iris, Violet, Suede","Violet leaf, carrot seed","Orris butter, heliotrope","Suede, white musk",Floral,2,#B98BB5
+oud-fume,"Oud, Smoke, Leather","Black pepper, saffron","Birch tar, leather","Oud, guaiac wood, labdanum",Woody,5,#6B4A2F
+neroli-matin,"Neroli, Bergamot, Petitgrain","Bergamot, lemon zest","Neroli, orange blossom","Petitgrain, white musk",Fresh,2,#C9B27A
+sel-marin,"Sea salt, Sage, Driftwood","Sea salt, grapefruit","Clary sage, rosemary","Driftwood, ambergris accord",Fresh,2,#6F8F7A
+discovery-set,Six scents,,,,,,#B98BB5

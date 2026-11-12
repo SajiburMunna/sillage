@@ -9,27 +9,35 @@
           "type": "link_list",
           "settings": {
             "heading": "Shop",
+            "menu": "main-menu"
+          }
+        },
+        "link-list-2": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Client care",
             "menu": "footer"
           }
         },
         "text-1": {
           "type": "text",
           "settings": {
-            "heading": "About the house",
-            "text": "<p>Share your fragrance philosophy, where your scents are made, or how customers can reach you.</p>"
+            "heading": "The house",
+            "text": "<p>Small-batch fragrance, blended by hand. Write to us any time and a real person will answer.</p>"
           }
         },
         "newsletter-1": {
           "type": "newsletter",
           "settings": {
-            "heading": "Join the list"
+            "heading": "Letters from the atelier"
           }
         }
       },
       "block_order": [
+        "newsletter-1",
         "link-list-1",
-        "text-1",
-        "newsletter-1"
+        "link-list-2",
+        "text-1"
       ],
       "settings": {
         "show_wordmark": true,
@@ -39,7 +47,7 @@
         "payment_enable": true,
         "show_country": true,
         "show_language": true,
-        "color_scheme": "scheme-1"
+        "color_scheme": "scheme-3"
       }
     },
     "promo_popup": {

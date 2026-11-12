@@ -8,7 +8,8 @@
     "play_animation": "Reproducir la animación de fondo",
     "skip_to_text": "Ir al contenido",
     "unit_price_separator": "por",
-    "vendor": "Proveedor:"
+    "vendor": "Proveedor:",
+    "star_reviews_info": "{{ rating_value }} de {{ rating_max }} estrellas"
   },
   "blogs": {
     "article": {
@@ -25,7 +26,19 @@
       "name": "Nombre",
       "post": "Publicar comentario",
       "success": "Tu comentario se ha publicado. ¡Gracias!",
-      "success_moderated": "Tu comentario se ha enviado correctamente. Lo publicaremos en breve, ya que nuestro blog está moderado."
+      "success_moderated": "Tu comentario se ha enviado correctamente. Lo publicaremos en breve, ya que nuestro blog está moderado.",
+      "tags_label": "Filtrar artículos por tema",
+      "all_topics": "Todos",
+      "no_articles": "Aún no hay artículos sobre este tema.",
+      "reading_time": {
+        "one": "{{ count }} min de lectura",
+        "other": "{{ count }} min de lectura"
+      },
+      "read_more": "Leer la historia",
+      "share": "Compartir esta historia",
+      "more_stories": "Más historias",
+      "older_post": "Artículo anterior",
+      "newer_post": "Artículo siguiente"
     }
   },
   "customer": {
@@ -169,6 +182,25 @@
         "x": "X (Twitter)",
         "youtube": "YouTube"
       }
+    },
+    "breadcrumbs": {
+      "label": "Ruta de navegación",
+      "home": "Inicio"
+    },
+    "sample_photos": {
+      "home_hero": "Frasco de perfume junto a una nota manuscrita",
+      "home_floral": "Pétalos de rosa secos",
+      "home_woody": "Humo de incienso sobre madera oscura",
+      "home_amber": "Frasco de vidrio ámbar sobre lino suave",
+      "home_fresh": "Limones frescos en la rama",
+      "home_spotlight": "Frasco de cristal tallado sobre seda naranja",
+      "home_ritual_1": "Mano que sostiene un frasco de vidrio ámbar",
+      "home_ritual_2": "Bandeja de baño con un frasco y una vela",
+      "home_ritual_3": "Frasco de perfume antiguo en una ventana",
+      "home_closing": "Una voluta de humo sobre negro",
+      "home_ugc_1": "Frasco esmerilado con luz de tarde",
+      "home_ugc_2": "Pétalos de rosa",
+      "home_ugc_3": "Frasco oscuro sobre piedra jaspeada"
     }
   },
   "gift_cards": {
@@ -209,7 +241,12 @@
       },
       "sort_by_label": "Ordenar por",
       "to": "Hasta",
-      "view_results": "Ver resultados"
+      "view_results": "Ver resultados",
+      "layout_label": "Diseño de la cuadrícula",
+      "layout_columns": {
+        "one": "Mostrar {{ count }} columna",
+        "other": "Mostrar {{ count }} columnas"
+      }
     },
     "product": {
       "add_to_cart": "Añadir a la cesta",
@@ -231,7 +268,12 @@
         "load_image": "Cargar la imagen {{ index }} en la galería",
         "play_video": "Reproducir vídeo",
         "view_in_3d": "Ver en 3D",
-        "view_in_space": "Ver en tu espacio"
+        "view_in_space": "Ver en tu espacio",
+        "open_zoom": "Abrir imagen en vista ampliada",
+        "zoom_viewer": "Imágenes ampliadas de {{ title }}",
+        "toggle_zoom": "Acercar o alejar",
+        "previous": "Imagen anterior",
+        "next": "Imagen siguiente"
       },
       "on_sale": "Oferta",
       "one_time_purchase": "Compra única",
@@ -262,7 +304,48 @@
       "variant_sold_out_or_unavailable": "Variante agotada o no disponible",
       "view_full_details": "Ver todos los detalles",
       "quick_view": "Vista rápida",
-      "quick_view_named": "Vista rápida de {{ title }}"
+      "quick_view_named": "Vista rápida de {{ title }}",
+      "notes_label": "Notas olfativas",
+      "delivery_estimate": "Pide hoy y llega {{ start }} – {{ end }}",
+      "delivery_estimate_single": "Pide hoy y llega {{ start }}",
+      "notify": {
+        "heading": "Agotado por ahora. Te avisamos por correo cuando vuelva.",
+        "label": "Correo electrónico",
+        "button": "Avisarme",
+        "success": "Gracias. Te escribiremos en cuanto vuelva.",
+        "body_label": "Solicitud de reposición"
+      },
+      "volume_pricing": {
+        "title": "Precios por volumen",
+        "price_each": "Precio por unidad",
+        "minimum_of": "Mínimo de {{ quantity }}",
+        "maximum_of": "Máximo de {{ quantity }}",
+        "increments_of": "Se vende en múltiplos de {{ quantity }}"
+      },
+      "scent_profile": {
+        "concentration": "Concentración",
+        "longevity": "Duración",
+        "sillage": "Estela",
+        "season": "Ideal en",
+        "wear": "Llevar",
+        "rating": "{{ value }} de 5",
+        "longevity_1": "Efímera",
+        "longevity_2": "Unas horas",
+        "longevity_3": "Medio día",
+        "longevity_4": "Duradera",
+        "longevity_5": "Día y noche",
+        "sillage_1": "Aroma de piel",
+        "sillage_2": "Íntima",
+        "sillage_3": "Moderada",
+        "sillage_4": "Intensa",
+        "sillage_5": "Llena la sala",
+        "spring": "Primavera",
+        "summer": "Verano",
+        "autumn": "Otoño",
+        "winter": "Invierno",
+        "day": "Día",
+        "night": "Noche"
+      }
     }
   },
   "recipient": {
@@ -300,7 +383,10 @@
       "free_shipping_progress": "Progreso hacia el envío gratis",
       "gift_wrap_label": "Añadir envoltorio de regalo",
       "gift_message_label": "Mensaje de regalo",
-      "gift_message_placeholder": "Escribe una nota para el destinatario (opcional)"
+      "gift_message_placeholder": "Escribe una nota para el destinatario (opcional)",
+      "empty_text": "Descubre un aroma que querrás llevar cada día. Cada pedido incluye muestras gratuitas.",
+      "secure_checkout": "Pago seguro y cifrado",
+      "free": "Gratis"
     },
     "collection": {
       "clear_all": "Borrar todo",
@@ -387,6 +473,20 @@
     "store_locations": {
       "hours": "Horario de apertura",
       "directions": "Cómo llegar"
+    },
+    "slideshow": {
+      "slide_label": "Diapositiva {{ index }} de {{ count }}",
+      "choose_slide": "Elegir una diapositiva",
+      "go_to_slide": "Ir a la diapositiva {{ index }}",
+      "pause": "Pausar presentación",
+      "play": "Reproducir presentación",
+      "previous": "Diapositiva anterior",
+      "next": "Diapositiva siguiente"
+    },
+    "home": {
+      "ribbon_pause": "Pausar texto en movimiento",
+      "ribbon_play": "Reproducir texto en movimiento",
+      "press_label": "Prensa"
     }
   },
   "templates": {
@@ -416,7 +516,12 @@
       },
       "search_for": "Buscar «{{ terms }}»",
       "suggestions": "Sugerencias",
-      "title": "Resultados de búsqueda"
+      "title": "Resultados de búsqueda",
+      "types_label": "Tipos de resultados",
+      "tab_all": "Todo",
+      "tab_products": "Productos",
+      "tab_other": "Artículos y páginas",
+      "no_results_hint": "Revisa la ortografía, prueba con una sola nota como «iris» o explora toda la colección."
     }
   }
 }

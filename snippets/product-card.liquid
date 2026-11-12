@@ -6,6 +6,9 @@
   - lazy {Boolean} lazy-load images (default true)
   - sizes {String} image sizes attribute
   - section_id {String}
+
+  Badges: tag a product "badge:New" or "badge:Bestseller" to show a custom label.
+  Ratings: shown when a reviews app fills the standard reviews.rating metafield.
 {%- endcomment -%}
 {%- liquid
   case settings.card_image_ratio
@@ -24,11 +27,32 @@
     assign priority = 'high'
   endif
   assign img_sizes = sizes | default: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw'
+  assign fit = settings.card_image_fit | default: 'cover'
 -%}
 
-<div class="card" data-reveal>
+{%- assign card_tint = product.metafields.custom.tint.value | default: product.metafields.custom.tint -%}
+<div class="card card--fit-{{ fit }}{% if card_tint != blank %} card--tinted{% endif %}"{% if card_tint != blank %} style="--tint: {{ card_tint }};"{% endif %} data-reveal>
   {%- if product != blank -%}
-    {%- assign featured = product.featured_media -%}
+    {%- liquid
+      assign featured = product.featured_media
+      assign custom_badge = ''
+      for tag in product.tags
+        assign tag_lower = tag | downcase
+        if tag_lower contains 'badge:'
+          assign custom_badge = tag | split: ':' | last | strip
+          break
+        endif
+      endfor
+      assign on_sale = false
+      if product.compare_at_price > product.price
+        assign on_sale = true
+        assign saving = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round
+      endif
+      assign show_add = false
+      if settings.card_show_quick_add and product.available
+        assign show_add = true
+      endif
+    -%}
     <div
       class="card__media media {{ ratio_class }}"
       {% if ratio_class == '' and featured %}
@@ -65,26 +89,67 @@
         {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
       {%- endif -%}
 
-      {%- if settings.card_show_quick_view -%}
-        <button
-          type="button"
-          class="card__quick-view"
-          data-quick-view="{{ product.url }}"
-          aria-label="{{ 'products.product.quick_view_named' | t: title: product.title | escape }}"
-          aria-haspopup="dialog"
-        >
-          {% render 'icon', icon: 'search' %}
-          <span>{{ 'products.product.quick_view' | t }}</span>
-        </button>
-      {%- endif -%}
-
       <div class="card__badges">
         {%- if product.available == false -%}
           <span class="badge badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
-        {%- elsif product.compare_at_price > product.price -%}
-          <span class="badge badge--sale">{{ 'products.product.on_sale' | t }}</span>
+        {%- elsif on_sale -%}
+          <span class="badge badge--sale">
+            <span aria-hidden="true">−{{ saving }}%</span>
+            <span class="visually-hidden">{{ 'products.product.on_sale' | t }}</span>
+          </span>
+        {%- endif -%}
+        {%- if custom_badge != blank -%}
+          <span class="badge badge--custom">{{ custom_badge | escape }}</span>
         {%- endif -%}
       </div>
+
+      {%- if show_add or settings.card_show_quick_view -%}
+        <div class="card__actions">
+          {%- if show_add -%}
+            {%- if product.has_only_default_variant -%}
+              <product-form class="card__action-form">
+                {%- form 'product', product, id: nil -%}
+                  <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                  <button
+                    type="submit"
+                    name="add"
+                    class="card__action card__action--primary"
+                    aria-label="{{ 'products.product.add_to_cart_named' | t: title: product.title | escape }}"
+                  >
+                    {% render 'icon', icon: 'plus' %}
+                    <span class="button__label card__action-label">{{ 'products.product.add_to_cart' | t }}</span>
+                    <span class="loading-spinner" aria-hidden="true"></span>
+                  </button>
+                  <p class="form__message form__message--error card__error" data-product-form-error role="alert" hidden></p>
+                {%- endform -%}
+              </product-form>
+            {%- else -%}
+              <a
+                href="{{ product.url }}"
+                class="card__action card__action--primary"
+                aria-label="{{ 'products.product.choose_options_named' | t: title: product.title | escape }}"
+                {% if settings.card_show_quick_view %}
+                  data-quick-view="{{ product.url }}" aria-haspopup="dialog"
+                {% endif %}
+              >
+                {% render 'icon', icon: 'plus' %}
+                <span class="card__action-label">{{ 'products.product.choose_options' | t }}</span>
+              </a>
+            {%- endif -%}
+          {%- endif -%}
+          {%- if settings.card_show_quick_view -%}
+            <button
+              type="button"
+              class="card__action card__action--icon{% unless show_add %} card__action--solo{% endunless %}"
+              data-quick-view="{{ product.url }}"
+              aria-label="{{ 'products.product.quick_view_named' | t: title: product.title | escape }}"
+              aria-haspopup="dialog"
+            >
+              {% render 'icon', icon: 'search' %}
+            </button>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
     </div>
 
     <div class="card__info">
@@ -95,17 +160,37 @@
         </span>
       {%- endif -%}
       <h3 class="card__title">
-        <a href="{{ product.url }}" class="card__link link-underline" id="CardLink-{{ section_id }}-{{ product.id }}">
+        <a href="{{ product.url }}" class="card__link" id="CardLink-{{ section_id }}-{{ product.id }}">
           {{- product.title | escape -}}
         </a>
       </h3>
+
+      {%- if settings.card_show_notes -%}
+        {%- assign card_notes = product.metafields.custom.notes.value | default: product.metafields.custom.notes -%}
+        {%- if card_notes != blank -%}
+          <p class="card__notes">{{ card_notes | split: ',' | join: ' · ' | escape }}</p>
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- if settings.card_show_rating and product.metafields.reviews.rating.value != blank -%}
+        {%- liquid
+          assign rating = product.metafields.reviews.rating.value
+          assign rating_percent = rating.rating | divided_by: rating.scale_max | times: 100
+        -%}
+        <p class="card__rating">
+          <span class="stars" style="--rating: {{ rating_percent }}%;" aria-hidden="true"></span>
+          <span class="visually-hidden">{{ 'accessibility.star_reviews_info' | t: rating_value: rating.rating, rating_max: rating.scale_max }}</span>
+          <span class="card__rating-count" aria-hidden="true">({{ product.metafields.reviews.rating_count | default: 0 }})</span>
+        </p>
+      {%- endif -%}
+
       {% render 'price', product: product %}
 
       {%- if settings.card_show_swatches -%}
         {%- for option in product.options_with_values -%}
           {%- if option.values.first.swatch -%}
             <ul class="card__swatches" aria-label="{{ option.name | escape }}">
-              {%- for value in option.values limit: 6 -%}
+              {%- for value in option.values limit: 5 -%}
                 <li>
                   <span
                     class="swatch"
@@ -116,8 +201,8 @@
                   </span>
                 </li>
               {%- endfor -%}
-              {%- if option.values.size > 6 -%}
-                <li class="text-muted">+{{ option.values.size | minus: 6 }}</li>
+              {%- if option.values.size > 5 -%}
+                <li class="card__swatches-more">+{{ option.values.size | minus: 5 }}</li>
               {%- endif -%}
             </ul>
             {%- break -%}
@@ -125,40 +210,6 @@
         {%- endfor -%}
       {%- endif -%}
     </div>
-
-    {%- if settings.card_show_quick_add -%}
-      <div class="card__quick-add">
-        {%- if product.has_only_default_variant and product.available -%}
-          <product-form>
-            {%- form 'product', product, id: nil -%}
-              <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-              <button
-                type="submit"
-                name="add"
-                class="button button--secondary button--small button--full"
-                aria-label="{{ 'products.product.add_to_cart_named' | t: title: product.title | escape }}"
-              >
-                {% render 'icon', icon: 'plus' %}
-                <span class="button__label">{{ 'products.product.add_to_cart' | t }}</span>
-                <span class="loading-spinner" aria-hidden="true"></span>
-              </button>
-              <p class="form__message form__message--error" data-product-form-error role="alert" hidden></p>
-            {%- endform -%}
-          </product-form>
-        {%- elsif product.available -%}
-          <a
-            href="{{ product.url }}"
-            class="button button--secondary button--small button--full"
-            aria-label="{{ 'products.product.choose_options_named' | t: title: product.title | escape }}"
-            {% if settings.card_show_quick_view %}
-              data-quick-view="{{ product.url }}" aria-haspopup="dialog"
-            {% endif %}
-          >
-            {{- 'products.product.choose_options' | t -}}
-          </a>
-        {%- endif -%}
-      </div>
-    {%- endif -%}
   {%- else -%}
     {%- assign index = placeholder_index | default: 1 | modulo: 6 | plus: 1 -%}
     <div class="card__media media {{ ratio_class | default: 'media--portrait' }}">

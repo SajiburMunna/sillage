@@ -1,15 +1,58 @@
+{{ 'section-pages.css' | asset_url | stylesheet_tag }}
+
 <section
   class="section-padding color-{{ section.settings.color_scheme }}"
   style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
 >
   <div class="page-width">
+    {%- if section.settings.show_breadcrumbs -%}{% render 'breadcrumbs' %}{%- endif -%}
     <h1 class="h-display h-display--md main-page-title">{{ blog.title | escape }}</h1>
+    {%- if section.settings.show_tags and blog.all_tags.size > 0 -%}
+      <nav class="blog-tags" aria-label="{{ 'blogs.article.tags_label' | t }}">
+        <ul class="blog-tags__list" role="list">
+          <li>
+            <a href="{{ blog.url }}" class="blog-tags__tag"{% unless current_tags %} aria-current="page"{% endunless %}>
+              {{- 'blogs.article.all_topics' | t -}}
+            </a>
+          </li>
+          {%- for tag in blog.all_tags -%}
+            <li>
+              <a
+                href="{{ blog.url }}/tagged/{{ tag | handle }}"
+                class="blog-tags__tag"
+                {% if current_tags contains tag %}
+                  aria-current="page"
+                {% endif %}
+              >
+                {{- tag | escape -}}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
     {%- paginate blog.articles by 9 -%}
-      <ul class="grid" role="list" style="--cols: 3; --cols-tablet: 2; --cols-mobile: 1;">
+      {%- liquid
+        assign feature_first = false
+        if section.settings.feature_first and paginate.current_page == 1 and blog.articles.size > 1
+          assign feature_first = true
+        endif
+      -%}
+      {%- if feature_first -%}
+        <div class="blog-feature">
+          {% render 'article-card', article: blog.articles.first, show_image: section.settings.show_image, show_date: section.settings.show_date, show_author: section.settings.show_author, featured: true, index: 1 %}
+        </div>
+      {%- endif -%}
+      <ul class="grid blog-grid" role="list" style="--cols: 3; --cols-tablet: 2; --cols-mobile: 1;">
         {%- for article in blog.articles -%}
-          <li>{% render 'article-card', article: article, show_image: section.settings.show_image, show_date: section.settings.show_date, show_author: section.settings.show_author %}</li>
+          {%- if feature_first and forloop.first -%}{%- continue -%}{%- endif -%}
+          <li>{% render 'article-card', article: article, show_image: section.settings.show_image, show_date: section.settings.show_date, show_author: section.settings.show_author, index: forloop.index %}</li>
         {%- endfor -%}
       </ul>
+      {%- if blog.articles.size == 0 -%}
+        <p class="text-muted text-center">{{ 'blogs.article.no_articles' | t }}</p>
+      {%- endif -%}
       {% render 'pagination', paginate: paginate %}
     {%- endpaginate -%}
   </div>
@@ -21,6 +64,9 @@
   "tag": "div",
   "class": "section",
   "settings": [
+    { "type": "checkbox", "id": "show_breadcrumbs", "default": true, "label": "t:sections.all.show_breadcrumbs" },
+    { "type": "checkbox", "id": "show_tags", "default": true, "label": "t:sections.main_blog.settings.show_tags.label" },
+    { "type": "checkbox", "id": "feature_first", "default": true, "label": "t:sections.main_blog.settings.feature_first.label" },
     { "type": "checkbox", "id": "show_image", "default": true, "label": "t:sections.main_blog.settings.show_image.label" },
     { "type": "checkbox", "id": "show_date", "default": true, "label": "t:sections.main_blog.settings.show_date.label" },
     { "type": "checkbox", "id": "show_author", "default": false, "label": "t:sections.main_blog.settings.show_author.label" },

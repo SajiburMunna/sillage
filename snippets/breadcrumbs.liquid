@@ -1,0 +1,90 @@
+{%- comment -%}
+  Breadcrumb trail with BreadcrumbList structured data.
+  Works on product, collection, article, blog and page templates.
+  Usage: {% render 'breadcrumbs' %}
+{%- endcomment -%}
+{%- liquid
+  assign crumb_urls = ''
+  assign crumb_titles = ''
+  assign separator = '|~|'
+
+  case template.name
+    when 'product'
+      if collection
+        assign crumb_urls = collection.url
+        assign crumb_titles = collection.title
+      endif
+      assign current_title = product.title
+    when 'collection'
+      assign current_title = collection.title
+      if current_tags
+        assign crumb_urls = collection.url
+        assign crumb_titles = collection.title
+        assign current_title = current_tags.joined_by
+      endif
+    when 'article'
+      assign crumb_urls = blog.url
+      assign crumb_titles = blog.title
+      assign current_title = article.title
+    when 'blog'
+      assign current_title = blog.title
+      if current_tags
+        assign crumb_urls = blog.url
+        assign crumb_titles = blog.title
+        assign current_title = current_tags.joined_by
+      endif
+    when 'page'
+      assign current_title = page.title
+    when 'search'
+      assign current_title = 'general.search.search' | t
+  endcase
+
+  assign url_list = crumb_urls | split: separator
+  assign title_list = crumb_titles | split: separator
+-%}
+
+{%- if current_title != blank -%}
+  <nav class="breadcrumbs" aria-label="{{ 'general.breadcrumbs.label' | t }}">
+    <ol class="breadcrumbs__list" role="list">
+      <li class="breadcrumbs__item">
+        <a class="breadcrumbs__link" href="{{ routes.root_url }}">{{ 'general.breadcrumbs.home' | t }}</a>
+      </li>
+      {%- for crumb_url in url_list -%}
+        <li class="breadcrumbs__item">
+          <a class="breadcrumbs__link" href="{{ crumb_url }}">{{ title_list[forloop.index0] | escape }}</a>
+        </li>
+      {%- endfor -%}
+      <li class="breadcrumbs__item">
+        <span class="breadcrumbs__current" aria-current="page">{{ current_title | escape }}</span>
+      </li>
+    </ol>
+  </nav>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": {{ 'general.breadcrumbs.home' | t | json }},
+          "item": {{ request.origin | append: routes.root_url | json }}
+        }
+        {%- for crumb_url in url_list -%},
+          {
+            "@type": "ListItem",
+            "position": {{ forloop.index | plus: 1 }},
+            "name": {{ title_list[forloop.index0] | json }},
+            "item": {{ request.origin | append: crumb_url | json }}
+          }
+        {%- endfor -%},
+        {
+          "@type": "ListItem",
+          "position": {{ url_list.size | plus: 2 }},
+          "name": {{ current_title | json }}
+        }
+      ]
+    }
+  </script>
+{%- endif -%}

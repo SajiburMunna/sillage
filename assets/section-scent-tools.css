@@ -375,3 +375,9 @@
   margin: 0;
   color: #ffb4b4;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .sq__step {
+    animation: none;
+  }
+}

@@ -11,7 +11,8 @@
 }
 
 .sc__eyebrow {
-  font-family: var(--font-heading-family);
+  font-family: var(--font-label-family);
+  font-weight: 500;
   font-size: 12px;
   letter-spacing: 0.24em;
   text-transform: uppercase;
@@ -137,8 +138,8 @@
   gap: 6px;
   padding: 4px 10px;
   border-radius: 999px;
-  background: #191714;
-  color: #f3f0eb;
+  background: #1e1a17;
+  color: #f6f2ec;
   font-size: 12px;
   font-weight: var(--font-body-weight-bold);
 }
@@ -149,8 +150,9 @@
 }
 
 .sc-card__vendor {
-  font-family: var(--font-heading-family);
-  font-size: 11px;
+  font-family: var(--font-label-family);
+  font-weight: 500;
+  font-size: 1.2rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   opacity: 0.75;
@@ -207,8 +209,8 @@
 }
 
 .sc-add:hover {
-  background: #191714;
-  color: #f3f0eb;
+  background: #1e1a17;
+  color: #f6f2ec;
 }
 
 .sc-add:hover .icon {
@@ -221,8 +223,8 @@
   justify-content: space-between;
   min-height: 44px;
   border-radius: 999px;
-  background: #191714;
-  color: #f3f0eb;
+  background: #1e1a17;
+  color: #f6f2ec;
   animation: sc-fade 0.35s ease;
 }
 
@@ -269,6 +271,11 @@ cart-stepper[aria-busy='true'] {
 
 /* ---------- House story ---------- */
 
+/* The spinning text ring's corners sweep past the viewport on phones; clip sideways only */
+.sh {
+  overflow-x: clip;
+}
+
 .sh__inner {
   display: grid;
   gap: 48px;
@@ -302,7 +309,7 @@ cart-stepper[aria-busy='true'] {
   inset: 0;
   width: 100%;
   height: 100%;
-  fill: #f3f0eb;
+  fill: #f6f2ec;
   fill-opacity: 0.42;
   font-family: var(--font-heading-family);
   animation: sh-spin 50s linear infinite;
@@ -395,22 +402,35 @@ cart-stepper[aria-busy='true'] {
 .sh__caption {
   position: absolute;
   bottom: 2%;
-  font-family: var(--font-heading-family);
-  font-size: 11px;
+  font-family: var(--font-label-family);
+  font-weight: 500;
+  font-size: 1.2rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: #191714;
+  color: #1e1a17;
 }
 
 .sh__caption--left { left: 0; }
 .sh__caption--right { right: 0; }
+
+/* Phones: the circle fills the width, so captions sit just below it instead of across it */
+@media screen and (max-width: 749px) {
+  .sh__viz {
+    margin-bottom: 3.6rem;
+  }
+  .sh__caption {
+    bottom: -3.6rem;
+    font-size: 1.1rem;
+    letter-spacing: 0.18em;
+  }
+}
 
 .sh__copy {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 24px;
-  color: #191714;
+  color: #1e1a17;
 }
 
 .sh__title {
@@ -432,8 +452,8 @@ cart-stepper[aria-busy='true'] {
   min-height: 56px;
   padding: 0 8px 0 24px;
   border-radius: 999px;
-  background: #191714;
-  color: #f3f0eb;
+  background: #1e1a17;
+  color: #f6f2ec;
   text-decoration: none;
   font-weight: var(--font-body-weight-bold);
   transition: background 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
@@ -450,8 +470,8 @@ cart-stepper[aria-busy='true'] {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #f3f0eb;
-  color: #191714;
+  background: #f6f2ec;
+  color: #1e1a17;
 }
 
 .sh__arrow-icon .icon {
@@ -547,9 +567,9 @@ cart-stepper[aria-busy='true'] {
 }
 
 .sv__btn--solid {
-  background: #f3f0eb;
-  color: #191714;
-  border-color: #f3f0eb;
+  background: #f6f2ec;
+  color: #1e1a17;
+  border-color: #f6f2ec;
 }
 
 .sv__info {
@@ -558,7 +578,7 @@ cart-stepper[aria-busy='true'] {
   gap: 32px;
   margin-top: clamp(56px, 8vw, 120px);
   padding-top: 32px;
-  border-top: 1px solid rgba(243, 240, 235, 0.15);
+  border-top: 1px solid rgba(246, 242, 236, 0.15);
 }
 
 .sv__item {
@@ -568,7 +588,8 @@ cart-stepper[aria-busy='true'] {
 }
 
 .sv__label {
-  font-family: var(--font-heading-family);
+  font-family: var(--font-label-family);
+  font-weight: 500;
   font-size: 12px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -644,7 +665,7 @@ cart-stepper[aria-busy='true'] {
 }
 
 .sv__fly {
-  --spot-stage: #191714;
+  --spot-stage: #1e1a17;
   --spot-light: #e8e0d4;
 }
 
@@ -751,6 +772,12 @@ sc-tabs {
 
 @media (prefers-reduced-motion: reduce) {
   .sc-tabs__panel.is-entering {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-stepper {
     animation: none;
   }
 }

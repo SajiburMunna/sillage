@@ -19,8 +19,10 @@
   assign ritual_block = scents[ritual_index]
   assign ritual_product = ritual_block.settings.product | default: story_products[ritual_index]
   assign heading_tag = 'h2'
+  assign chapter_tag = 'h3'
   if section.index == 1
     assign heading_tag = 'h1'
+    assign chapter_tag = 'h2'
   endif
 -%}
 
@@ -266,7 +268,7 @@
             <span class="ss-chapter__meta">{{ meta | escape }}</span>
             <div class="ss-chapter__card">
               <span class="ss-chapter__vendor">{{ p.vendor | default: shop.name | escape }}</span>
-              <p class="ss-chapter__name">{{ p.title | default: block.settings.title | escape }}</p>
+              <{{ chapter_tag }} class="ss-chapter__name">{{ p.title | default: block.settings.title | escape }}</{{ chapter_tag }}>
               <p class="ss-chapter__desc">
                 {%- if block.settings.description != blank -%}
                   {{ block.settings.description | escape }}
@@ -643,7 +645,7 @@
         {
           "type": "color",
           "id": "cap",
-          "default": "#191714",
+          "default": "#1e1a17",
           "label": "t:sections.scent_story.blocks.scent.settings.cap.label"
         },
         {
@@ -671,7 +673,7 @@
             "bottle_style": "flacon",
             "label": "Aqua",
             "liquid": "#9ED3D6",
-            "cap": "#191714",
+            "cap": "#1e1a17",
             "bg": "#BFCFCD",
             "dot": "#2F6B73"
           }
@@ -704,7 +706,7 @@
             "bottle_style": "spray",
             "label": "Amber",
             "liquid": "#D9A35F",
-            "cap": "#F3F0EB",
+            "cap": "#F6F2EC",
             "bg": "#D6C3A6",
             "dot": "#9A6A2C"
           }

@@ -1,0 +1,260 @@
+{{ 'section-home.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'section-home.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign p = section.settings.product | default: collections.all.products.first
+  assign variant = p.selected_or_first_available_variant
+  assign mf = p.metafields.custom
+  assign top = section.settings.top_notes | default: mf.top_notes.value
+  assign heart = section.settings.heart_notes | default: mf.heart_notes.value
+  assign base = section.settings.base_notes | default: mf.base_notes.value
+  assign title = section.settings.heading | default: p.title
+  if title == blank
+    assign title = 'onboarding.product_title' | t
+  endif
+  assign image = section.settings.image | default: p.featured_media.preview_image
+  assign form_id = 'SpotlightForm-' | append: section.id
+-%}
+
+<section
+  class="spotlight section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px; --tint: {{ section.settings.tint }};"
+>
+  {%- if section.settings.show_trail -%}{% render 'trail' %}{%- endif -%}
+  <div class="page-width spotlight__grid{% if section.settings.layout == 'image_right' %} spotlight__grid--reverse{% endif %}">
+    <div class="spotlight__media" data-reveal>
+      <span class="spotlight__field" aria-hidden="true"></span>
+      <div class="vessel spotlight__vessel">
+        {%- if image != blank -%}
+          {{
+            image
+            | image_url: width: 1400
+            | image_tag: widths: '500, 750, 1000, 1400', sizes: '(min-width: 990px) 40vw, 90vw', loading: 'lazy', alt: image.alt | default: title
+          }}
+        {%- elsif settings.show_sample_photos -%}
+          {% render 'sample-photo', name: 'home-spotlight', sizes: '(min-width: 990px) 40vw, 90vw' %}
+        {%- else -%}
+          {% render 'placeholder-bottle', tint: section.settings.tint, variant: 2 %}
+        {%- endif -%}
+      </div>
+      {%- if top != blank or heart != blank or base != blank -%}
+        <ul class="note-chips spotlight__orbit" role="list" aria-hidden="true">
+          {%- if top != blank -%}<li class="spotlight__chip spotlight__chip--1"><span class="note-chip">{{ top | split: ',' | first | strip | escape }}</span></li>{%- endif -%}
+          {%- if heart != blank -%}<li class="spotlight__chip spotlight__chip--2"><span class="note-chip">{{ heart | split: ',' | first | strip | escape }}</span></li>{%- endif -%}
+          {%- if base != blank -%}<li class="spotlight__chip spotlight__chip--3"><span class="note-chip">{{ base | split: ',' | first | strip | escape }}</span></li>{%- endif -%}
+        </ul>
+      {%- endif -%}
+    </div>
+
+    <div class="spotlight__info" data-reveal>
+      {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+      <h2 class="h-display h-display--md spotlight__title">{{ title }}</h2>
+      {%- if section.settings.text != blank -%}
+        <div class="rte spotlight__text">{{ section.settings.text }}</div>
+      {%- elsif p.description != blank -%}
+        <p class="spotlight__text">{{ p.description | strip_html | truncatewords: 30 }}</p>
+      {%- endif -%}
+
+      {%- if top != blank or heart != blank or base != blank -%}
+        <dl class="spotlight__notes">
+          {%- if top != blank -%}
+            <div class="spotlight__tier"><dt>{{ 'products.product.fragrance.top' | t }}</dt><dd>{{ top | escape }}</dd></div>
+          {%- endif -%}
+          {%- if heart != blank -%}
+            <div class="spotlight__tier"><dt>{{ 'products.product.fragrance.heart' | t }}</dt><dd>{{ heart | escape }}</dd></div>
+          {%- endif -%}
+          {%- if base != blank -%}
+            <div class="spotlight__tier"><dt>{{ 'products.product.fragrance.base' | t }}</dt><dd>{{ base | escape }}</dd></div>
+          {%- endif -%}
+        </dl>
+      {%- endif -%}
+
+      {%- if p != blank -%}
+        <spotlight-form class="spotlight__buy">
+          {%- if p.requires_selling_plan -%}
+            <a href="{{ p.url }}" class="button">{{ 'products.product.choose_options' | t }}</a>
+          {%- else -%}
+            <product-form>
+              {%- form 'product', p, id: form_id -%}
+                {%- if p.has_only_default_variant -%}
+                  <input type="hidden" name="id" value="{{ variant.id }}">
+                {%- else -%}
+                  <div class="field spotlight__select">
+                    <label class="field__label" for="{{ form_id }}-Variant">{{ p.options | join: ' / ' | escape }}</label>
+                    <select id="{{ form_id }}-Variant" name="id" data-spotlight-select>
+                      {%- for v in p.variants -%}
+                        <option
+                          value="{{ v.id }}"
+                          data-price="{{ v.price | money | escape }}"
+                          data-available="{{ v.available }}"
+                          {% if v.id == variant.id %}
+                            selected
+                          {% endif %}
+                        >
+                          {{- v.title | escape -}}
+                          {%- unless v.available %} — {{ 'products.product.sold_out' | t }}{% endunless -%}
+                        </option>
+                      {%- endfor -%}
+                    </select>
+                  </div>
+                {%- endif -%}
+                <div class="spotlight__row">
+                  <p class="spotlight__price" data-spotlight-price>{{ variant.price | money }}</p>
+                  <button
+                    type="submit"
+                    name="add"
+                    class="button spotlight__add"
+                    data-label-add="{{ 'products.product.add_to_cart' | t }}"
+                    data-label-sold="{{ 'products.product.sold_out' | t }}"
+                    {% unless variant.available %}
+                      aria-disabled="true" data-sold-out
+                    {% endunless %}
+                  >
+                    <span class="button__label">
+                      {%- if variant.available -%}{{ 'products.product.add_to_cart' | t }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
+                    </span>
+                    <span class="loading-spinner" aria-hidden="true"></span>
+                  </button>
+                </div>
+                <p class="form__message form__message--error" data-product-form-error role="alert" hidden></p>
+              {%- endform -%}
+            </product-form>
+          {%- endif -%}
+          <a href="{{ p.url }}" class="button button--tertiary spotlight__more">
+            {{- 'products.product.view_full_details' | t }}
+            {% render 'icon', icon: 'arrow' %}
+          </a>
+        </spotlight-form>
+      {%- else -%}
+        <div class="spotlight__row">
+          {% render 'price', product: blank %}
+          <span class="button" aria-disabled="true">{{ 'products.product.add_to_cart' | t }}</span>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.product_spotlight.name",
+  "tag": "div",
+  "class": "section",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "t:sections.product_spotlight.settings.product.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.all.image",
+      "info": "t:sections.product_spotlight.settings.image.info"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "default": "In the spotlight",
+      "label": "t:sections.all.eyebrow"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:sections.all.heading",
+      "info": "t:sections.product_spotlight.settings.heading.info"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "t:sections.all.text",
+      "info": "t:sections.product_spotlight.settings.text.info"
+    },
+    {
+      "type": "text",
+      "id": "top_notes",
+      "default": "Bergamot, pink pepper",
+      "label": "t:sections.product_spotlight.settings.top_notes.label",
+      "info": "t:sections.product_spotlight.settings.top_notes.info"
+    },
+    {
+      "type": "text",
+      "id": "heart_notes",
+      "default": "Iris, ambrette seed",
+      "label": "t:sections.product_spotlight.settings.heart_notes.label"
+    },
+    {
+      "type": "text",
+      "id": "base_notes",
+      "default": "Oud, musk, vanilla",
+      "label": "t:sections.product_spotlight.settings.base_notes.label"
+    },
+    {
+      "type": "color",
+      "id": "tint",
+      "default": "#E9B9A6",
+      "label": "t:sections.product_spotlight.settings.tint.label"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "default": "image_left",
+      "label": "t:sections.product_spotlight.settings.layout.label",
+      "options": [
+        {
+          "value": "image_left",
+          "label": "t:sections.product_spotlight.settings.layout.options.image_left"
+        },
+        {
+          "value": "image_right",
+          "label": "t:sections.product_spotlight.settings.layout.options.image_right"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trail",
+      "default": true,
+      "label": "t:sections.product_spotlight.settings.show_trail.label",
+      "info": "t:sections.product_spotlight.settings.show_trail.info"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.color_scheme.label",
+      "default": "scheme-4"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "t:sections.all.padding_top",
+      "default": 112
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "t:sections.all.padding_bottom",
+      "default": 112
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.product_spotlight.presets.name"
+    }
+  ]
+}
+{% endschema %}

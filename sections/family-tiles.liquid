@@ -1,0 +1,206 @@
+{{ 'section-home.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="families section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  {%- if section.settings.show_trail -%}{% render 'trail' %}{%- endif -%}
+  <div class="page-width">
+    <div class="section-header home-header" data-reveal>
+      <div>
+        {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        {%- if section.settings.heading != blank -%}<h2 class="section-header__title h-display h-display--md">{{ section.settings.heading }}</h2>{%- endif -%}
+      </div>
+      {%- if section.settings.text != blank -%}<div class="section-header__text rte">{{ section.settings.text }}</div>{%- endif -%}
+    </div>
+
+    <ul class="families__list" role="list" style="--tiles: {{ section.blocks.size | at_least: 1 }};">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign c = block.settings.collection
+          assign title = block.settings.title | default: c.title
+          assign image = block.settings.image | default: c.image | default: c.featured_image
+          assign family_handle = title | handleize
+          assign url = c.url | default: collections[family_handle].url | default: routes.all_products_collection_url
+        -%}
+        <li class="families__item" data-reveal style="--delay: {{ forloop.index0 | times: 0.08 }}s; --tint: {{ block.settings.tint }};" {{ block.shopify_attributes }}>
+          <a class="families__tile" href="{{ url }}">
+            <div class="vessel families__media">
+              {%- if image != blank -%}
+                {{
+                  image
+                  | image_url: width: 900
+                  | image_tag: widths: '300, 450, 600, 900', sizes: '(min-width: 990px) 25vw, 70vw', loading: 'lazy', alt: ''
+                }}
+              {%- elsif settings.show_sample_photos and forloop.index <= 4 -%}
+                {%- assign sample_names = 'home-floral,home-woody,home-amber,home-fresh' | split: ',' -%}
+                {% render 'sample-photo', name: sample_names[forloop.index0], sizes: '(min-width: 990px) 25vw, 70vw' %}
+              {%- else -%}
+                {% render 'placeholder-bottle', tint: block.settings.tint, variant: forloop.index %}
+              {%- endif -%}
+              <span class="families__tint" aria-hidden="true"></span>
+            </div>
+            <div class="families__body">
+              <h3 class="families__title">{{ title | escape }}</h3>
+              {%- if block.settings.notes != blank -%}
+                <p class="families__notes">{{ block.settings.notes | escape }}</p>
+              {%- endif -%}
+              <span class="families__meta">
+                {%- if c != blank -%}
+                  <span>{{ 'sections.scent_collection.count' | t: count: c.products_count }}</span>
+                {%- endif -%}
+                <span class="families__arrow" aria-hidden="true">{% render 'icon', icon: 'arrow' %}</span>
+              </span>
+            </div>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.family_tiles.name",
+  "tag": "div",
+  "class": "section",
+  "max_blocks": 6,
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "default": "Shop by mood",
+      "label": "t:sections.all.eyebrow"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:sections.all.heading",
+      "info": "t:sections.family_tiles.settings.heading.info",
+      "default": "Find your <em>family</em>"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "default": "<p>Every scent belongs to a family. Start with the mood you love and explore from there.</p>",
+      "label": "t:sections.all.text"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trail",
+      "default": true,
+      "label": "t:sections.family_tiles.settings.show_trail.label",
+      "info": "t:sections.family_tiles.settings.show_trail.info"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "t:sections.all.padding_top",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "t:sections.all.padding_bottom",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "family",
+      "name": "t:sections.family_tiles.blocks.family.name",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "t:sections.family_tiles.blocks.family.settings.collection.label"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Floral",
+          "label": "t:sections.family_tiles.blocks.family.settings.title.label",
+          "info": "t:sections.family_tiles.blocks.family.settings.title.info"
+        },
+        {
+          "type": "text",
+          "id": "notes",
+          "default": "Rose, jasmine, iris",
+          "label": "t:sections.family_tiles.blocks.family.settings.notes.label"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.all.image",
+          "info": "t:sections.family_tiles.blocks.family.settings.image.info"
+        },
+        {
+          "type": "color",
+          "id": "tint",
+          "default": "#C97B63",
+          "label": "t:sections.family_tiles.blocks.family.settings.tint.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.family_tiles.presets.name",
+      "blocks": [
+        {
+          "type": "family",
+          "settings": {
+            "title": "Floral",
+            "notes": "Rose, jasmine, iris",
+            "tint": "#C97B63"
+          }
+        },
+        {
+          "type": "family",
+          "settings": {
+            "title": "Woody",
+            "notes": "Cedar, vetiver, sandalwood",
+            "tint": "#8A5235"
+          }
+        },
+        {
+          "type": "family",
+          "settings": {
+            "title": "Amber",
+            "notes": "Vanilla, labdanum, benzoin",
+            "tint": "#D9A441"
+          }
+        },
+        {
+          "type": "family",
+          "settings": {
+            "title": "Fresh",
+            "notes": "Bergamot, neroli, sea salt",
+            "tint": "#6F8F7A"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

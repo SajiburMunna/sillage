@@ -1,0 +1,14 @@
+{%- comment -%}
+  The trail: a hairline curve in the left margin that links home page chapters.
+  The chapter number comes from the section's position in the template.
+  Shown from 1200px wide; draws as it scrolls into view; still for reduced motion.
+  The parent element must be position: relative.
+  Usage: {% render 'trail' %}
+{%- endcomment -%}
+{%- assign chapter = section.index | prepend: '0' | slice: -2, 2 -%}
+<div class="trail" aria-hidden="true">
+  <span class="trail__number">{{ chapter }}</span>
+  <svg class="trail__line" viewBox="0 0 24 100" preserveAspectRatio="none" focusable="false">
+    <path pathLength="1" d="M12 0 C 22 22, 2 48, 12 62 S 18 88, 12 100"/>
+  </svg>
+</div>

@@ -23,15 +23,24 @@
 </p>
 
 {%- if settings.cart_show_note -%}
-  <cart-note class="cart__note field">
-    <label for="CartNote-{{ context }}" class="field__label">{{ 'sections.cart.note' | t }}</label>
-    <textarea id="CartNote-{{ context }}" name="note" form="CartForm-{{ context }}" class="field__input" rows="2">{{ cart.note | escape }}</textarea>
-  </cart-note>
+  <details class="cart__note-toggle"{% if cart.note != blank %} open{% endif %}>
+    <summary>
+      {% render 'icon', icon: 'chat' %}
+      <span>{{ 'sections.cart.note' | t }}</span>
+      {% render 'icon', icon: 'caret' %}
+    </summary>
+    <cart-note class="cart__note field">
+      <label for="CartNote-{{ context }}" class="visually-hidden">{{ 'sections.cart.note' | t }}</label>
+      <textarea id="CartNote-{{ context }}" name="note" form="CartForm-{{ context }}" class="field__input" rows="2">{{ cart.note | escape }}</textarea>
+    </cart-note>
+  </details>
 {%- endif -%}
 
 <form action="{{ routes.cart_url }}" method="post" id="CartForm-{{ context }}" class="cart__ctas">
-  <button type="submit" name="checkout" class="button button--full"{% if cart.empty? %} disabled{% endif %}>
+  <button type="submit" name="checkout" class="button button--full cart__checkout"{% if cart.empty? %} disabled{% endif %}>
+    {% render 'icon', icon: 'lock' %}
     {{ 'sections.cart.checkout' | t }}
+    <span class="cart__checkout-total" aria-hidden="true">· {{ cart.total_price | money }}</span>
   </button>
   {%- if additional_checkout_buttons -%}
     <div class="cart__dynamic-checkout-buttons additional-checkout-buttons">
@@ -39,3 +48,5 @@
     </div>
   {%- endif -%}
 </form>
+
+<p class="cart__secure">{{ 'sections.cart.secure_checkout' | t }}</p>

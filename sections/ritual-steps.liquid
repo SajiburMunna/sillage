@@ -1,0 +1,199 @@
+{{ 'section-home.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'section-home.js' | asset_url }}" defer="defer"></script>
+
+{%- assign step_count = section.blocks.size | prepend: '0' | slice: -2, 2 -%}
+
+<ritual-steps
+  class="ritual section-padding color-{{ section.settings.color_scheme }}"
+  style="--pad-top: {{ section.settings.padding_top }}px; --pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  {%- if section.settings.show_trail -%}{% render 'trail' %}{%- endif -%}
+  <div class="page-width">
+    <div class="section-header home-header" data-reveal>
+      <div>
+        {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        {%- if section.settings.heading != blank -%}<h2 class="section-header__title h-display h-display--md">{{ section.settings.heading }}</h2>{%- endif -%}
+      </div>
+      {%- if section.settings.text != blank -%}<div class="section-header__text rte">{{ section.settings.text }}</div>{%- endif -%}
+    </div>
+
+    <div class="ritual__grid{% if section.settings.image_side == 'right' %} ritual__grid--reverse{% endif %}">
+      <div class="ritual__media" aria-hidden="true">
+        <div class="ritual__sticky">
+          <div class="vessel ritual__vessel">
+            {%- for block in section.blocks -%}
+              <div class="ritual__frame{% if forloop.first %} is-active{% endif %}" data-ritual-frame>
+                {%- if block.settings.image != blank -%}
+                  {{ block.settings.image | image_url: width: 1200 | image_tag: widths: '500, 800, 1200', sizes: '40vw', loading: 'lazy', alt: '' }}
+                {%- elsif settings.show_sample_photos and forloop.index <= 3 -%}
+                  {%- assign sample_name = 'home-ritual-' | append: forloop.index -%}
+                  {% render 'sample-photo', name: sample_name, sizes: '40vw' %}
+                {%- else -%}
+                  {% render 'placeholder-bottle', tint: 'rgb(var(--color-accent))', variant: forloop.index %}
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          </div>
+          <p class="ritual__counter"><span data-ritual-current>01</span> / {{ step_count }}</p>
+        </div>
+      </div>
+
+      <ol class="ritual__steps" role="list">
+        {%- for block in section.blocks -%}
+          <li class="ritual__step{% if forloop.first %} is-active{% endif %}" data-ritual-step {{ block.shopify_attributes }}>
+            <span class="ritual__num" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+            <div class="vessel ritual__step-media">
+              {%- if block.settings.image != blank -%}
+                {{ block.settings.image | image_url: width: 900 | image_tag: widths: '400, 600, 900', sizes: '90vw', loading: 'lazy', alt: block.settings.image.alt }}
+              {%- elsif settings.show_sample_photos and forloop.index <= 3 -%}
+                {%- assign sample_name = 'home-ritual-' | append: forloop.index -%}
+                {% render 'sample-photo', name: sample_name, sizes: '90vw' %}
+              {%- else -%}
+                {% render 'placeholder-bottle', tint: 'rgb(var(--color-accent))', variant: forloop.index %}
+              {%- endif -%}
+            </div>
+            <h3 class="ritual__title">{{ block.settings.title | escape }}</h3>
+            {%- if block.settings.text != blank -%}<div class="rte ritual__text">{{ block.settings.text }}</div>{%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ol>
+    </div>
+  </div>
+</ritual-steps>
+
+{% schema %}
+{
+  "name": "t:sections.ritual_steps.name",
+  "tag": "div",
+  "class": "section",
+  "max_blocks": 5,
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "default": "The ritual",
+      "label": "t:sections.all.eyebrow"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:sections.all.heading",
+      "info": "t:sections.ritual_steps.settings.heading.info",
+      "default": "How to <em>wear</em> it"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "t:sections.all.text"
+    },
+    {
+      "type": "select",
+      "id": "image_side",
+      "default": "left",
+      "label": "t:sections.ritual_steps.settings.image_side.label",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.ritual_steps.settings.image_side.options.left"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.ritual_steps.settings.image_side.options.right"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trail",
+      "default": true,
+      "label": "t:sections.ritual_steps.settings.show_trail.label",
+      "info": "t:sections.ritual_steps.settings.show_trail.info"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.color_scheme.label",
+      "default": "scheme-5"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "t:sections.all.padding_top",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 8,
+      "unit": "px",
+      "label": "t:sections.all.padding_bottom",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "t:sections.ritual_steps.blocks.step.name",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.all.image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Warm the skin",
+          "label": "t:sections.ritual_steps.blocks.step.settings.title.label"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Scent holds best on warm, moisturised skin. Apply after a shower.</p>",
+          "label": "t:sections.all.text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.ritual_steps.presets.name",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "title": "Warm the skin",
+            "text": "<p>Scent holds best on warm, moisturised skin. Apply after a shower.</p>"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Find the pulse points",
+            "text": "<p>Spray once on each wrist and once at the base of the neck, from 15 cm away.</p>"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Let it settle",
+            "text": "<p>Don’t rub. Give the heart notes ten minutes to open before you judge it.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

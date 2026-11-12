@@ -25,6 +25,24 @@
         {%- endunless -%}
       {%- endfor -%}
     </ul>
+    {%- if product.media.size > 1 -%}
+      <ul class="product__thumbs quick-view__thumbs" role="list">
+        {%- for media in product.media limit: 6 -%}
+          <li>
+            <button
+              type="button"
+              class="product__thumb media"
+              data-gallery-thumb
+              data-media-id="{{ media.id }}"
+              aria-current="{% if media.id == featured_media.id %}true{% else %}false{% endif %}"
+              aria-label="{{ 'products.product.media.load_image' | t: index: forloop.index }}"
+            >
+              {{ media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '', widths: '80, 160', sizes: '64px' }}
+            </button>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
   </media-gallery>
 
   <div class="quick-view__info">
@@ -50,7 +68,10 @@
     {% render 'variant-picker', product: product, block: picker_block, section_id: section.id, update_url: false %}
     {% render 'buy-buttons', product: product, block: buy_block, section_id: section.id, show_quantity: true, dynamic_checkout: true %}
 
-    <a href="{{ product.url }}" class="link-underline quick-view__more">{{ 'products.product.view_full_details' | t }}</a>
+    <a href="{{ product.url }}" class="button button--tertiary quick-view__more">
+      {{- 'products.product.view_full_details' | t }}
+      {% render 'icon', icon: 'arrow' %}
+    </a>
   </div>
 
   <script type="application/json" data-selected-variant hidden>
